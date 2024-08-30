@@ -14,18 +14,17 @@ There are two ways to detect a collision, depending of the type of node you are 
 ### 1. PhysicsBody2D
 ```gdscript
 func _physics_process(delta):
+
+	# Using move_and_collide.
+	var collision = move_and_collide(velocity * delta)
+	if collision:
+		print("I collided with ", collision.get_collider().name)
+
+	# Using move_and_slide.
 	move_and_slide()
-
-	var collision_count = get_slide_collision_count()
-
-	for i in collision_count:
-		var collision_info = get_slide_collision(i)
-		var collider = collision_info.get_collider()
-
-		if collider.has_method("take_damage"):
-			collider.take_damage(impact_damage)
-			died.emit()
-			queue_free()
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		print("I collided with ", collision.get_collider().name)
 ```
 
 ### 2. Area2D
@@ -33,7 +32,7 @@ func _physics_process(delta):
 func _physics_process(delta):
 	global_position += Vector2(speed, 0) * delta
 
-func _on_area_2d_body_entered(body):
+func _on_body_entered(body):
 	if body.is_in_group("enemy"):
 		if body.has_method("take_damage"):
 			body.take_damage(damage)

@@ -1,7 +1,7 @@
 ---
 weight: 300
 title: "Composition"
-description: ""
+description: "A good game arquitecture is to structure the game in small components"
 icon: "article"
 date: "2024-08-28T13:51:43+02:00"
 lastmod: "22024-08-28T13:51:43+02:00"
@@ -9,7 +9,8 @@ draft: false
 toc: true
 ---
 
-A good game arquitecture is to structure the game in small components
+![alt](/images/components.webp)
+
 
 1. What are components
     - Small blocks of useful functionality

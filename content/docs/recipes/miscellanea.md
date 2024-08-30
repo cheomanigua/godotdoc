@@ -75,12 +75,14 @@ func _ready():
 
 ### Timer
 
+The code below shows a message during 5 seconds. It creates a one-shot timer and wait for it to finish.
+
 ```gdscript
 $Label.text = message
-yield(get_tree().create_timer(5.0), "timeout")
+await get_tree().create_timer(5.0).timeout
 $Label.text = ""
 ```
-The code above shows a message during 5 seconds
+
 
 ### Autoload (Singleton)
 
