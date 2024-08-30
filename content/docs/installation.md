@@ -39,9 +39,9 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 
 # NeoVim as editor
 
-If you wish, you can use **NeoVim** also as your editor for **Godot**.
+If you wish, you can use **NeoVim** also as your editor for **Godot** along a running instance of **Godot**.
 
-## Install last version of NeoVim (Ubuntu)
+## 1. Install last version of NeoVim (Ubuntu)
 
 ```bash
 $ sudo add-apt-repository ppa:neovim-ppa/unstable -y
@@ -55,7 +55,7 @@ $ sudo apt install make gcc ripgrep unzip git xclip neovim
 $ nvim
 ```
 
-## kickstart.nvim
+## 2. kickstart.nvim
 
 Install **kickstart** config file for an easy configuration.
 
@@ -84,6 +84,10 @@ ensure_installed = { 'gdscript', 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luad
 Run `:TSUpdate`
 
 4. Restart your computer
+
+### Launch Godot and NeoVim
+
+Now all you have to do is to launch **Godot** and then launch **NeoVim**.
 
 If you get the error: `could not connect to 127.0.0.1:6005, reason : "ECONNREFUSED"`, go to your **Godot** editor and be sure that the server settings at **Editor** -> **Editor Settings** -> **Network** -> **Language Server** are correctly setup.
 

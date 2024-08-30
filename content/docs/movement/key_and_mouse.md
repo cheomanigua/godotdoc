@@ -1,5 +1,5 @@
 ---
-weight: 5100
+weight: 10100
 title: "Keyboard move & Mouse shoot"
 description: "In this article I explain how to move with the keyboard and point and shoot with the mouse"
 icon: "article"

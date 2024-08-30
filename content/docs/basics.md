@@ -9,16 +9,6 @@ draft: false
 toc: true
 ---
 
-## Clickeable Area2D
-
-When left clicking in an Area2D, the message "Object has been clicked" will appear in the debug window. Create the following script to an Area2D node:
-
-```gdscript
-func _input_event(viewport, event, shape_idx):
-	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-		print("Object has been clicked") #debugging
-```
-Note that if we don't add "event.pressed", the event will detect both the press and the release. If you only want to detect the first click, add "event.pressed".
 
 ## Input
 The most common input types are:
@@ -70,4 +60,203 @@ func _input(event):
 		queue_redraw()
 
 # For the left click to work, add "mouse_left_button" to Project Settings -> Input Map
+```
+
+## .new() vs .instantiate()
+
+### .new()
+
+**.new()** is used to instantiate **scripts** and **single nodes**:
+
+```gdscript
+@onready var data = load("res://Scripts/data.gd").new()
+func _ready():
+    add_child(data)
+```
+
+Note that if you have defined the name of the class in the script **data.gd** by using the line `class_name Data`, you can instantiate the script like this:
+
+
+```gdscript
+@onready var data = Data.new()
+```
+
+or inherits like this:
+
+```gdscript
+extends Data
+```
+Note that if you don't use `@onready` and `add_child()`, all instance nodes will produce orphan nodes (stray nodes). You can check for stray nodes by using `print_stray_nodes()` and the **Debugger->Monitors->Object->Orphan Nodes**
+
+More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#classes)
+
+
+### .instantiate()
+
+**.instantiate()** is used to instantiate **scenes**:
+
+```gdscript
+const Bullet = preload("res://Bullet.tscn")
+
+some_function():
+    var new_bullet = Bullet.instantiate()
+    get_tree().root.add_child(new_bullet)
+```
+
+or
+
+```gdscript
+var new_bullet = preload("res://Bullet.tscn").instantiate()
+
+some_function():
+    get_tree().root.add_child(new_bullet)
+```
+
+
+## Instantiate a scene using parameters
+
+The following code will instantiate 1 Gem in the player position. 
+
+
+- **foo.gd** 
+
+```gdscript
+const ItemObject = preload("res://scenes/item_object.tscn")
+
+func bar():
+    var name = "Gem"
+    var quantity = 1
+    var item_object = ItemObject.instantiate()
+    item_object.initialize(name, quantity)
+    add_child(item_object)
+    item_object.position = Player.position
+```
+
+- **item_object.sd** is used to instantiate scenes:
+
+```gdscript
+export (String) var item_name
+export (int) var item_quantity = 1
+
+func initialize(name: String, quantity: int):
+	item_name = name
+	item_quantity = quantity
+```
+
+Note the we can instantiate the item scene both via editor at compile time with the export variables, and via code at run time with the rest of the code. 
+
+Also note that you cannot instantiate an object from its own script (You cannot instantiate **item_object** from **item_object.sd**)
+
+
+## load() vs preload()
+When importing a resource, you can use either load or preload.
+
+- **load()** is run at runtime
+- **preload()** is run at compile time
+
+```gdscript
+@onready var data = load("res://Scripts/data.gd").new()
+@onready var data = preload("res://Scripts/data.gd").new()
+```
+
+If you prefer to use a constant:
+
+```gdscript
+@onready const Data = preload("res://Scripts/data.gd")
+var data = Data.new()
+```
+
+## free() vs queue_free() vs remove_child()
+When importing a resource, you can use either load or preload.
+
+- **[free()](https://docs.godotengine.org/en/stable/classes/class_object.html#class-object-method-free)** deletes an object from memory immediately. Be cautious.
+- **[queue_free()](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-queue-free)** deletes a node from memory when it's safe to do so.
+- **[remove_child()](https://docs.godotengine.org/en/latest/classes/class_node.html?#class-node-method-remove-child)** removes a node from the scene tree but it does not delete the node.
+
+You can choose exactly when to free the queue by adding the following code in any method that you are gonna call:
+```gdscript
+    if is_queued_for_deletion():
+        return
+```
+
+[WeakRef](https://docs.godotengine.org/en/stable/classes/class_weakref.html)
+
+Holds an Object, but does not contribute to the reference count if the object is a reference.
+
+## Changing Node instances textures in the editor
+
+Add this script to the parent node where the Sprite node is a child:
+
+```gdscript
+tool
+
+extends Area2D
+
+@export(Texture) onready var texture setget texture_set, texture_get
+
+func texture_set(newtexture):
+	$Sprite.texture = newtexture
+
+func texture_get():
+	return $Sprite.texture
+```
+
+You will now be able to select a different texture for each node instance in the editor. This is great for level creation, as you will be able to differentiate between several types of potions, keys, etc.
+
+## Changing Node instances textures in a script
+
+#### At run time
+
+```gdscript
+func _ready():
+	var texture = load("%s" % creature_stats.Texture)
+	get_node("Sprite").texture = texture
+```
+
+#### At compile time
+
+```gdscript
+func _ready():
+	var texture = preload("res://Images/Characters/orc.png")
+	get_node("Sprite").texture = texture
+```
+
+## Canvas Layer
+
+If you want the GUI to be independent from the Viewport camera (the GUI will remain in screen regardless of camera movement), create/change the parent node of the GUI scene to **CanvasLayer**.
+
+## Pause Game
+
+```gdscript
+var is_paused: bool = false
+
+func _ready():
+	pause_mode = Node.PAUSE_MODE_PROCESS # On player node, for instance
+
+func _unhandled_input(event):
+    if (event.is_action_pressed("pause")):
+		 is_paused = !is_paused
+		 pause()
+
+func pause():
+	if is_paused:
+		get_tree().paused = true
+		set_physics_process(false)
+	else:
+		get_tree().paused = false
+		set_physics_process(true)
+```
+
+## Creating "variables" dynamically
+
+```gdscript
+	var vars: Dictionary
+	var bonus_index := 9 # this is the value of the JSON file, starting in strength_bonus
+
+	for key in Player.stats:
+		# Dynamically creating variables of Player stats keys and assigning JSON file value
+		vars[key] = Data.item_data[item_name].values()[bonus_index]
+		if vars[key] != null:
+			$Label.text += "\n%s %s%d" % [key.capitalize(), vars[key]]
+		bonus_index += 1
 ```
