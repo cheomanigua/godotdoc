@@ -9,10 +9,11 @@ draft: false
 toc: true
 ---
 
-There are two ways to detect a collision, depending of the type of node you are using:
+There are three ways to detect a collision, depending of the type of node you are using:
 
 1. **PhysicsBody2D** uses the built in collision feature.
 2. **Area2D** uses the built in `body_entered` or `area_entered` signals.
+3. **RigidBody2D** uses the built in `body_entered` or `area_entered` signals.
 
 ### 1. PhysicsBody2D
 
@@ -55,6 +56,22 @@ func _on_body_entered(body):
 		if body.has_method("take_damage"):
 			body.take_damage(damage)
 			queue_free()
+```
+
+### 3. RigidBody2D
+
+In order for **RigidBody2D** to detect a collision, **contact_monitor** and **max_contact_reported** have to be set to an integer bigger than 0.
+
+```gdscript
+func _ready():
+	contact_monitor = 1
+	max_contact_reported = 1
+	body_entered().connect(_on_body_entered)
+
+func _on_body_entered(body):
+	if body.name == "HeliPad":
+		if linear_velocity.y > 0.0002:
+			print("Hard landing")
 ```
 
 ### Layers and Masks
