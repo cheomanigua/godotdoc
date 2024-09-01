@@ -11,24 +11,42 @@ toc: true
 
 There are two ways to detect a collision, depending of the type of node you are using:
 
+1. **PhysicsBody2D** uses the built in collision feature.
+2. **Area2D** uses the built in `body_entered` or `area_entered` signals.
+
 ### 1. PhysicsBody2D
+
+Comparison between **move_and_collide** and **move_and_slide** for a bullet object.
+
+- **move_and_collide** is better used for projectiles kind of objects because we asure that the projectile is going to hit only once at the target, causing the expected amount of damage.
+- **move_and_slide** is not good for projectiles, because a single projectile can impact several times at the target, causing more damage than expected.
+
 ```gdscript
 func _physics_process(delta):
 
 	# Using move_and_collide.
 	var collision = move_and_collide(velocity * delta)
 	if collision:
-		print("I collided with ", collision.get_collider().name)
+		queue_free()
+		if collision.get_collider().has_method("take_damage"):
+			collision.get_collider().take_damage(damage)
+			print("Bullet hit target")
 
 	# Using move_and_slide.
 	move_and_slide()
 	for i in get_slide_collision_count():
+		queue_free()
 		var collision = get_slide_collision(i)
-		print("I collided with ", collision.get_collider().name)
+		if collision.get_collider().has_method("take_damage"):
+			collision.get_collider().take_damage(damage)
+			print("Bullet hit target")
 ```
 
 ### 2. Area2D
 ```gdscript
+func _ready():
+	body_entered().connect(_on_body_entered)
+
 func _physics_process(delta):
 	global_position += Vector2(speed, 0) * delta
 
