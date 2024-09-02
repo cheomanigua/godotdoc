@@ -20,9 +20,9 @@ toc: true
 ### Node structure
 
 ```
-[RigidBody2D] -> "Ship"
+[RigidBody2D] "Ship"
 		|-[CollisionPolygon2D]
-		|-[ProgressBar] -> "HealhBar"
+		|-[ProgressBar] "HealhBar"
 ```
 
 ### Code
@@ -53,8 +53,6 @@ func _physics_process(_delta: float) -> void:
 	previous_velocity = linear_velocity
 	
 func _integrate_forces(state):
-	for i in range(state.get_contact_count()):
-		collision_force += state.get_contact_impulse(i) * state.get_contact_local_normal(i)
 
 	if Input.is_action_pressed("ui_up"):
 		state.apply_force(thrust.rotated(rotation))
