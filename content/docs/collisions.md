@@ -60,11 +60,11 @@ func _on_body_entered(body):
 
 ### 3. RigidBody2D
 
-In order for **RigidBody2D** to detect a collision, **contact_monitor** and **max_contact_reported** have to be set to an integer bigger than 0.
+In order for **RigidBody2D** to detect a collision, **contact_monitor** must to be set to `true` and **max_contact_reported** have to be set to an integer bigger than 0.
 
 ```gdscript
 func _ready():
-	contact_monitor = 1
+	contact_monitor = true
 	max_contact_reported = 1
 	body_entered().connect(_on_body_entered)
 

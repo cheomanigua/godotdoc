@@ -1,6 +1,6 @@
 ---
 weight: 10100
-title: "Keyboard move & Mouse shoot"
+title: "CharacterBody2D - Mouse shoot"
 description: "In this article I explain how to move with the keyboard and point and shoot with the mouse"
 icon: "article"
 date: "2024-08-28T19:24:58+02:00"

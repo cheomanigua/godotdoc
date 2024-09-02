@@ -39,7 +39,7 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 
 # NeoVim as editor
 
-If you wish, you can use **NeoVim** also as your editor for **Godot** along a running instance of **Godot**.
+If you wish, you can use **NeoVim** also as your editor for **Godot** alongside a running instance of **Godot**.
 
 ## 1. Install last version of NeoVim (Ubuntu)
 

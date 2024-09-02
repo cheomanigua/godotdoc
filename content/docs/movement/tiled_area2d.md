@@ -1,5 +1,5 @@
 ---
-weight: 10200
+weight: 10300
 title: "Tiled Area2D"
 description: "Characters move from center of tile to center of tile"
 icon: "article"
