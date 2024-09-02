@@ -31,7 +31,7 @@ res://
 
 ### Node structure
 ```
-[Node2D] Main
+[Node2D] "Main"
 		|-Player
 		|-Enemy
 ```
@@ -42,7 +42,7 @@ Bullets are instantiated at runtime, so they do not appear in the initial node s
 
 #### Node Hierarcy
 ```
-[CharacterBody2D] Player
+[CharacterBody2D] "Player"
 		|-[CollisionShape2D]
 ```
 #### player.gd
@@ -75,9 +75,9 @@ func shoot():
 #### Node hierarchy
 
 ```
-[StaticBody2D] Enemy
+[StaticBody2D] "Enemy"
 		|-[CollisionShape2D]
-		|-[ProgressBar] HealthBar
+		|-[ProgressBar] "HealthBar"
 ```
 
 #### enemy.gd
@@ -107,7 +107,7 @@ func take_damage(damage:float):
 
 #### Node hierarchy
 ```
-[Area2D] Bullet
+[Area2D] "Bullet"
 		|-[CollisionShape2D]
 ```
 

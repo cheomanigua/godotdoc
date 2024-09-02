@@ -9,9 +9,13 @@ draft: false
 toc: true
 ---
 
-- The example shows how to move a RigidBody2D using thrust for impulse, and torque for turning. Also, damage is inflicted when the RigidBody2D collides with other object. Damage is directly proportional to the impulse force.
+- The example shows how to move a RigidBody2D using thrust for impulse, and torque for turning.
+- Damage is inflicted when the RigidBody2D collides with other object. Damage is directly proportional to the impulse force.
 
-- **Visible collision shapes** has been enabled in the **Editor** menu.
+### Setup
+- **Arrow left** and **Arrow right**: Torque
+- **Arrow up**: Thrust
+- `Debug` -> `Visible collision shapes` has been enabled.
 
 ### Node structure
 
