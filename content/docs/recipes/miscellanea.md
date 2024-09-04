@@ -20,10 +20,6 @@ func _input_event(viewport, event, shape_idx):
 ```
 Note that if we don't add "event.pressed", the event will detect both the press and the release. If you only want to detect the first click, add "event.pressed".
 
-### Boolean switch
-We can use a bool variable as a switch. Check the example above and see how bool variable **'clicked'** is used.
-
-
 ### Camera
 Add a camera node as children to the player and set the Current property to **'On'** in the Inspector.
 

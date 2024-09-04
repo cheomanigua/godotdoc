@@ -57,7 +57,7 @@ func add_item(name,quantity):
 	else:
 		inventory[name] = quantity
 
-func _unhandled_input(event):
+func _unhandled_key_input(event: InputEvent) -> void:
 	if (event.is_action_pressed("pickup")):
 		pickup()
 

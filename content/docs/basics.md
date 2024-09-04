@@ -13,7 +13,7 @@ toc: true
 ## Input
 The most common input types are:
 
-- [InputEvent](https://docs.godotengine.org/en/stable/classes/class_inputevent.html) Use them inside `func _input(event)`. The best use of InputEvent is when a single event is needed, like showing the inventory, pausing the game, jumping, etc). 
+- [InputEvent](https://docs.godotengine.org/en/stable/classes/class_inputevent.html) Use them inside `func _input(event)`. The best use of InputEvent is when a single event is needed, like showing the inventory, pausing the game, jumping, etc. 
 
   - [is_action_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-pressed) *
   - [is_action_released](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-released) *

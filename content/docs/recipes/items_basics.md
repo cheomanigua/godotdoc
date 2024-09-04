@@ -46,10 +46,10 @@ extends CharacterBody2D
 
 var inventory: Array[String]
 
-func _input(event):
-	if Input.is_action_pressed("ui_select"):
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_select"):
 		print_inventory()
-	#if Input.is_action_pressed("drop"):
+	#if event.is_action_pressed("drop"):
 	#	drop_item()
 ...
 
@@ -119,10 +119,10 @@ extends CharacterBody2D
 
 var inventory: Array[Area2D]
 
-func _input(event):
-	if Input.is_action_pressed("ui_select"):
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_select"):
 		print_inventory()
-	#if Input.is_action_pressed("drop"):
+	#if event.is_action_pressed("drop"):
 	#	drop_item()
 ...
 
