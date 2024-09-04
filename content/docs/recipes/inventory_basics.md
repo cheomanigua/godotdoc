@@ -38,9 +38,9 @@ var inventory_activated: bool = false
 func _ready():
 	item_list.hide()
 
-func get_input():
+func _input(event):
 	...
-	if Input.is_action_just_pressed("inventory"):
+	if Input.is_action_pressed("inventory"):
 		inventory_activated = !inventory_activated
 		show_inventory()
 	...
@@ -49,9 +49,9 @@ func get_input():
 
 func show_inventory():
 	if inventory_activated:
-		item_list.show()
 		for i in inventory:
 			item_list.add_item(i)
+		item_list.show()
 	else:
 		item_list.hide()
 		item_list.clear()

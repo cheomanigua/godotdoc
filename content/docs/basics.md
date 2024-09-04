@@ -13,31 +13,62 @@ toc: true
 ## Input
 The most common input types are:
 
-- Input
+- [InputEvent](https://docs.godotengine.org/en/stable/classes/class_inputevent.html) Use them inside `func _input(event)`. The best use of InputEvent is when a single event is needed, like showing the inventory, pausing the game, jumping, etc). 
+
+  - [is_action_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-pressed) *
+  - [is_action_released](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-released) *
+  - [is_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-pressed)
+
+ ```gdscript
+ func _input(event):
+		if event.is_action_pressed("ui_select"):
+		show_inventory()
+```
+
+- [Input](https://docs.godotengine.org/en/stable/classes/class_input.html) Use them inside `func _physics_process(delta)`. The best use of Input is when a continous event is needed, like moving a character with keyboard keys.
+  - [get_vector](https://docs.godotengine.org/en/stable/classes/class_input.html#class-input-method-get-vector)
   - [is_action_just_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-just-pressed) *
   - [is_action_just_released](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-just-released) *
   - [is_action_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-pressed) *
   - [is_key_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-key-pressed)
   - [is_mouse_button_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-mouse-button-pressed)
   - [get_mouse_button_mask](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-get-mouse-button-mask)
-- [InputEvent](https://docs.godotengine.org/en/stable/classes/class_inputevent.html) (better used when a single event is needed, like showing the inventory, pausing the game, etc)
 
-  - [is_action_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-pressed) *
-  - [is_action_released](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-released) *
-  - [is_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-pressed)
+ ```gdscript
+func _physics_process(_delta):
+		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		velocity = input_direction * speed
+		move_and_slide()
+```
 
-\* is_action is specified by a name (such as "ui_right") defined in the Project->Project Settings->Input Map panel of the Editor. As well as the default actions, we may redefine them and add more of our own.
+\* **is_action** is specified by a name (such as **"ui_right"**) defined in the **Project->Project Settings->Input Map** panel of the Editor. As well as the default actions, we may redefine them and add more of our own.
 
-Inputs and InputEvents run in the following event/processes:
+### event/processes in order of execution
 
-- [_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-input): This is the first input method that gets called
-- [_gui_input](https://docs.godotengine.org/es/stable/classes/class_control.html#class-control-method-gui-input) Second input method to be called. It can only be used by Control nodes
-- [_unhandled_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-unhandled-input): Best input method to use for player controls. This way does not interfere with Control node input handlers.
-- [_unhandled_key_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-unhandled-key-input): The same as above, but mouse movements do not activate this function
-- [_process](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-process)
-- [_physics_process](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-method-physics-process)
+- [_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-input)
+	- This is the first input method that gets called.
+	- For gameplay input, **_unhandled_input** and **_unhandled_key_input** are usually a better fit as they allow the GUI to intercept the events first.
+- [_gui_input](https://docs.godotengine.org/es/stable/classes/class_control.html#class-control-private-method-gui-input)
+	- Second input method to be called.
+	- It can only be used by **Control** nodes.
+- [_shortcut_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-shortcut-input)
+	- This method can be used to handle shortcuts.
+	- For generic GUI events, use **_input** instead.
+	- Gameplay events should usually be handled with either **_unhandled_input** or **_unhandled_key_input**.
+- [_unhandled_key_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-unhandled-key-input)
+	- This method can be used to handle Unicode character input with `Alt`, `Alt + Ctrl`, and `Alt + Shift` modifiers, after shortcuts were handled.
+	- For gameplay input, this and **_unhandled_input** are usually a better fit than _input, as GUI events should be handled first.
+	- This method also performs better than **_unhandled_input**, since unrelated events such as InputEventMouseMotion are automatically filtered, hence, mouse movements do not activate this function
+	- For shortcuts, consider using **_shortcut_input** instead.
+- [_unhandled_input](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-unhandled-input)
+	- The same as **unhandle_key_input**, but this methods also handles mouse events.
+	- To handle only keyboard events, consider using **_unhandled_key_input** for performance reasons.
+- [_process](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-process)
+	- Called during the processing step of the main loop. Processing happens at every frame and as fast as possible, so the `delta` time since the previous frame is not constant. `delta` is in seconds.
+- [_physics_process](https://docs.godotengine.org/en/stable/classes/class_node.html#class-node-private-method-physics-process)
+	- Called during the physics processing step of the main loop. Physics processing means that the frame rate is synced to the physics, i.e. the `delta` variable should be constant. `delta` is in seconds.
 
-## _input(event)
+### func _input(event)
 
 In the example below, a square will  switch colors between blue and red when the left mouse button in clicked over it.
 

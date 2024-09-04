@@ -46,17 +46,17 @@ extends CharacterBody2D
 
 var inventory: Array[String]
 
-func get_input():
-	if Input.is_action_just_pressed("ui_select"):
-		list_inventory()
-	#if Input.is_action_just_pressed("drop"):
+func _input(event):
+	if Input.is_action_pressed("ui_select"):
+		print_inventory()
+	#if Input.is_action_pressed("drop"):
 	#	drop_item()
 ...
 
 func pickup(item:String):
 	inventory.append(item)
 
-func list_inventory():
+func print_inventory():
 	for i in inventory:
 		print(i)
 	if inventory.is_empty():
@@ -119,17 +119,17 @@ extends CharacterBody2D
 
 var inventory: Array[Area2D]
 
-func get_input():
-	if Input.is_action_just_pressed("ui_select"):
-		list_inventory()
-	#if Input.is_action_just_pressed("drop"):
+func _input(event):
+	if Input.is_action_pressed("ui_select"):
+		print_inventory()
+	#if Input.is_action_pressed("drop"):
 	#	drop_item()
 ...
 
 func pickup(item:Area2D):
 	inventory.append(item)
 
-func list_inventory():
+func print_inventory():
 	for i in inventory:
 		print(i.item_name)
 	if inventory.is_empty():

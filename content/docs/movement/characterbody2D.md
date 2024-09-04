@@ -52,11 +52,13 @@ extends CharacterBody2D
 @export var speed = 400
 const BULLET = preload("res://scenes/bullet.tscn")
 
+func _input(event):
+	if Input.is_action_pressed("shoot"):
+		shoot()
+
 func get_input():
 	var input_direction = Input.get_vector("left", "right", "up", "down")
 	velocity = input_direction * speed
-	if Input.is_action_just_pressed("shoot"):
-		shoot()
 		
 func _physics_process(delta):
 	get_input()
