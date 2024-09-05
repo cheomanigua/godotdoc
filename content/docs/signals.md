@@ -1,7 +1,7 @@
 ---
 weight: 300
 title: "Signals"
-description: ""
+description: "A decoupled way to communicate between nodes"
 icon: "article"
 date: "2024-08-28T16:18:53+02:00"
 lastmod: "2024-08-28T16:18:53+02:00"
@@ -26,7 +26,7 @@ Example of connecting to the `body_entered` signal from a **CharacterBody2D** sc
 
 **Note 1**: If the node that connect to the signal is in the same scene, we can reference it by $ or %.
 
-**Note 2**: If the node that connect to the signal is in a different scene 
+**Note 2**: If the node that connect to the signal is in a different scene, check some sections below.
 
 
 2. **Custom**. You can create your own signals. They need the following:
@@ -119,7 +119,7 @@ signal event_message
 
 #### 2. Emit the signal from a different node
 
-Now, any script can emit the signal `message`. For instance, an **Area2D** node:
+Now, any script can emit the signal `event_message`. For instance, an **Area2D** node:
 
 ```gdscript
 func _on_body_entered():
@@ -131,11 +131,11 @@ func _on_body_entered():
 
 Now, any script can connect to the emitted signal. For instance, a **Label** node that shows event messages throughout the game:
 ```gdscript
-func _on_ready():
+func _ready():
 	SignalManager.event_message.connect(_on_message_received)
 
-func _on_message_received(the_message):
-	text = the_message
+func _on_message_received(message):
+	text = message
 ```
 
 This way, you can show lots of event messages from different nodes. For instance, an **Area2D** node instantiating a bullet. Upon inflicting damage, the **Label** node above will connect and show the message:
