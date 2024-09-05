@@ -1,5 +1,5 @@
 ---
-weight: 500
+weight: 300
 title: "Signals"
 description: ""
 icon: "article"
@@ -96,4 +96,55 @@ You can also use either of these:
 if body.is_in_group("players"):
 if body.has_method("player_spotted"):
 if body.variable == "holy"
+```
+
+### Singleton (Autoload)
+
+You can create a signal manager that creates multiple signals that are globally accesible to any node.
+
+#### 1. Create the Singleton
+
+- Create a script and give it a name. In this example the name is `signal_manager.gd`.
+- Create a single signal for the example. Remember that you can create as many signals as you wish:
+```gdscript
+signal event_message
+```
+- Add the script as **Autoload**:
+	- **Project** -> **Project Settings** -> **Globals**
+	- Click on the folder icon
+	- Select the script `signal_manager.gd` and click **Open**
+	- Click the **Add** button
+	- Be sure that **Global variable** is enabled
+	- A node called `SignalManager` is created
+
+#### 2. Emit the signal from a different node
+
+Now, any script can emit the signal `message`. For instance, an **Area2D** node:
+
+```gdscript
+func _on_body_entered():
+		if body.name == "Player":
+			SignalManager.event_message.emit(body.name + " has collided with " + name)
+```
+
+#### 3. Connect to the signal from a different node
+
+Now, any script can connect to the emitted signal. For instance, a **Label** node that shows event messages throughout the game:
+```gdscript
+func _on_ready():
+	SignalManager.event_message.connect(_on_message_received)
+
+func _on_message_received(the_message):
+	text = the_message
+```
+
+This way, you can show lots of event messages from different nodes. For instance, an **Area2D** node instantiating a bullet. Upon inflicting damage, the **Label** node above will connect and show the message:
+
+#### 4. Emit the signal from a Bullet node
+
+```gdscript
+func _on_body_entered():
+		if body.has_method("take_damage"):
+			body.take_damage(damage)
+			SignalManager.event_message.emit(body.name + " has received " + str(damage) + " points of damage from " + name)
 ```

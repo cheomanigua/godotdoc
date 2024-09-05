@@ -1,5 +1,5 @@
 ---
-weight: 600
+weight: 400
 title: "Collisions"
 description: ""
 icon: "article"

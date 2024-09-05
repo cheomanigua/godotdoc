@@ -10,17 +10,16 @@ toc: true
 ---
 
 ## Interaction
+
 - There is a player, a key and a door.
 - The player can pickup the key.
 - The key has a unique name.
 - The door can only be open if the Player has the key with the unique name.
 
-
-
 #### Key
 - The **Key** is an **Area2D** node.
 - The **Key** has a editable **String** variable called `item_name`. We must type a name in the editor for the key.
-- The **Key** `item_name` is what gives uniquenes to the object.
+- The **Key** `item_name` is what gives uniquenes to the item.
 - When picked up, the **Key** `item_name` is added to a **String** array.
 - When used, the **Key** is eliminated.
 
@@ -33,6 +32,7 @@ toc: true
 In the implementation section, take into account:
 - The **Key** `item_name` is **"Iron Key"**.
 - The **Door** can only be opened if the **Key** `item_name` is **"Iron Key"**.
+
 
 ## Node Structure
 
@@ -55,6 +55,7 @@ In the implementation section, take into account:
 		|-[Area2D] "door.gd"
 				|-[CollisionShape2D]
 ```
+
 
 ## Implementation
 
@@ -128,7 +129,7 @@ func _on_body_entered(body):
 ```
 
 
-### Solution 2. Interacting with Object array
+### Solution 2. Interacting with Area2D array
 
 The **Key** node is stored in a **Area2D** array.
 
