@@ -11,7 +11,7 @@ toc: true
 Dictionaries contain a list of key-value pairs {"key" : "value"}. The key-value pairs can be of different types:
 
 ```gdscript
-var inventory {
+var inventory = {
     "coin" : 5, 
     "gem" : 2,
     "color" : "green"
@@ -19,17 +19,16 @@ var inventory {
 ```
 Access:
 
+- `inventory` will return **{coin: 5, gem: 2, color: green}**
 - `inventory["coin"]` will return **5**
 - `inventory.coin` will return **5**
 - `inventory.keys()` will return **[coin, gem, color]**
 - `inventory.keys()[0]` will return **coin**
 - `inventory.values()` will return **[5, 2, green]**
 - `inventory.values()[0]` will return **5**
-- `inventory` will return **{coin: 5, gem: 2, color: green}**
 
 Assignments:
 - `inventory["coin"] = 2` will change the value of **coin** from **5** to **2**
-- `inventory[1] = 2` is the same as above
 - `inventory.coin = 2` is the same as above
 
 Math:
@@ -43,9 +42,16 @@ Creating:
 ### Printing dictionaries
 - `print(inventory)`
 - `print(JSON.print(inventory, "\t"))`
+
  ```gdscript
 for key in inventory:
-    print("%s : %d" % [key, inventory[key]])
+		print("%s : %s" % [key, inventory[key]])
+```
+will print:
+```
+coin : 5
+gem : 2
+color : green
 ```
 
 ### Get random key on Dictionary

@@ -22,11 +22,12 @@ The most common input types are:
 ```gdscript
 func _input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_select"):
-				show_inventory()
+			show_inventory()
 ```
 
 - [Input](https://docs.godotengine.org/en/stable/classes/class_input.html) Use them inside `func _physics_process(delta)`. The best use of Input is when a continous event is needed, like moving a character with keyboard keys.
   - [get_vector](https://docs.godotengine.org/en/stable/classes/class_input.html#class-input-method-get-vector)
+  - [get_axis](https://docs.godotengine.org/en/stable/classes/class_input.html#class-input-method-get-axis)
   - [is_action_just_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-just-pressed) *
   - [is_action_just_released](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-just-released) *
   - [is_action_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-action-pressed) *
@@ -155,12 +156,12 @@ The following code will instantiate 1 Gem in the player position.
 const ItemObject = preload("res://scenes/item_object.tscn")
 
 func bar():
-    var name = "Gem"
-    var quantity = 1
-    var item_object = ItemObject.instantiate()
-    item_object.initialize(name, quantity)
-    add_child(item_object)
-    item_object.position = Player.position
+	var name = "Gem"
+	var quantity = 1
+	var item_object = ItemObject.instantiate()
+	item_object.initialize(name, quantity)
+	add_child(item_object)
+	item_object.position = Player.position
 ```
 
 - **item_object.sd** is used to instantiate scenes:
