@@ -60,3 +60,19 @@ As a general rule, nodes should manage their children, not the other way around.
 References:
 - [https://kidscancode.org/godot_recipes/4.x/basics/node_communication/](https://kidscancode.org/godot_recipes/4.x/basics/node_communication/)
 - [https://kidscancode.org/godot_recipes/4.x/img/node_access_theduriel.png](https://kidscancode.org/godot_recipes/4.x/img/node_access_theduriel.png)
+
+
+### Get name of scene
+
+If you want to get the name of a scene called `Key.tscn`, run the following code in the scene script:
+
+```gdscript
+func _ready() -> void:
+	    var path = scene_file_path
+	    print (path.right(-path.rfind("/") - 1).left(-5))
+```
+
+It will print:
+```
+key
+```

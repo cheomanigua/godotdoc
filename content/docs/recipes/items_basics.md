@@ -18,20 +18,21 @@ toc: true
 
 #### Key
 - The **Key** is an **Area2D** node.
-- The **Key** has a editable **String** variable called `item_name`. We must type a name in the editor for the key.
+- The **Key** has an editable **String** variable called `item_name`. We must type a name in the editor for the `item_name`.
 - The **Key** `item_name` is what gives uniquenes to the item.
-- When picked up, the **Key** `item_name` is added to a **String** array.
-- When used, the **Key** is eliminated.
+- When picked up, the **Key** `item_name` is added to a **String** array inventory.
+- When used, the **Key** is eliminated from the inventory.
 
 #### Door
-- The **Door** is a **StaticBody2D** with and child **Area2D** for detection purposes. The **Area2D** is slighty bigger than the **StaticBody2D**.
-- The **Door** can only be opened if the **Key** has a specific `item_name`. 
+- The **Door** is an **Area2D** node with a child **StaticBody2D** for collision purposes. The **Area2D** is slighty bigger than the **StaticBody2D**.
+- The **Door** has an editable **String** variable called `door_key`. We mus type a name in the edit or for the `door_key`.
+- The **Door** can only be open if the **Key** `item_name` string matches the **Door** `door_key` string. 
 - When opened, the **Door** is eliminated.
 
 #### Examples
 In the implementation section, take into account:
 - The **Key** `item_name` is **"Iron Key"**.
-- The **Door** can only be opened if the **Key** `item_name` is **"Iron Key"**.
+- The **Door** `door_key` is **"Iron Key"**. 
 
 
 ## Node Structure
@@ -50,9 +51,9 @@ In the implementation section, take into account:
 
 #### Door
 ```
-[StaticBody2d] "Door"
+[Area2D] "Door"
 		|-[CollisionShape2D]
-		|-[Area2D] "door.gd"
+		|-[StaticBody2D]
 				|-[CollisionShape2D]
 ```
 
@@ -82,8 +83,8 @@ func pickup(item:String):
 	inventory.append(item)
 
 func print_inventory():
-	for i in inventory:
-		print(i)
+	for item in inventory:
+		print(item)
 	if inventory.is_empty():
 		print("Your inventory is empty")
 
@@ -116,22 +117,25 @@ func _on_body_entered(body):
 ```gdscript
 extends Area2D
 
+@export var door_key: String
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body):
 	if body.name == "Player":
-		if body.inventory.has("Iron Key"):
-			print("You've got the key. You may pass")
-			owner.queue_free()
+		if body.inventory.has(door_key):
+			print("The door has been open with the %s" % [door_key])
+			body.inventory.erase(door_key)
+			queue_free()
 		else:
-			print("You shall not pass. You need the Iron Key")
+			print("You need the %s" % [door_key])
 ```
 
 
 ### Solution 2. Interacting with Area2D array
 
-The **Key** node is stored in a **Area2D** array.
+The **Key** node is stored in an **Area2D** array.
 
 #### player.gd
 
@@ -151,8 +155,8 @@ func pickup(item:Area2D):
 	inventory.append(item)
 
 func print_inventory():
-	for i in inventory:
-		print(i.item_name)
+	for item in inventory:
+		print(item.item_name)
 	if inventory.is_empty():
 		print("Inventory is empty")
 #	
@@ -185,21 +189,23 @@ func _on_body_entered(body):
 ```gdscript
 extends Area2D
 
+@export var door_key: String
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body):
 	if body.name == "Player":
 		if body.inventory.is_empty():
-			print("You need the Iron Key. You shall not pass")
+			print("You need the %s to pass" % [door_key])
 		else:
 			for i in body.inventory:
-				if i.item_name == "Iron Key":
-					print("You've got the Iron Key. You shall pass")
-					owner.queue_free()
+				if i.item_name == door_key:
+					print("The door has been open with the %s" % [door_key])
+					queue_free()
 					body.inventory.erase(i)
 					i.queue_free()
 				else:
-					print("You need the Iron Key. You shall not pass")
+					print("You need the %s" % [door_key])
 ```
 
