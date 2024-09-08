@@ -49,3 +49,14 @@ Can be done with minimal coupling using:
 |-|-|
 | `%Node` | access node everywhere |
 
+
+### Call down, Signal up
+
+As a general rule, nodes should manage their children, not the other way around. If you’re using `get_parent()` or `get_node("..")`, then you’re probably headed for trouble.
+
+- If a node is calling a child (i.e. going “down” the tree), then get_node() is appropriate.
+- If a node needs to communicate “up” the tree, it should probably use a signal.
+
+References:
+- [https://kidscancode.org/godot_recipes/4.x/basics/node_communication/](https://kidscancode.org/godot_recipes/4.x/basics/node_communication/)
+- [https://kidscancode.org/godot_recipes/4.x/img/node_access_theduriel.png](https://kidscancode.org/godot_recipes/4.x/img/node_access_theduriel.png)

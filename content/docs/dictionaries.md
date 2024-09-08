@@ -42,11 +42,30 @@ Creating:
 ### Printing dictionaries
 - `print(inventory)`
 - `print(JSON.print(inventory, "\t"))`
+- Loops:
 
- ```gdscript
+```gdscript
+for key in inventory:
+		print(key + " : " + str(inventory[key]))
+```
+or
+```gdscript
 for key in inventory:
 		print("%s : %s" % [key, inventory[key]])
 ```
+or
+```gdscript
+for i in inventory.size():
+		print (inventory.keys()[i] + " : " + str(inventory.values()[i]))
+		i+=1
+```
+or
+```gdscript
+for i in inventory.size():
+		print ("%s : %s" % [inventory.keys()[i], inventory.values()[i]])
+		i+=1
+```
+
 will print:
 ```
 coin : 5
