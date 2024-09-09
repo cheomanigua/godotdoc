@@ -93,7 +93,7 @@ Example:
 | - If another object has set one of its masks to 2, it will collide with Object A | - If another object has set one of its masks to 1, it will collide with Object B.
 
 
-### Filtering
+### Accessing data or logic from an object
 
 ```gdscript
 func _on_body_entered():
@@ -101,5 +101,5 @@ func _on_body_entered():
 		if body.is_in_group("enemy"):
 		if body.has_method("player_spotted"):
 		if body.variable == "holy"
-		if body is MyCustomClass
+		if body is ClassName
 ```
