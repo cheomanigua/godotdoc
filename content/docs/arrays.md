@@ -23,7 +23,7 @@ func show_inventory():
 	var a: String
 	inventory.sort()
 	for i in inventory:
-		if a != i 
+		if a != i: 
 			print(i + " x" + str(inventory.count(i)))
 		a = i 
 ```
