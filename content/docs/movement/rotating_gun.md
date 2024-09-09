@@ -1,5 +1,5 @@
 ---
-weight: 5350
+weight: 10400
 title: "Rotating Gun"
 description: "How to make a gun rotate around the player"
 icon: "article"

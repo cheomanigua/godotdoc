@@ -96,6 +96,7 @@ You can also use either of these:
 if body.is_in_group("players"):
 if body.has_method("player_spotted"):
 if body.variable == "holy"
+if body is MyCustomClass
 ```
 
 ### Singleton (Autoload)
