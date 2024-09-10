@@ -142,3 +142,67 @@ Then:
 
 - Rename window: `rename-window` + *your_window_name*
 - Rename session: `rename-session` or `rename` + *your_session_name*
+
+
+# Aseprite 
+
+You can build **Aseprite** from source code. This way you don't have to pay for the application.
+
+Ref:
+- [https://github.com/aseprite/aseprite/blob/main/INSTALL.md](https://github.com/aseprite/aseprite/blob/main/INSTALL.md)
+- [https://github.com/aseprite/skia?tab=readme-ov-file#skia-on-linux](https://github.com/aseprite/skia?tab=readme-ov-file#skia-on-linux)
+
+### 1. Download Aseprite source code
+
+```
+git clone --recursive https://github.com/aseprite/aseprite.git
+```
+### 2. Install dependencies
+```
+sudo apt-get install -y g++ clang libc++-dev libc++abi-dev cmake ninja-build libx11-dev libxcursor-dev libxi-dev libgl1-mesa-dev libfontconfig1-dev python-is-python3
+```
+
+### 3. Skia for Aseprite and laf 
+
+```
+mkdir $HOME/deps
+cd $HOME/deps
+git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+git clone -b aseprite-m102 https://github.com/aseprite/skia.git
+export PATH="${PWD}/depot_tools:${PATH}"
+cd skia
+python3 tools/git-sync-deps
+```
+
+```
+ gn gen out/Release-x64 --args='is_debug=false is_official_build=true skia_use_system_expat=false skia_use_system_icu=false skia_use_system_libjpeg_turbo=false skia_use_system_libpng=false skia_use_system_libwebp=false skia_use_system_zlib=false skia_use_sfntly=false skia_use_freetype=true skia_use_harfbuzz=true skia_pdf_subset_harfbuzz=true skia_use_system_freetype2=false skia_use_system_harfbuzz=false cc="clang" cxx="clang++" extra_cflags_cc=["-stdlib=libc++"] extra_ldflags=["-stdlib=libc++"]'
+```
+
+```
+ninja -C out/Release-x64 skia modules
+```
+
+
+### 4. Compile aseprite
+```
+cd aseprite
+mkdir build
+cd build
+export CC=clang
+export CXX=clang++
+cmake \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DCMAKE_CXX_FLAGS:STRING=-stdlib=libc++ \
+  -DCMAKE_EXE_LINKER_FLAGS:STRING=-stdlib=libc++ \
+  -DLAF_BACKEND=skia \
+  -DSKIA_DIR=$HOME/deps/skia \
+  -DSKIA_LIBRARY_DIR=$HOME/deps/skia/out/Release-x64 \
+  -DSKIA_LIBRARY=$HOME/deps/skia/out/Release-x64/libskia.a \
+  -G Ninja \
+  ..
+ninja aseprite
+```
+
+### 5. Launch aseprite
+
+The executable file is created in `aseprite/build/bin/`
