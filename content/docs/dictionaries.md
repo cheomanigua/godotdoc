@@ -45,25 +45,29 @@ Creating:
 - Loops:
 
 ```gdscript
+
 for key in inventory:
-		print(key + " : " + str(inventory[key]))
+	print(key + " : " + str(inventory[key]))
 ```
 or
 ```gdscript
+
 for key in inventory:
-		print("%s : %s" % [key, inventory[key]])
+	print("%s : %s" % [key, inventory[key]])
 ```
 or
 ```gdscript
+
 for i in inventory.size():
-		print (inventory.keys()[i] + " : " + str(inventory.values()[i]))
-		i+=1
+	print (inventory.keys()[i] + " : " + str(inventory.values()[i]))
+	i+=1
 ```
 or
 ```gdscript
+
 for i in inventory.size():
-		print ("%s : %s" % [inventory.keys()[i], inventory.values()[i]])
-		i+=1
+	print ("%s : %s" % [inventory.keys()[i], inventory.values()[i]])
+	i+=1
 ```
 
 will print:

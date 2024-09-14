@@ -67,9 +67,10 @@ References:
 If you want to get the name of a scene called `Key.tscn`, run the following code in the scene script:
 
 ```gdscript
+
 func _ready() -> void:
-	    var path = scene_file_path
-	    print (path.right(-path.rfind("/") - 1).left(-5))
+    var path = scene_file_path
+    print (path.right(-path.rfind("/") - 1).left(-5))
 ```
 
 It will print:

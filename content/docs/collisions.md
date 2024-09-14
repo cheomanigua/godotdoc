@@ -96,10 +96,11 @@ Example:
 ### Accessing data or logic from an object
 
 ```gdscript
+
 func _on_body_entered():
-		if body.name == "Player":
-		if body.is_in_group("enemy"):
-		if body.has_method("player_spotted"):
-		if body.variable == "holy"
-		if body is ClassName
+	if body.name == "Player":
+	if body.is_in_group("enemy"):
+	if body.has_method("player_spotted"):
+	if body.variable == "holy"
+	if body is ClassName
 ```

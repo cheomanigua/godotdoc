@@ -14,9 +14,10 @@ toc: true
 When left clicking in an Area2D, the message "Object has been clicked" will appear in the debug window. Create the following script to an Area2D node:
 
 ```gdscript
+
 func _input_event(viewport, event, shape_idx):
-	if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
-		print("Object has been clicked") #debugging
+    if (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+    	print("Object has been clicked") #debugging
 ```
 Note that if we don't add "event.pressed", the event will detect both the press and the release. If you only want to detect the first click, add "event.pressed".
 
@@ -32,24 +33,27 @@ position = get_viewport_rect().size / 2
 ### Change window size
 
 ```gdscript
-func _ready(): 
+
+func _ready():
     OS.set_window_size(Vector2(1024, 780))
 ```
 
 ### Full screen manual
 
 ```gdscript
+
 # get device resolution
 var max = OS.get_screen_size()
 
 # adjust game resolution
-    OS.set_window_size(max)
-    OS.set_window_position(Vector2(0,0))
+OS.set_window_size(max)
+OS.set_window_position(Vector2(0,0))
 ```
 
 ### Full screen automatic
 
 ```gdscript
+
 OS.set_window_fullscreen(true)
 OS.set_borderless_window(true) #unable to move
 ```
@@ -57,12 +61,14 @@ OS.set_borderless_window(true) #unable to move
 ### Disable CollisionShape2D
 
 ```gdscript
+
 $CollisionShape2D.set_deferred("disabled", true)
 ```
 
 ### Add a node to a Group
 
-```
+```gdscript
+
 func _ready():
     add_to_group("players")
 ```

@@ -56,3 +56,24 @@ func show_inventory():
 		item_list.hide()
 		item_list.clear()
 ```
+
+Another version of **show_inventory()**, where **inventory_list** is a **Label**, instead of a **ItemList**:
+
+```gdscript
+
+func show_inventory():
+	inventory_list.text = ""
+	if inventory_activated:
+		if inventory.is_empty():
+			inventory_activated = false
+		else:
+			inventory_list.show()
+			var a: String
+			inventory.sort()
+			for i in inventory:
+				if a != i:
+					inventory_list.text += ("%s x%s\n" % [i, str(inventory.count(i))])
+				a = i
+	else:
+		inventory_list.hide()
+```

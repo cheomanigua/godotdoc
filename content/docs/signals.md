@@ -123,9 +123,10 @@ signal event_message
 Now, any script can emit the signal `event_message`. For instance, an **Area2D** node:
 
 ```gdscript
+
 func _on_body_entered():
-		if body.name == "Player":
-			SignalManager.event_message.emit(body.name + " has collided with " + name)
+	if body.name == "Player":
+		SignalManager.event_message.emit(body.name + " has collided with " + name)
 ```
 
 #### 3. Connect to the signal from a different node
@@ -144,8 +145,9 @@ This way, you can show lots of event messages from different nodes. For instance
 #### 4. Emit the signal from a Bullet node
 
 ```gdscript
+
 func _on_body_entered():
-		if body.has_method("take_damage"):
-			body.take_damage(damage)
-			SignalManager.event_message.emit(body.name + " has received " + str(damage) + " points of damage from " + name)
+	if body.has_method("take_damage"):
+		body.take_damage(damage)
+		SignalManager.event_message.emit(body.name + " has received " + str(damage) + " points of damage from " + name)
 ```

@@ -20,9 +20,10 @@ The most common input types are:
   - [is_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-pressed)
 
 ```gdscript
+
 func _input(event: InputEvent) -> void:
-		if event.is_action_pressed("ui_select"):
-			show_inventory()
+	if event.is_action_pressed("ui_select"):
+		show_inventory()
 ```
 
 - [Input](https://docs.godotengine.org/en/stable/classes/class_input.html) Use them inside `func _physics_process(delta)`. The best use of Input is when a continous event is needed, like moving a character with keyboard keys.
@@ -36,10 +37,11 @@ func _input(event: InputEvent) -> void:
   - [get_mouse_button_mask](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-get-mouse-button-mask)
 
 ```gdscript
+
 func _physics_process(_delta):
-		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-		velocity = input_direction * speed
-		move_and_slide()
+	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	velocity = input_direction * speed
+	move_and_slide()
 ```
 
 \* **is_action** is specified by a name (such as **"ui_right"**) defined in the **Project->Project Settings->Input Map** panel of the Editor. As well as the default actions, we may redefine them and add more of our own.
@@ -207,6 +209,7 @@ When importing a resource, you can use either load or preload.
 
 You can choose exactly when to free the queue by adding the following code in any method that you are gonna call:
 ```gdscript
+
     if is_queued_for_deletion():
         return
 ```
@@ -240,6 +243,7 @@ You will now be able to select a different texture for each node instance in the
 #### At run time
 
 ```gdscript
+
 func _ready():
 	var texture = load("%s" % creature_stats.Texture)
 	get_node("Sprite").texture = texture
@@ -248,6 +252,7 @@ func _ready():
 #### At compile time
 
 ```gdscript
+
 func _ready():
 	var texture = preload("res://Images/Characters/orc.png")
 	get_node("Sprite").texture = texture

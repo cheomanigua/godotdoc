@@ -146,9 +146,10 @@ Then:
 
 # Aseprite 
 
-You can build **Aseprite** from source code. This way you don't have to pay for the application.
+You can build **Aseprite** from source code. When building from source code, you can use it for [free](https://www.aseprite.org/faq/#if-aseprite-source-code-is-available-how-is-that-you-are-selling-it) for your personal purposes. You can make commercial art/assets with it too. The only restriction is that you cannot redistribute Aseprite to third parties.
 
 Ref:
+- [https://www.aseprite.org/faq/#if-aseprite-source-code-is-available-how-is-that-you-are-selling-it](https://www.aseprite.org/faq/#if-aseprite-source-code-is-available-how-is-that-you-are-selling-it)
 - [https://github.com/aseprite/aseprite/blob/main/INSTALL.md](https://github.com/aseprite/aseprite/blob/main/INSTALL.md)
 - [https://github.com/aseprite/skia?tab=readme-ov-file#skia-on-linux](https://github.com/aseprite/skia?tab=readme-ov-file#skia-on-linux)
 
