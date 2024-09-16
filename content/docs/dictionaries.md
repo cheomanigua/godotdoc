@@ -137,9 +137,7 @@ var inventory = {}
 
 func add_item(item):
 	if inventory.has(item):
-		var temp = inventory[item]
-		temp += 1
-		inventory[item] = temp
+		inventory[item] += 1
 		print("You have %d %s" % [inventory[item], item])
 	else:
 		inventory[item] = 1

@@ -86,7 +86,7 @@ You can use either `get_node()` or `find_node()`. Note that `get_node()` doesn't
 ### Example of a connected function:
 
 ```gdscript
-func _on_Zone_body_entered():
+func _on_Zone_body_entered(body):
 if body.name == "Player":
 	print("%s detected" % body.name)
 ```
@@ -124,7 +124,7 @@ Now, any script can emit the signal `event_message`. For instance, an **Area2D**
 
 ```gdscript
 
-func _on_body_entered():
+func _on_body_entered(body):
 	if body.name == "Player":
 		SignalManager.event_message.emit(body.name + " has collided with " + name)
 ```
@@ -146,7 +146,7 @@ This way, you can show lots of event messages from different nodes. For instance
 
 ```gdscript
 
-func _on_body_entered():
+func _on_body_entered(body):
 	if body.has_method("take_damage"):
 		body.take_damage(damage)
 		SignalManager.event_message.emit(body.name + " has received " + str(damage) + " points of damage from " + name)

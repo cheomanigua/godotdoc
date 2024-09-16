@@ -1,7 +1,7 @@
 ---
 weight: 10100
 title: "CharacterBody2D - Mouse shoot"
-description: "In this article I explain how to move with the keyboard and point and shoot with the mouse"
+description: "How to move with the keyboard and point and shoot with the mouse"
 icon: "article"
 date: "2024-08-28T19:24:58+02:00"
 lastmod: "2024-08-28T19:24:58+02:00"

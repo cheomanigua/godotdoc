@@ -9,6 +9,10 @@ draft: false
 toc: true
 ---
 
+We are going to implement the inventory using two methods. The first method uses an **Array** as an inventory, and the second method uses an **Dictionary** as an inventory.
+
+## 1. Array inventory
+
 ### Setup
 - The input action **inventory** has been mapped to key `I`.
 - The code is meant to be appended to the [previous chapter](items_basics) **player.gd** script.
@@ -22,6 +26,7 @@ toc: true
 		|-[CharacterNode2D] "Player"
 		|-[CanvasLayer]
 				|-[ItemList]
+				|-[Label] "InventoryList"
 ```
 
 #### player.gd
@@ -34,6 +39,7 @@ extends CharacterBody2D
 var inventory: Array[String]
 var inventory_activated: bool = false
 @onready var item_list: ItemList = %ItemList
+@onready var inventory_list: Label = %InventoryList
 
 func _ready():
 	item_list.hide()
@@ -72,8 +78,41 @@ func show_inventory():
 			inventory.sort()
 			for i in inventory:
 				if a != i:
-					inventory_list.text += ("%s x%s\n" % [i, str(inventory.count(i))])
+					inventory_list.text += "%s x%d\n" % [i, inventory.count(i)]
 				a = i
+	else:
+		inventory_list.hide()
+```
+
+## 2. Dictionary inventory
+
+The code below only has the part related to make it work with a **Dictionary** instead of an **Array**. Everything else is the same as the previous code above.
+
+#### player.gd
+
+```gdscript
+
+var inventory: Dictionary
+
+...
+
+func pickup(item: String) -> void:
+	if inventory.has(item):
+		inventory[item] += 1
+	else:
+		inventory[item] = 1
+
+...
+
+func show_inventory():
+	inventory_list.text = ""
+	if inventory_activated:
+		if inventory.is_empty():
+			inventory_activated = false
+		else:
+			inventory_list.show()
+			for key in inventory:
+				inventory_list.text += "%s : %d\n" % [key, inventory[key]]
 	else:
 		inventory_list.hide()
 ```
