@@ -109,6 +109,14 @@ If you get the error: `could not connect to 127.0.0.1:6005, reason : "ECONNREFUS
 ```
 $ sudo apt install tmux
 ```
+#### Color configuration
+
+```
+$ touch tmux.conf
+$ echo "set -g default-terminal \"screen-256color\"" >> tmux.conf
+$ sudo chown root:root tmux.conf
+$ sudo mv tmux.conf /etc
+```
 
 ### Key bindings
 

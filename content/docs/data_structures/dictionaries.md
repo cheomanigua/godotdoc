@@ -1,5 +1,5 @@
 ---
-weight: 500
+weight: 3300
 title: "Dictionaries"
 description: ""
 icon: "article"

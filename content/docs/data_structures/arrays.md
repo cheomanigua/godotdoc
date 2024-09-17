@@ -1,5 +1,5 @@
 ---
-weight: 450
+weight: 3200
 title: "Arrays"
 description: "Working with arrays"
 icon: "article"

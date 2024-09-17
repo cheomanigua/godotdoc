@@ -1,5 +1,5 @@
 ---
-weight: 425
+weight: 3100
 title: "Enums"
 description: "Enums are mistake-free attributes"
 icon: "article"
