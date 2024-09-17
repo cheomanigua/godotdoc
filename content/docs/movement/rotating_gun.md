@@ -36,7 +36,7 @@ toc: true
 
 #### Bullet
 ```
-[Area2d] "Bullet								S
+[Area2d] "Bullet"								S
 		|-[CollisionShape2D]
 		|-[VisibleOnScreenNotifier2D]			%
 ```
