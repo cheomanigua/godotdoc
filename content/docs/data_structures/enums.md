@@ -19,8 +19,8 @@ Exporing the **enum** will let the player choose from a drop down menu the attri
 
 extends Area2D
 
-enum ATTRIBUTE { health, strength, intelligence, dexterity }
-@export var attribute: ATTRIBUTE
+enum attributes { HEALTH, STRENGTH, INTELLIGENCE, DEXTERITY }
+@export var attribute: attributes
 @export var value: float
 @export var item_name: String
 
@@ -36,7 +36,7 @@ func _on_body_entered(body):
 		body.pickup(item_name)
 		if value > 0:
 			body.increase_attribute(attribute, value)
-			message = "Your %s has been increased by %s points" % [ATTRIBUTE.keys()[attribute], value]
+			message = "Your %s has been increased by %s points" % [attributes.keys()[attribute], value]
 		else:
 			message = ""
 		Signals.log.emit("%s picked up a %s. %s" % [body.name, item_name, message])
