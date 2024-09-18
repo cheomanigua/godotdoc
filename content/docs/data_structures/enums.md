@@ -9,9 +9,36 @@ draft: false
 toc: true
 ---
 
+### @export vs @export_enum
+
+#### @export
+
+The enum values are integers:
+
+```gdscript
+
+enum attributes { HEALTH, STRENGTH, INTELLIGENCE, DEXTERITY }
+@export var attribute: attributes = attributes.HEALTH
+```
+
+#### @export_enum
+
+The enum values can be integers or strings:
+
+
+```gdscript
+
+export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: int = 0
+export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: String = "Health"
+```
+[Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-enums)
+
+
+### Example
+
 In this example, when the player pickups an item, it will increase the player's attribute.
 
-Exporing the **enum** will let the player choose from a drop down menu the attribute in the Godot editor.
+Exporting the **enum** will let the player choose from a drop down menu the attribute in the Godot editor.
 
 #### item.gd
 
@@ -65,3 +92,5 @@ func increase_attribute(attribute: int, value: float):
 		3:
 			attributes.dexterity += value
 ```
+
+

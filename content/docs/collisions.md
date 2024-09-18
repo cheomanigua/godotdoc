@@ -95,12 +95,26 @@ Example:
 
 ### Accessing data or logic from an object
 
+You can use either of these (Note that these methods are **much** slower than direct references):
+
 ```gdscript
 
-func _on_body_entered():
+func _on_body_entered(body):
 	if body.name == "Player":
 	if body.is_in_group("enemy"):
-	if body.has_method("player_spotted"):
+	if body.has_method("pickup"):
+	if body.has_signal("player_spotted"):
 	if body.variable == "holy"
 	if body is ClassName
+```
+
+You can also check if a given property, method, or signal name exists in an object with the `in` operator:
+
+
+```gdscript
+
+func _on_body_entered(body):
+	if "inventory" in body:
+	if "pickup" in body:
+	if "player_spotted" in body:
 ```

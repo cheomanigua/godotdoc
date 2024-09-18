@@ -90,13 +90,24 @@ func _on_Zone_body_entered(body):
 if body.name == "Player":
 	print("%s detected" % body.name)
 ```
-You can also use either of these:
+You can also use either of these (Note that these methods are **much** slower than direct references):
 
 ```gdscript
 if body.is_in_group("players"):
-if body.has_method("player_spotted"):
+if body.has_method("pickup"):
+if body.has_signal("player_spotted"):
 if body.variable == "holy"
 if body is MyCustomClass
+```
+
+You can also check if a given property, method, or signal name exists in an object with the `in` operator:
+
+```gdscript
+
+func _on_body_entered(body):
+	if "inventory" in body:
+	if "pickup" in body:
+	if "player_spotted" in body:
 ```
 
 ### Singleton (Autoload)
