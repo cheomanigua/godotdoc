@@ -37,6 +37,13 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 7. Tick the box **'Use dedicated GPU if available'**
 8. Clic on the **'OK'** button
 
+### Key binding
+
+- **Ctrl** + **K**: Comment/uncomment selected text
+- **Ctrl** + **R**: Find and replace selected text
+- **Alt** + **Up/Down**: Move selected text up/down a line
+
+
 # NeoVim as editor
 
 If you wish, you can use **NeoVim** also as your editor for **Godot** alongside a running instance of **Godot**.

@@ -9,6 +9,9 @@ draft: false
 toc: true
 ---
 
+- In Godot, enums are useful for states, status, roles, game modes.
+- By using enums, the compiler will instantly catch an error when checking againts an enum constant. 
+
 ### @export vs @export_enum
 
 #### @export
@@ -28,8 +31,8 @@ The enum values can be integers or strings:
 
 ```gdscript
 
-export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: int = 0
-export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: String = "Health"
+@export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: int = 0
+@export_enum ("health", "strengh", "intelligence", "dexterity") var attributes: String = "Health"
 ```
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-enums)
 

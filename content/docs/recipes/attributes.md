@@ -9,7 +9,70 @@ draft: false
 toc: true
 ---
 
-## 1. Array within a Dictionary
+
+## 1. Preferred. Dictionary with @export_enum
+
+#### player.gd
+
+```gdscript
+
+extends CharacterBody2D
+
+
+var inventory: Array[String]
+const SPEED = 300.0
+
+
+var attributes: Dictionary = {
+	"max_health" : 100,
+	"health" : 90,
+	"strength" : 5,
+	"intelligente" : 5,
+	"dexterity" : 5,
+}
+
+
+func pickup(item: String):
+	inventory.append(item)
+
+
+func change_attribute(attribute: String, attribute_value: int):
+		attributes[attribute] += attribute_value
+		if attributes["health"] > attributes["max_health"]:
+			attributes["health"] = attributes["max_health"]
+
+
+func _physics_process(_delta):
+	var input_direction = Input.get_vector("left", "right", "up", "down")
+	velocity = input_direction * SPEED
+	move_and_slide()
+```
+
+#### item.gd
+
+```gdscript
+extends Area2D
+
+@export_enum("max_health", "health", "strength", "intelligence", "dexterity") var attributes: String = "health"
+@export var item_name: String
+@export var attribute_value: int = 0
+
+
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+
+
+func _on_body_entered(body):
+	if "pickup" in body:
+		body.pickup(item_name)
+		if attribute_value > 0:
+			body.change_attribute(attributes, attribute_value)
+			print("%s picked up a %s with a value of %d points" % [body.name, item_name, attribute_value])
+		queue_free()
+```
+
+
+## 2. Array within a Dictionary
 
 #### player.gd
 
@@ -71,9 +134,9 @@ func _on_body_entered(body):
 		queue_free()
 ```
 
-## 2. Simple Dictionary
+## 3. Simple Dictionary
 
-### 2.1 Health inside Dictionary
+### 3.1 Health inside Dictionary
 
 #### player.gd
 
@@ -112,7 +175,7 @@ func increase_attribute(attribute: int, attribute_value: int):
 Same script as previous **item.gd** script above
 
 
-### 2.2 Health outsite Dictionary
+### 3.2 Health outsite Dictionary
 
 #### player.gd
 
