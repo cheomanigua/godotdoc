@@ -18,10 +18,8 @@ toc: true
 
 extends CharacterBody2D
 
-
 var inventory: Array[String]
 const SPEED = 300.0
-
 
 var attributes: Dictionary = {
 	"max_health" : 100,
