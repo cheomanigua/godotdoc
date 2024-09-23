@@ -11,11 +11,11 @@ toc: true
 
 There are three ways to detect a collision, depending of the type of node you are using:
 
-1. **PhysicsBody2D** uses the built in collision feature.
+1. **CharacterBody2D** uses the built in collision feature.
 2. **Area2D** uses the built in `body_entered` or `area_entered` signals.
 3. **RigidBody2D** uses the built in `body_entered` or `area_entered` signals.
 
-### 1. PhysicsBody2D
+### 1. CharacterBody2D
 
 Comparison between **move_and_collide** and **move_and_slide** for a bullet object.
 
