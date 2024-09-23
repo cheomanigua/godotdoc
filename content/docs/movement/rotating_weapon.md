@@ -1,7 +1,7 @@
 ---
 weight: 10400
-title: "Rotating Gun"
-description: "How to make a gun rotate around the player"
+title: "Rotating Weapon"
+description: "How to make a Weapon rotate around the player"
 icon: "article"
 date: "2024-09-09T11:36:13+02:00"
 lastmod: "2024-09-09T11:36:13+02:00"
@@ -9,9 +9,9 @@ draft: false
 toc: true
 ---
 
-- In this recipe will implement of a gun rotating around the player, or to be more precise, a gun rotating around a pivot.
-- The gun points where the mouse cursor is.
-- The player moves independently from the gun rotation.
+- In this recipe will implement of a Weapon rotating around the player, or to be more precise, a Weapon rotating around a pivot.
+- The Weapon points where the mouse cursor is.
+- The player moves independently from the Weapon rotation.
 
 ### Node structure
 
@@ -26,12 +26,12 @@ toc: true
 [CharacterBody2D] "Player"						S
 		|-[CollisionPolygon2D]
 		|-[Marker2D] "Pivot"					%
-				|-[Sprite2D] "Gun"
+				|-[Sprite2D] "Weapon"
 						|-[Marker2D] "Muzzle"	%
 ```
 - **Player** and **Pivot** center points are located in the same place.
-- **Gun** center point is offset from **Pivot** center point.
-- **Muzzel** center point is offseet from **Gun** center point.
+- **Weapon** center point is offset from **Pivot** center point.
+- **Muzzel** center point is offseet from **Weapon** center point.
 
 
 #### Bullet

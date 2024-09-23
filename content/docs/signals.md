@@ -86,9 +86,10 @@ You can use either `get_node()` or `find_node()`. Note that `get_node()` doesn't
 ### Example of a connected function:
 
 ```gdscript
+
 func _on_Zone_body_entered(body):
-if body.name == "Player":
-	print("%s detected" % body.name)
+	if body.name == "Player":
+		print("%s detected" % body.name)
 ```
 You can also use either of these (Note that these methods are **much** slower than direct references):
 
