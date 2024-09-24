@@ -27,7 +27,7 @@ We have the variable `elements` with the flags: `FIRE`, `WATER` and `EARTH`. Cha
 __1___2___4__			__1___2___4__			__1___2___4__			__1___2___4__			__1___2___4__
 | 1 | 0 | 0 |			| 0 | 1 | 0 |			| 1 | 1 | 0 |			| 0 | 0 | 1 |			| 1 | 0 | 1 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯
-1 + 0 + 0 = 1			0 + 1 + 0 = 2			1 + 2 + 0 = 3			0 + 0 + 4 = 4			1 + 0 + 4 = 5
+1 + 0 + 0 = 1			0 + 2 + 0 = 2			1 + 2 + 0 = 3			0 + 0 + 4 = 4			1 + 0 + 4 = 5
 ```
 
 In the five examples above, we have set the value of `element` to the following:

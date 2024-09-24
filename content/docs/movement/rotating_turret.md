@@ -21,7 +21,7 @@ In this example we show how a **turret** will rotate towards the **player** when
 	|-[CollisionBody2D] "Base"			%
 	|	|-[CollisionBody2D] "Cannon"
 	|		|-[Marker2D] "Muzzle"		%
-	|		|-[Marker2D] "Shoot-At"		%
+	|		|-[Marker2D] "ShootAt"		%
 	|-[Timer]							%
 ```
 
@@ -50,7 +50,7 @@ var elapse: float = 5.0
 var original_angle: float
 @onready var base: CollisionShape2D = %Base
 @onready var muzzle: Marker2D = %Muzzle
-@onready var marker_2d: Marker2D = %Marker2D
+@onready var shoot_at: Marker2D = %ShootAt
 @onready var timer: Timer = %Timer
 @onready var player: Player = %Player
 
@@ -89,5 +89,5 @@ func _shoot():
 		var new_bullet = BULLET.instantiate()
 		get_tree().root.call_deferred("add_child", new_bullet)
 		new_bullet.global_position = muzzle.global_position
-		new_bullet.look_at(marker_2d.global_position)
+		new_bullet.look_at(shoot_at.global_position)
 ```
