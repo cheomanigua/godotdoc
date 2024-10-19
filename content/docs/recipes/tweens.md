@@ -12,6 +12,7 @@ toc: true
 ### Show pop up damage
 
 ```gdscript
+
 func take_damage(damage):
 	var label: Label = Label.new()
 	add_child(label)
@@ -34,6 +35,7 @@ func take_damage(damage):
 ### Cannon firing animation
 
 ```gdscript
+
 func _shoot():
 	if detected and locked:
 		var tween = create_tween()
