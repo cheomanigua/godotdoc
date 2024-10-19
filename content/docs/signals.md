@@ -120,6 +120,8 @@ You can create a signal manager that creates multiple signals that are globally 
 - Create a script and give it a name. In this example the name is `signal_manager.gd`.
 - Create a single signal for the example. Remember that you can create as many signals as you wish:
 ```gdscript
+
+@warning_ignore("unused_signal")
 signal event_message
 ```
 - Add the script as **Autoload**:

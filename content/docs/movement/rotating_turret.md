@@ -81,6 +81,7 @@ func _on_body_entered(body):
 func _on_body_exited(body):
 	if body is Player:
 		detected = !detected
+		timer.stop()
 		timer.timeout.disconnect(_shoot)
 
 
