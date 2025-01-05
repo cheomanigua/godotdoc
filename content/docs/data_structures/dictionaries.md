@@ -239,7 +239,6 @@ def csv_to_json_hash_key_int(csv_file, json_file):
   with open(json_file, 'w') as jsonfile:
     json.dump(data, jsonfile, indent=4)
 
-# Example usage:
 csv_to_json_hash_key_int('creatures.csv', 'creatures.json')
 ```
 
@@ -248,3 +247,5 @@ csv_to_json_hash_key_int('creatures.csv', 'creatures.json')
 ```
 $ python convert.py
 ```
+
+Now there is a new JSON file created called `creatures.json`.
