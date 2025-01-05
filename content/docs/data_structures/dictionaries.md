@@ -210,7 +210,7 @@ Goblin strength is 5
 
 ### CSV to JSON
 
-Let's say that we have a csv file called `creatures.csv` and we want to converted to a JSON file called `creatures.json`.
+Let's say that we have a csv file called `creatures.csv` and we want to convert it to a JSON file called `creatures.json`. During the conversion, we want to create a hash key with the first column of the csv file, so it can be used properly in Godot as a Dictionary key.
 
 - Create the following python script and name it, for instance, to `convert.py`:
 
