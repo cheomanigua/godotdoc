@@ -207,3 +207,44 @@ hframes : 8
 frame : 1
 Goblin strength is 5
 ```
+
+### CSV to JSON
+
+Let's say that we have a csv file called `creatures.csv` and we want to converted to a JSON file called `creatures.json`.
+
+- Create the following python script and name it, for instance, to `convert.py`:
+
+```python
+import csv
+import json
+
+def csv_to_json_hash_key_int(csv_file, json_file):
+  """
+  Converts a CSV file to JSON, 
+  using the first column as hash keys, 
+  and converting any number in values to integers.
+
+  Args:
+    csv_file: Path to the input CSV file.
+    json_file: Path to the output JSON file.
+  """
+  data = {}
+  with open(csv_file, 'r') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+      key = row[reader.fieldnames[0]] 
+      del row[reader.fieldnames[0]] 
+      data[key] = {k: int(v) if v.isdigit() else v for k, v in row.items()} 
+
+  with open(json_file, 'w') as jsonfile:
+    json.dump(data, jsonfile, indent=4)
+
+# Example usage:
+csv_to_json_hash_key_int('creatures.csv', 'creatures.json')
+```
+
+- Run the following command:
+
+```
+$ python convert.py
+```

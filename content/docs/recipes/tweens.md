@@ -1,7 +1,7 @@
 ---
 weight: 5275
 title: "Tweens"
-description: ""
+description: "How to create quick and easy animations"
 icon: "How to create fast and simple animations"
 date: "2024-10-19T11:05:31+02:00"
 lastmod: "2024-10-19T11:05:31+02:00"
