@@ -164,7 +164,7 @@ func _on_body_entered(body,item):
 ```
 
 ### Loading JSON files
-Example file: [https://drive.google.com/file/d/1EngStPfZxbTGDxjVKbe7Zql3kBepNaq3/view](https://drive.google.com/file/d/1EngStPfZxbTGDxjVKbe7Zql3kBepNaq3/view)
+Example file: [here](https://drive.google.com/file/d/1EngStPfZxbTGDxjVKbe7Zql3kBepNaq3/view)
 
 1. JSON file is downloaded to Godot project at location res://Data/Creatures.json
 2. A Global singleton script in created:
@@ -210,42 +210,22 @@ Goblin strength is 5
 
 ### CSV to JSON
 
-Let's say that we have a csv file called `creatures.csv` and we want to convert it to a JSON file called `creatures.json`. During the conversion, we want to create a hash key with the first column of the csv file, so it can be used properly in Godot as a Dictionary key.
+As you can see, it is possible to use a JSON file to load game data. However, creating game data directly in a JSON file is cumbersome and time consuming.
 
-- Create the following python script and name it, for instance, to `convert.py`:
+It is much better to create the game data in a spreadsheet, export it as .csv file and convert it to .json.
 
-```python
-import csv
-import json
+I made two scripts in python and perl for converting .csv files to .json files. You can download them from my Google Drive:
 
-def csv_to_json_hash_key_int(csv_file, json_file):
-  """
-  Converts a CSV file to JSON, 
-  using the first column as hash keys, 
-  and converting any number in values to integers.
+- ![csv2json.py](https://drive.google.com/file/d/17ui1LX0nl19yW6ByzLVEJL7CyTgGkEjq/view)
+- ![csv2json.pl](https://drive.google.com/file/d/1WXsbMYa4gVXAOFkMbroYci-dT91Epa5z/view)
 
-  Args:
-    csv_file: Path to the input CSV file.
-    json_file: Path to the output JSON file.
-  """
-  data = {}
-  with open(csv_file, 'r') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-      key = row[reader.fieldnames[0]] 
-      del row[reader.fieldnames[0]] 
-      data[key] = {k: int(v) if v.isdigit() else v for k, v in row.items()} 
+Also, you can download a .csv file as an example: ![godot.csv](https://drive.google.com/file/d/1hRlGHk_9t8duqkYuwaWSkTsaLLo8UpP3/view)
 
-  with open(json_file, 'w') as jsonfile:
-    json.dump(data, jsonfile, indent=4)
-
-csv_to_json_hash_key_int('creatures.csv', 'creatures.json')
-```
-
-- Run the following command:
+In order to convert `godot.csv` to a .json file, run any of the following commands. Remember that you must run the command in the same directory where the scripts and the `godot.csv` are.
 
 ```
-$ python convert.py
+$ python csv2json.py
+$ perl csv2json.pl
 ```
 
-Now there is a new JSON file created called `creatures.json`.
+After running any of the commands, there will be a new JSON file created called `output.json`. You can rename it if you want. It's ready to use in Godot.
