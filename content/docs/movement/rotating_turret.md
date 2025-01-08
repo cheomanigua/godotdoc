@@ -9,7 +9,7 @@ draft: false
 toc: true
 ---
 
-In this example we show how a **turret** will rotate towards the **player** when the player enters the **radar** area. The **turret** will start to shoot every second towards the **player** while the player stays in the radar area 180º in front of the cannon.
+In this example we show how a **turret** will rotate towards the **player** when the player enters the **radar** area. The **turret** will start to shoot every second towards the **player** for as long as the player stays in the radar area 180º in front of the cannon.
 
 
 ### Node Structure
