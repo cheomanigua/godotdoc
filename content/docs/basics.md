@@ -312,7 +312,7 @@ A good game arquitecture is to structure the game in small components
 
 #### 2. Accessing components
 
-- get_node("SomeNode") or $SomeNode
+- $SomeNode or get_node("SomeNode")
 - %SomeNode
 - creating a class
 - using the physics engine (Areas, etc.)
