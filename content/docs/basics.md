@@ -297,3 +297,48 @@ func pause():
 			$Label.text += "\n%s %s%d" % [key.capitalize(), vars[key]]
 		bonus_index += 1
 ```
+
+
+## Component Game Structure
+
+A good game arquitecture is to structure the game in small components
+
+#### 1. What are components
+
+- Small blocks of useful functionality
+- Work independently of another component
+- Can be re-configured for easy prototyping
+- Ideally know as little as possible outside of the component
+
+#### 2. Accessing components
+
+- get_node("SomeNode") or $SomeNode
+- %SomeNode
+- creating a class
+- using the physics engine (Areas, etc.)
+- groups
+- autoloads
+- @export NodePath
+
+#### 3. Component communication
+
+Can be done with minimal coupling using:
+
+- signals
+- contracts
+- signal relays
+- propagate_call
+
+
+##  Node Paths
+
+You can access nodes using $Node or get_node("Node"). Knowind this, then:
+
+| | |
+|-|-|
+|$NodeA/NodeB                |access children|
+|$".." or get_parent()       |access parent|
+|$".."/NodeA                 |access sibling|
+|$"." or self                |access current node|
+|%Node                       |access node everywhere|
+
