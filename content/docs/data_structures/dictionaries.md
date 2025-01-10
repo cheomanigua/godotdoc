@@ -217,7 +217,7 @@ It is much better to create the game data in a spreadsheet, export it as .csv fi
 I made two scripts in python and perl for converting .csv files to .json files. You can download them from my Google Drive:
 
 - [csv2json.py](https://drive.google.com/file/d/17ui1LX0nl19yW6ByzLVEJL7CyTgGkEjq/view)
-- [csv2json.pl](https://drive.google.com/file/d/1WXsbMYa4gVXAOFkMbroYci-dT91Epa5z/view)
+- [csv2json.pl](https://drive.google.com/file/d/1VMtDTCZJfG9PAnPzI1Nca2n7nggolvGQ/view)
 
 Also, you can download a .csv file as an example: [godot.csv](https://drive.google.com/file/d/1hRlGHk_9t8duqkYuwaWSkTsaLLo8UpP3/view)
 
