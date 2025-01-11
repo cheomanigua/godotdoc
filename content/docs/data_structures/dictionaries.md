@@ -164,7 +164,7 @@ func _on_body_entered(body,item):
 ```
 
 ### Loading JSON files
-Example file: [here](https://drive.google.com/file/d/16irrPAzEku4uLfroE1ri3X_i5ChUJEcE/view)
+Example file: [here](https://drive.google.com/file/d/1c3-zgfKZ_ljJP6ll1oh5AwoLXjEZpakO/view)
 
 1. JSON file is downloaded to Godot project at location res://Data/creatures.json
 2. A Global singleton script in created:
