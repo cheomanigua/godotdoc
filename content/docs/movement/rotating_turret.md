@@ -88,7 +88,7 @@ func _on_body_exited(body):
 func _shoot():
 	if detected and locked:
 		var new_bullet = BULLET.instantiate()
-		get_tree().root.call_deferred("add_child", new_bullet)
+		add_child(new_bullet)
 		new_bullet.global_position = muzzle.global_position
 		new_bullet.look_at(shoot_at.global_position)
 ```
