@@ -29,9 +29,10 @@ In this example we show how a **turret** will rotate towards the **player** when
 ### Node layout
 
 - The base of the **turret** is a circle with a **cannon** sticking out of it.
-- There are two markers along the longitudinal axis of the **cannon** at the end point of the **cannon**: the **muzzle** and shoot-at.
+- There are two markers along the longitudinal axis of the **cannon** at the end point of the **cannon**: the **muzzle** and **shoot-at**.
 - The **muzzle** marker is the spawing point of the bullets.
 - The **shoot-at** marker is the direction where the bullets move towards from the **muzzle**. 
+- From a 2D top view, the **cannon** (====), the **muzzle** marker (+) and the **shoot-at** marker(x) are positioned like this from left to right: **====+x**
 - There is a **radar** area around the **turret** scanning for the **player**.
 - There is a **timer** in charge of shooting the **cannon** every second when **player** is detectedand within 180º cannon front area.
 

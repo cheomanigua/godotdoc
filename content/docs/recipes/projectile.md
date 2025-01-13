@@ -96,10 +96,10 @@ func _ready() -> void:
 	player.shoot.connect(_on_player_shoot)
 
 func _on_player_shoot(Bullet, direction, location):
-	var spawned_bullet = Bullet.instantiate()
-	add_child(spawned_bullet)
-	spawned_bullet.rotation = direction
-	spawned_bullet.position = location
+	var new_bullet = Bullet.instantiate()
+	add_child(new_bullet)
+	new_bullet.rotation = direction
+	new_bullet.position = location
 ```
 
 ### Full implementation

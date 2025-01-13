@@ -13,8 +13,9 @@ Signals are Godot's implementation of the observer pattern. They allow a node to
 
 There are to types of signals in Godot:
 
+#### 1. Built-in
 
-1. **Built-in**. These signals comes with Godot and you don't need to create them. They emit the signal by default and you can connect to them in two ways:
+These signals comes with Godot and you don't need to create them. They emit the signal by default and you can connect to them in two ways:
 
 - From the editor (*Scene/Node -> Node/Signal -> <signal> -> Connect*)
 
@@ -28,8 +29,9 @@ Example of connecting to the `body_entered` signal from a **CharacterBody2D** sc
 
 **Note 2**: If the node that connect to the signal is in a different scene, check some sections below.
 
+#### 2. Custom
 
-2. **Custom**. You can create your own signals. They need the following:
+You can create your own signals. They need the following:
 
 - A name: `signal my_signal`
 - An emitter: `my_signal.emit()`

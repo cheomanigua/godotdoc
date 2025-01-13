@@ -245,8 +245,8 @@ You will now be able to select a different texture for each node instance in the
 ```gdscript
 
 func _ready():
-	var texture = load("%s" % creature_stats.Texture)
-	get_node("Sprite").texture = texture
+	var ctexture = load("%s" % creature_stats.Texture)
+	%Sprite.texture = ctexture
 ```
 
 #### At compile time
@@ -254,8 +254,8 @@ func _ready():
 ```gdscript
 
 func _ready():
-	var texture = preload("res://Images/Characters/orc.png")
-	get_node("Sprite").texture = texture
+	var ctexture = preload("res://Images/Characters/orc.png")
+	%Sprite.texture = ctexture
 ```
 
 ## Canvas Layer
@@ -299,7 +299,7 @@ func pause():
 ```
 
 
-## Component Game Structure
+## Components - A Design Pattern
 
 A good game arquitecture is to structure the game in small components
 

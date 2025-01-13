@@ -79,12 +79,12 @@ extends Area2D
 var speed:float = 2000
 var damage:float = 1
 
-@onready var visible_on_screen_notifier_2d: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
+@onready var vosn2d: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
 
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
-	visible_on_screen_notifier_2d.screen_exited.connect(_on_screen_exited)
+	vosn2d.screen_exited.connect(_on_screen_exited)
 
 
 func _physics_process(delta):
@@ -112,8 +112,8 @@ func _ready() -> void:
 	player.shoot.connect(_on_player_shoot)
 
 func _on_player_shoot(Bullet, direction, location):
-	var spawned_bullet = Bullet.instantiate()
-	add_child(spawned_bullet)
-	spawned_bullet.rotation = direction
-	spawned_bullet.position = location
+	var new_bullet = Bullet.instantiate()
+	add_child(new_bullet)
+	new_bullet.rotation = direction
+	new_bullet.position = location
 ```

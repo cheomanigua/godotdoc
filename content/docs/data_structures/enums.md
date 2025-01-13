@@ -39,7 +39,7 @@ The enum values can be integers or strings:
 
 In the following examples, when the player pickups an item, it will increase the player's attribute.
 
-Exporting the **enum** will let the player choose from a drop down menu the attribute in the Godot editor.
+Exporting the **enum** will let the player choose the attribute from a drop down menu in the Godot editor.
 
 
 ## Examples
