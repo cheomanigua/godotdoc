@@ -40,6 +40,7 @@ Creating:
 - `inventory.potion = 3` is the same as above
 
 ### Printing dictionaries
+
 - `print(inventory)`
 - `print(JSON.print(inventory, "\t"))`
 - Loops:
@@ -50,12 +51,14 @@ for key in inventory:
 	print(key + " : " + str(inventory[key]))
 ```
 or
+
 ```gdscript
 
 for key in inventory:
 	print("%s : %s" % [key, inventory[key]])
 ```
 or
+
 ```gdscript
 
 for i in inventory.size():
@@ -63,6 +66,7 @@ for i in inventory.size():
 	i+=1
 ```
 or
+
 ```gdscript
 
 for i in inventory.size():
@@ -71,6 +75,7 @@ for i in inventory.size():
 ```
 
 will print:
+
 ```
 coin : 5
 gem : 2
@@ -86,11 +91,55 @@ print(inventory.keys()[a])
 ```
 
 ### Deep Copy
+
 ```gdscript
 var copied_dictionary = str2var(var2str(original_dictionary))
 ```
 
-### Array within dictionary
+
+### Dictionary Management
+
+You can manage a dynamic dictionary by automatically allocating a new key or updating the value of a key:
+
+#### Player.gd
+
+```gdscript
+var inventory = {}
+
+func add_item(item):
+	if inventory.has(item):
+		inventory[item] += 1
+		print("You have %d %s" % [inventory[item], item])
+	else:
+		inventory[item] = 1
+		print("You have %d %s" % [inventory[item], item])
+```
+
+With the above setup, you can create a **item management** system. The example below shows how to decouple the responsibilities when the player picks up a coin and add it to the Player's inventory. The player enters an item's Area2D collision shape, whose `body_entered` signal is listened from **Item.gd**. Player scene is **Autoloaded** (global singleton), so the Player's `add_item()` function above can be accessed globally from any script:
+
+#### Item.gd
+
+```gdscript
+extends Area2D
+
+func _ready():
+	pickup(get_parent().get_name())
+
+func pickup(item):
+	body_entered.connect(_on_body_entered,[item])
+
+func _on_body_entered(body,item):
+	if body.name == "Player":
+		Player.add_item(item)
+		queue_free()
+```
+
+## More complex dictionaries
+
+### 1. Array within dictionary
+
+Dictionaries can be more complex that the examples prior.
+
 ```gdscript
 var inventory {
     0 : ["Silver", 23], 
@@ -127,43 +176,8 @@ func _ready():
         print("%s: %s" % [inventory[key][0],inventory[key][1]])
 ```
 
-### Dictionary Management
-You can manage a dynamic dictionary by automatically allocating a new key or updating the value of a key:
+### 2. String keys. Loading JSON files
 
-#### Player.gd
-
-```gdscript
-var inventory = {}
-
-func add_item(item):
-	if inventory.has(item):
-		inventory[item] += 1
-		print("You have %d %s" % [inventory[item], item])
-	else:
-		inventory[item] = 1
-		print("You have %d %s" % [inventory[item], item])
-```
-
-With the above setup, you can create a **item management** system. The example below shows how to decouple the responsibilities when the player picks up a coin and add it to the Player's inventory. The player enters an item's Area2D collision shape, whose `body_entered` signal is listened from **Item.gd**. Player scene is **Autoloaded** (global singleton), so the Player's `add_item()` function above can be accessed globally from any script:
-
-#### Item.gd
-
-```gdscript
-extends Area2D
-
-func _ready():
-	pickup(get_parent().get_name())
-
-func pickup(item):
-	body_entered.connect(_on_body_entered,[item])
-
-func _on_body_entered(body,item):
-	if body.name == "Player":
-		Player.add_item(item)
-		queue_free()
-```
-
-### Loading JSON files
 Example file: [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view)
 
 1. JSON file is downloaded to Godot project at location res://Data/test.json
