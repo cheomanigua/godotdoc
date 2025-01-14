@@ -164,18 +164,20 @@ func _on_body_entered(body,item):
 ```
 
 ### Loading JSON files
-Example file: [here](https://drive.google.com/file/d/1c3-zgfKZ_ljJP6ll1oh5AwoLXjEZpakO/view)
+Example file: [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view)
 
-1. JSON file is downloaded to Godot project at location res://Data/creatures.json
+1. JSON file is downloaded to Godot project at location res://Data/test.json
 2. A Global singleton script in created:
 
+Given the [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view) file, we write the following code:
+
 ```gdscript
-extends Node
+extends Node2D
 
 var creatures:Dictionary = {}
 
 func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var file = FileAccess.open("res://Data/test.json", FileAccess.READ)
 	var json = JSON.parse_string(file.get_as_text())
 	file.close()
 	return json
@@ -184,29 +186,74 @@ func _ready():
 	creatures = get_creatures_data()
 	# Testing
 	print (creatures.keys())
-	var type = "Goblin"
-	print ("%s stats are:" % [type])
-	for key in creatures[type]:
-		print ("%s : %s" % [key, creatures[type][key]])
-	print("%s strength is %d" % [type, creatures[type]["strength"]])
-
+	var ckey: String = "goblin"
+	var cvalue: String = "strength"
+	print ("%s stats are:" % [ckey.capitalize()])
+	for key in creatures[ckey]:
+		print ("%s : %s" % [key, creatures[ckey][key]])
+	print("")
+	print(ckey.capitalize())
+	print("Strength: %d" % [creatures[ckey]["strength"]])
+	print("Intelligence: %d" % [creatures[ckey]["intelligence"]])
+	print("Dexterity: %d" % [creatures[ckey]["dexterity"]])
+	print("Endurance: %d" % [creatures[ckey]["endurance"]])
+	print("Health: %d" % [creatures[ckey]["health"]])
+	print("")
+	print("a) %s strength is %d" % [ckey.capitalize(), creatures[ckey]["strength"]])
+	print("b) %s" % [creatures.keys()[0]])
+	print("c) %s" % [creatures[ckey].values()[0]])
+	print("d) %s" % [creatures[ckey].keys()])
+	print("e) %s" % [creatures[ckey].values()])
+	print("f) %s" % [creatures[ckey].keys()[0]])
+	print("g) %s" % [creatures.values()[0]])
+	print("h) goblin strength is %d" % [creatures[ckey]["strength"]])
+	print("i) %s strength is %d" % [ckey, creatures[ckey]["strength"]])
+	print("j) %s %s is %d" % [ckey, cvalue, creatures[ckey][cvalue]])
+	print("k) %s %s is %d" % [creatures.keys()[0], creatures[ckey].keys()[0], creatures[ckey].values()[0]])
 ```
+
 The above code will print:
 
+
 ```
-["Player", "Human", "Orc", "Goblin", "Adivía", "Agoiru"]
+["human", "goblin"]
 Goblin stats are:
-strength : 5
-intelligence : 5
-dexterity : 7
-endurance : 5
-health : 10
+strength : 2
+intelligence : 2
+dexterity : 2
+endurance : 2
+health : 2
 sprite_sheet : demon1.png
 vframes : 9
 hframes : 8
 frame : 1
-Goblin strength is 5
+
+Goblin
+Strength: 2
+Intelligence: 2
+Dexterity: 2
+Endurance: 2
+Health: 2
+
+a) Goblin strength is 2
+b) human
+c) 2
+d) ["strength", "intelligence", "dexterity", "endurance", "health", "sprite_sheet", "vframes", "hframes", "frame"]
+e) [2, 2, 2, 2, 2, "demon1.png", 9, 8, 1]
+f) strength
+g) { "strength": 1, "intelligence": 1, "dexterity": 1, "endurance": 1, "health": 1, "sprite_sheet": <null>, "vframes": <null>, "hframes": <null>, "frame": <null> }
+h) goblin strength is 2
+i) goblin strength is 2
+j) goblin strength is 2
+k) human strength is 2
 ```
+
+As you can see from the results, using numbers as indexes is not a good idea. It may work if the json file is always rendered in the same order both for keys and values. But this is not always the case. In the example above we are trying to get *Goblin* related data. However in lines **b)**, **g)** and **k)** *Human* related data is fetched.
+
+Assigning the name `goblin` to the variable `ckey` is the safest way to proceed with keys. Again, it will not guarantee the correct data if the values are indexed by numbers. In the example above the numbered index used is `[0]`.
+
+However, if we assign the name `strength` to the variable `cvalue`, we can safely index the value from the json file, regardless if it changes the key/value orders when rendering the file. You can see a fine example comparing lines **h)**, **i)** and **j**. They yield the same result, but the line **j)** in the code is cleaner and it's safe.
+
 
 ### CSV to JSON
 
