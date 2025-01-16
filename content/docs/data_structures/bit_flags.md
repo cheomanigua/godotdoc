@@ -24,11 +24,13 @@ We have the variable `elements` with the flags: `FIRE`, `WATER` and `EARTH`. Cha
 
 
 ```
-__1___2___4__			__1___2___4__			__1___2___4__			__1___2___4__			__1___2___4__
-| 1 | 0 | 0 |			| 0 | 1 | 0 |			| 1 | 1 | 0 |			| 0 | 0 | 1 |			| 1 | 0 | 1 |
+__4___2___1__			__4___2___1__			__4___2___1__			__4___2___1__			__4___2___1__
+| 0 | 0 | 1 |			| 0 | 1 | 0 |			| 0 | 1 | 1 |			| 1 | 0 | 0 |			| 1 | 0 | 1 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯			¯¯¯¯¯¯¯¯¯¯¯¯¯
-1 + 0 + 0 = 1			0 + 2 + 0 = 2			1 + 2 + 0 = 3			0 + 0 + 4 = 4			1 + 0 + 4 = 5
+0 + 0 + 1 = 1			0 + 2 + 0 = 2			0 + 2 + 1 = 3			4 + 0 + 0 = 4			4 + 0 + 1 = 5
 ```
+
+Note the the flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left.
 
 In the five examples above, we have set the value of `element` to the following:
 
