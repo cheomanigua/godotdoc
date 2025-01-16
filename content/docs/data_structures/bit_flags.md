@@ -79,37 +79,54 @@ func show_elements(type: int):
 
 ### Bitwise operations
 
-Checking if any of the bits are 1:
+In the following operations, `bit_index` is a made up placeholder. It has to be replaced by an actual value between 0 and 2, and represents the bit position. This bit is the only one affected by the bitwise operations. Note that if `elements` had 10 elements instead of 3, `bit_index` could be a value between 0 and 9. The maximum bits a integer can have is 64, so `elements` could potentially have a range of 0 to 63 elements, A LOT!!!
 
-```gdscript
-if flags != 0:
+```
+__4___2___1__		__4___2___1__		__4___2___1__
+| 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
+¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
+bit_index = 0		bit_index = 1		bit_index = 2
 ```
 
-In the following operations, `bit_index` is a made up placeholder. It has to be replaced by a value betweeb 0 to 63 inclusive, and represents the bit position. This bit will be the only affected by the following bit operations:
-
-Setting a bit to 1:
+Check if all of the bits are set:
 
 ```gdscript
-# In this case the bit doesn't need to be 0 before setting its value
-flags |= 1 << bit_index
+if elements != 0:
 ```
 
-Setting a bit to 0:
+Set a bit to 1:
 
 ```gdscript
-flags &= ~(1 << bit_index)
+# Replace bit_index by 0, 1 or 2
+elements |= 1 << bit_index
 ```
 
-Flipping a bit:
+Set a bit to 0:
 
 ```gdscript
-flags ^= 1 << bit_index
+# Replace bit_index by 0, 1 or 2
+elements &= ~(1 << bit_index)
+```
+
+Flip a bit:
+
+```gdscript
+# Replace bit_index by 0, 1 or 2
+elements ^= 1 << bit_index
 ```
 
 Check if a bit is set:
 
 ```gdscript
-if flags & (1 << bit_index):
+# Replace bit_index by 0, 1 or 2
+if elements & (1 << bit_index):
+```
+
+Check if a bit is not set:
+
+```gdscript
+# Replace bit_index by 0, 1 or 2
+if (elements & (1 << bit_index == 0)):
 ```
 
 #### Examples
@@ -138,13 +155,19 @@ func _ready() -> void:
 	print("")
 	var usage: String
 	if elements & (1 << 1):
-		usage = "You can use water"
+		usage = "You can use Water"
 	else:
 		usage = "You cannot use Water"
 	print(("Checking if bit index 1 is set: %s") % [usage])
+	print("")
+	if (elements & (1 << 1 == 0)):
+		usage = "You cannot use Water"
+	else:
+		usage = "You can use Water"
+	print(("Checking if bit index 1 is not set: %s") % [usage])
 ```
 
-The  code above will print:
+The code above will print:
 
 ```
 User selected:
@@ -162,6 +185,8 @@ Fire, Water and Earth
 Flipping bit index 1: 5 or 101
 Fire and Earth
 
-Checking if bit index 1 is set: You cannot use water
+Checking if bit index 1 is set: You cannot use Water
+
+Checking if bit index 1 is not set: You cannot use Water
 ```
 
