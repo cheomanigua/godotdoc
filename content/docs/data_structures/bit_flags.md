@@ -9,7 +9,7 @@ draft: false
 toc: true
 ---
 
-### Basics
+# Basics
 
 Bit flags were used in the past to save memory. An integer in GDscript has 64 bits, so you can store 64 boolean values in a single integer.
 
@@ -47,7 +47,7 @@ Note that we have only used 3 bits of the 64 bits availables with an `int` varia
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
 
 
-#### Example 
+### Example 
 
 ```gdscript
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int = 0
@@ -77,15 +77,19 @@ func show_elements(type: int):
 			print("Fire, Water and Earth")
 ```
 
-### Bitwise operations
+# Bitwise operations
 
-In the following operations, `bit_index` is a made up placeholder. It has to be replaced by an actual value between 0 and 2, and represents the bit position. This bit is the only one affected by the bitwise operations. Note that if `elements` had 10 elements instead of 3, `bit_index` could be a value between 0 and 9. The maximum bits a integer can have is 64, so `elements` could potentially have a range of 0 to 63 elements, A LOT!!!
+There are two types of bitwise operations: Left Shift/Right Shift operators and direct operators. Both accomplish the same goal, but use slightly different approach.
+
+## Direct bitwise operations
+
+In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position. In this particular example, only one bit is affected by the bitwise operations.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
-bit_index = 0		bit_index = 1		bit_index = 2
+bit_index = 1		bit_index = 2		bit_index = 4
 ```
 
 Check if all of the bits are set:
@@ -94,42 +98,42 @@ Check if all of the bits are set:
 if elements != 0:
 ```
 
-Set a bit to 1:
+Set a bit:
 
 ```gdscript
-# Replace bit_index by 0, 1 or 2
-elements |= 1 << bit_index
+# Replace bit_index by 1, 2 or 4
+elements |= bit_index
 ```
 
-Set a bit to 0:
+Clear a bit:
 
 ```gdscript
-# Replace bit_index by 0, 1 or 2
-elements &= ~(1 << bit_index)
+# Replace bit_index by 1, 2 or 4
+elements &= ~bit_index
 ```
 
 Flip a bit:
 
 ```gdscript
-# Replace bit_index by 0, 1 or 2
-elements ^= 1 << bit_index
+# Replace bit_index by 1, 2 or 4
+elements ^= bit_index
 ```
 
 Check if a bit is set:
 
 ```gdscript
-# Replace bit_index by 0, 1 or 2
-if elements & (1 << bit_index):
+# Replace bit_index by 1, 2 or 4
+if elements & bit_index:
 ```
 
 Check if a bit is not set:
 
 ```gdscript
-# Replace bit_index by 0, 1 or 2
-if (elements & (1 << bit_index == 0)):
+# Replace bit_index by 1, 2 or 4
+if (elements & (bit_index == 0)):
 ```
 
-#### Examples
+### Example 1
 
 ```gdscript
 
@@ -141,12 +145,190 @@ func _ready() -> void:
 	print(("Setting flags to: %d or %s") % [elements, String.num_int64(elements,2,false)])
 	show_elements(elements)
 	print("")
+	elements &= ~2
+	print(("Clearing bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	elements |= 2
+	print(("Setting bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	elements ^= 2
+	print(("Flipping bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	var usage: String
+	if elements & 2:
+		usage = "You can use Water"
+	else:
+		usage = "You cannot use Water"
+	print(("Checking if bit index 2 is set: %s") % [usage])
+	print("")
+	if (elements & (2 == 0)):
+		usage = "You cannot use Water"
+	else:
+		usage = "You can use Water"
+	print(("Checking if bit index 2 is not set: %s") % [usage])
+```
+
+### Example 2
+
+```gdscript
+
+const FIRE = 1
+const WATER = 2
+const EARTH = 4
+
+func _ready() -> void:
+	print("User selected:")
+	show_elements(elements)
+	print("")
+	elements = 7
+	print(("Setting flags to: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	clear_flag(WATER)
+	print(("Clearing bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	set_flag(WATER)
+	print(("Setting bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	flip_flag(WATER)
+	print(("Flipping bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	print("Checking if bit index 2 is set:")
+	print("You can use Water") if is_flag_set(WATER) else print("You cannot use Water")
+	print("")
+	print("Checking if bit index 2 is not set:")
+	print("You cannot use Water") if is_flag_not_set(WATER) else print("You can use Water")
+
+
+	# Function to set a flag (use bitwise OR)
+	func set_flag(flag):
+		elements |= flag
+
+
+	# Function to clear a flag (use bitwise AND with negation)
+	func clear_flag(flag):
+		elements &= ~flag
+
+
+	# Function to flip a flag
+	func flip_flag(flag):
+		elements ^= flag
+
+
+	# Function to check if a flag is set (use bitwise AND)
+	func is_flag_set(flag) -> bool:
+		return (elements & flag) != 0
+
+
+	# Function to check if a flag is not set (use bitwise AND)
+	func is_flag_set(flag) -> bool:
+		return (elements & flag) == 0
+```
+
+
+Both example code above will print:
+
+```
+User selected:
+Water and Earth
+
+Setting flags to: 7 or 111
+Fire, Water and Earth
+
+Clearing bit index 2: 5 or 101
+Fire and Earth
+
+Setting bit index 2: 7 or 111
+Fire, Water and Earth
+
+Flipping bit index 2: 5 or 101
+Fire and Earth
+
+Checking if bit index 2 is set: You cannot use Water
+
+Checking if bit index 2 is not set: You cannot use Water
+```
+
+
+## Left Shift bitwise operations
+
+In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit position. In this particular example, only one bit is affected by the bitwise operations.
+
+```
+__4___2___1__		__4___2___1__		__4___2___1__
+| 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
+¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
+bit_index = 0		bit_index = 1		bit_index = 2
+```
+
+
+Check if all of the bits are set:
+
+```gdscript
+if elements != 0:
+```
+
+Set a bit:
+
+```gdscript
+# Replace bit_index by 1, 2 or 3
+elements |= 1 << bit_index
+```
+
+Clear a bit:
+
+```gdscript
+# Replace bit_index by 1, 2 or 3
+elements &= ~(1 << bit_index)
+```
+
+Flip a bit:
+
+```gdscript
+# Replace bit_index by 1, 2 or 3
+elements ^= 1 << bit_index
+```
+
+
+Check if a bit is set:
+
+```gdscript
+# Replace bit_index by 1, 2 or 3
+if elements & (1 << bit_index):
+```
+
+
+Check if a bit is not set:
+
+```gdscript
+# Replace bit_index by 1, 2 or 3
+if (elements & (1 << bit_index == 0)):
+```
+
+### Example 1
+
+```gdscript
+func _ready() -> void:
+	print("User selected:")
+	show_elements(elements)
+	print(elements)
+	print("")
+	elements = 7
+	print(("Setting flags to: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
 	elements &= ~(1 << 1)
-	print(("Setting bit index 1 to 0: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	print(("Clearing bit index 1: %d or %s") % [elements, String.num_int64(elements,2,false)])
 	show_elements(elements)
 	print("")
 	elements |= 1 << 1
-	print(("Setting bit index 1 to 1: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	print(("Setting bit index 1: %d or %s") % [elements, String.num_int64(elements,2,false)])
 	show_elements(elements)
 	print("")
 	elements ^= 1 << 1
@@ -167,7 +349,69 @@ func _ready() -> void:
 	print(("Checking if bit index 1 is not set: %s") % [usage])
 ```
 
-The code above will print:
+
+### Example 2
+
+```gdscript
+
+const FIRE = 0
+const WATER = 1
+const EARTH = 2
+
+func _ready() -> void:
+	print("User selected:")
+	show_elements(elements)
+	print("")
+	elements = 7
+	print(("Setting flags to: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	clear_flag(WATER)
+	print(("Clearing bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	set_flag(WATER)
+	print(("Setting bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	flip_flag(WATER)
+	print(("Flipping bit index 2: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	print("Checking if bit index 2 is set:")
+	print("You can use Water") if is_flag_set(WATER) else print("You cannot use Water")
+	print("")
+	print("Checking if bit index 2 is not set:")
+	print("You cannot use Water") if is_flag_not_set(WATER) else print("You can use Water")
+
+
+# Function to set a flag (use bitwise OR)
+func set_flag(flag):
+	elements |= 1 << flag
+
+
+# Function to clear a flag (use bitwise AND with negation)
+func clear_flag(flag):
+	elements &= ~(1 << flag)
+
+
+# Function to flip a flag
+func flip_flag(flag):
+	elements ^= 1 << flag
+
+
+# Function to check if a flag is set (use bitwise AND)
+func is_flag_set(flag) -> bool:
+	return elements & (1 << flag)
+
+
+# Function to check if a flag is not set (use bitwise AND)
+func is_flag_not_set(flag) -> bool:
+	return (elements & (1 << flag) == 0)
+```
+
+
+Both example code above will print:
 
 ```
 User selected:
@@ -176,10 +420,10 @@ Water and Earth
 Setting flags to: 7 or 111
 Fire, Water and Earth
 
-Setting bit index 1 to 0: 5 or 101
+Clearing bit index 1: 5 or 101
 Fire and Earth
 
-Setting bit index 1 to 1: 7 or 111
+Setting bit index 1: 7 or 111
 Fire, Water and Earth
 
 Flipping bit index 1: 5 or 101
@@ -189,4 +433,3 @@ Checking if bit index 1 is set: You cannot use Water
 
 Checking if bit index 1 is not set: You cannot use Water
 ```
-
