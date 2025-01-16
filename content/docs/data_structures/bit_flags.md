@@ -45,17 +45,17 @@ Note that we have only used 3 bits of the 64 bits availables with an `int` varia
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
 
 
-### Example 
+#### Example 
 
 ```gdscript
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int = 0
 
 
 func _ready() -> void:
-	add_attack("magical",  elements)
+	show_elements(elements)
 
 
-func add_attack(attack_name: String, type: int):
+func show_elements(type: int):
 	match(type):
 		0:
 			print("No magical attack")
@@ -83,26 +83,7 @@ Checking if any of the bits are 1:
 if flags != 0:
 ```
 
-
-Reading a single bit:
-
-```gdscript
-# bit_index is a value from 0 to 63 inclusive
-if flags & (1 << bit_index):
-```
-
-Flipping a bit:
-
-```gdscript
-flags ^= 1 << bit_index
-```
-
-Setting a bit to 1 or 0:
-
-```gdscript
-# value is either 1 or 0, and the bit needs to be 0 before setting its value
-flags |= value << bit_index
-```
+In the following operations, `bit_index` is a made up placeholder. It has to be replaced by a value betweeb 0 to 63 inclusive, and represents the bit position. This bit will be the only affected by the following bit operations:
 
 Setting a bit to 1:
 
@@ -116,3 +97,69 @@ Setting a bit to 0:
 ```gdscript
 flags &= ~(1 << bit_index)
 ```
+
+Flipping a bit:
+
+```gdscript
+flags ^= 1 << bit_index
+```
+
+Check if a bit is set:
+
+```gdscript
+if flags & (1 << bit_index):
+```
+
+#### Examples
+
+```gdscript
+
+func _ready() -> void:
+	print("User selected:")
+	show_elements(elements)
+	print("")
+	elements = 7
+	print(("Setting flags to: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	elements &= ~(1 << 1)
+	print(("Setting bit index 1 to 0: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	elements |= 1 << 1
+	print(("Setting bit index 1 to 1: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	elements ^= 1 << 1
+	print(("Flipping bit index 1: %d or %s") % [elements, String.num_int64(elements,2,false)])
+	show_elements(elements)
+	print("")
+	var usage: String
+	if elements & (1 << 1):
+		usage = "You can use water"
+	else:
+		usage = "You cannot use Water"
+	print(("Checking if bit index 1 is set: %s") % [usage])
+```
+
+The  code above will print:
+
+```
+User selected:
+Water and Earth
+
+Setting flags to: 7 or 111
+Fire, Water and Earth
+
+Setting bit index 1 to 0: 5 or 101
+Fire and Earth
+
+Setting bit index 1 to 1: 7 or 111
+Fire, Water and Earth
+
+Flipping bit index 1: 5 or 101
+Fire and Earth
+
+Checking if bit index 1 is set: You cannot use water
+```
+
