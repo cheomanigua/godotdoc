@@ -58,21 +58,21 @@ func _ready() -> void:
 func show_elements(type: int):
 	match(type):
 		0:
-			print("No magical attack")
+			print("N/A")
 		1:
-			print("Attack by Fire")
+			print("Fire")
 		2:
-			print("Attack by Water")
+			print("Water")
 		3:
-			print("Attack by Fire and Water")
+			print("Fire and Water")
 		4:
-			print("Attack by Earth")
+			print("Earth")
 		5:
-			print("Attack by Fire and Earth")
+			print("Fire and Earth")
 		6:
-			print("Attack by Water and Earth")
+			print("Water and Earth")
 		7:
-			print("Attack by Fire, Water and Earth")
+			print("Fire, Water and Earth")
 ```
 
 ### Bitwise operations
