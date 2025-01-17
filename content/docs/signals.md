@@ -17,7 +17,7 @@ There are to types of signals in Godot:
 
 These signals comes with Godot and you don't need to create them. They emit the signal by default and you can connect to them in two ways:
 
-- From the editor (*Scene/Node -> Node/Signal -> <signal> -> Connect*)
+- From the editor (*Scene/Node -> Node/Signal -> \<signal\> -> Connect*)
 
 - From code: `<source_node>.<signal_name>.connect(target_function_name>)`
 
