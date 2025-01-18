@@ -11,7 +11,7 @@ toc: true
 
 ## Basics
 
-Bit flags are boolean values stored in each bit of an integer variable, in binary order (power of 2). In Godot, an integer has 64 bits, which means you can have 64 different boolean values in one single integer variable.
+Bit flags are boolean values stored in each bit of an integer variable, in binary order (power of 2). In Godot, an integer has 64 bits, which means you can hold 64 different boolean values in one single integer variable.
 
 Bit flags are good for creating multiple choice boolean selections with one single variable, each selection being one bit of the variable.
 
@@ -41,17 +41,15 @@ In the image above, the **bit index by variable/LSO** is a visual representation
 
 In the five examples above, we have set the variable `elements` and the left shift operator to the following values (note that `1<<0` can also be written as `1`):
 
-| | variable | LSO v1 | LSO v2 | 
+| | variable | LSO v1 | LSO v2 |
 |-|-|-|-|
-| FIRE | `1` | `1` | `1<<0` 
+| FIRE | `1` | `1` | `1<<0`
 | WATER | `2` | `1<<1` | `1<<1` |
 | FIRE and WATER | `3` | `1 + (1<<1)` | `(1<<0) + (1<<1)` |
 | EARTH | `4` | `1<<2` | `1<<2` |
 | FIRE and EARTH | `5` | `1 + (1<<2)` | `(1<<0) + (1<<2)` |
 
 ... and so on.
-
-Note that we have only used 3 bits of the 64 bits availables with an `int` variable. We could have added 61 extra elements.
 
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
@@ -62,7 +60,7 @@ There are two types of bitwise operators: Left Shift/Right Shift operators and d
 
 ### Direct bitwise operations
 
-In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position. In this particular example, only one bit is affected by the bitwise operations.
+In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position value. In this particular example, only one bit is affected by the bitwise operations.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
@@ -96,13 +94,13 @@ left_shift = 0		left_shift = 1		left_shift = 2
 
 ### Custom functions
 
-| Function | Direct operator | Left Shift Operator |
+| Name and parameter | Body | Flag |
 |-|-|-|
-| `func set_flag(flag):` | `elements \|= flag` | `elements \|= 1 << flag` |
-| `func clear_flag(flag):` | `elements &= ~flag` | `elements &= ~(1 << flag)` |
-| `func flip_flag(flag):` | `elements ^= flag` | `elements ^= 1 << flag` |
-| `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `return elements & (1 << flag)` |
-| `func is_flag_not_set(flag) -> bool:` | `return (elements & flag) == 0` | `return (elements & (1 << flag) == 0)` |
+| `func set_flag(flag):` | `elements \|= flag` | `1` or `1<<0` |
+| `func clear_flag(flag):` | `elements &= ~flag` | `2` or `1<<1` |
+| `func flip_flag(flag):` | `elements ^= flag` | `3` or `(1<<0)+(1<<1)` |
+| `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `4` or `1<<2` |
+| `func is_flag_not_set(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
 
 
 ## Example
@@ -118,9 +116,9 @@ extends Node
 
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int = 0
 
-const lsoFIRE = 1 << 0
-const lsoWATER = 1 << 1
-const lsoEARTH = 1 << 2
+const lsoFIRE = 1<<0
+const lsoWATER = 1<<1
+const lsoEARTH = 1<<2
 const vFIRE = 1
 const vWATER = 2
 const vEARTH = 4
@@ -128,6 +126,7 @@ const vEARTH = 4
 
 func _ready() -> void:
 	print(("User selected: %d / %s") % [elements, String.num_int64(elements,2,false)])
+    print_elements()
 	print(("%d is the 'elements' variable value and %s represents the 'elements' variable binary base conversion") % [elements, String.num_int64(elements,2,false)])
 	show_elements(elements)
 	print("")
@@ -161,7 +160,7 @@ func _ready() -> void:
 	print(("g) Flipping bit %d (WATER) using custom function: %d / %s") % [lsoWATER,elements, String.num_int64(elements,2,false)])
 	print("")
 
-	print("h) Checking if bit index 2 (WATER) is set lso:")
+	print("h) Checking if bit index 2 (WATER) is set using lso:")
 	print("Water is set") if elements & (1<<1) else print("Water is not set")
 	print("")
 	
@@ -180,13 +179,13 @@ func show_elements(type: int):
 			print("Fire")
 		2:
 			print("Water")
-		vFIRE + (1<<1):
+		vFIRE + vWATER:
 			print("Fire and Water")
 		4:
 			print("Earth")
 		1 + (1<<2):
 			print("Fire and Earth")
-		(1<<1) + lsoEARTH:
+		lsoWATER + lsoEARTH:
 			print("Water and Earth")
 		7:
 			print("Fire, Water and Earth")
@@ -215,7 +214,18 @@ func is_flag_set(flag) -> bool:
 # Function to check if a flag is unset
 func is_flag_not_set(flag) -> bool:
 	return (elements & flag) == 0
+
+
+func print_elements():
+	var elementsArray : Array[String] = ["Fire","Water","Earth"]
+	var elementsPrint : Array[String] = []
+	var elementsBinary: String = String.num_int64(elements,2,false).reverse()
+	for i in elementsBinary.length():
+		if elementsBinary[i] == "1":
+			elementsPrint.append(elementsArray[i])
+	print(elementsPrint)
 ```
+
 
 
 Running the script will print:
@@ -223,7 +233,7 @@ Running the script will print:
 ```
 User selected: 7 / 111
 7 is the 'elements' variable value and 111 represents the 'elements' variable binary base conversion.
-Fire, Water and Earth
+["Fire", "Water", "Earth"]
 
 a) Clearing bit 2 (WATER) using direct operator: 5 / 101
 b) Setting bit 2 (WATER) using left shift operator: 7 / 111
@@ -233,8 +243,9 @@ e) Clearing bit 2 (WATER) using custom function: 5 / 101
 f) Setting bit 2 (WATER) using custom function: 7 / 111
 g) Flipping bit 2 (WATER) using custom function: 5 / 101
 
-h) Checking if bit index 2 (WATER) is set lso:
+h) Checking if bit index 2 (WATER) is set using lso:
 Water is not set
 
 i) Checking if bit index 2 (WATER) is not set using custom fuction:
-Water is not set``
+Water is not set
+```
