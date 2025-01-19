@@ -46,14 +46,29 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 
 # NeoVim as editor
 
-If you wish, you can use **NeoVim** also as your editor for **Godot** alongside a running instance of **Godot**.
+If you wish, you can use **NeoVim** as your editor for **Godot** alongside a running instance of **Godot**. For that, you will have to install **NeoVim**, and then install either **lazy.vim** or **kickstart.nvim**. Also, you will have to change some configurations in **Godot**.
 
-## 1. Install last version of NeoVim (Ubuntu)
+## 1. Godot Configuration
+
+- Make the following changes in Godot `Editor`->`Editor Settings...`:
+  - **Network** -> **Language Server**:
+    - Remote Host: `127.0.0.1`
+    - Remote Port: `6005`
+    - Enable Smart Resolve: `On`
+    - Show Native Symbols in Editor: `On`
+
+## 2. Install last version of NeoVim (Ubuntu)
 
 ```bash
 $ sudo add-apt-repository ppa:neovim-ppa/unstable -y
 $ sudo apt update
 $ sudo apt install make gcc ripgrep unzip git xclip neovim
+```
+
+or
+
+```
+$ sudo apt-get install neovim
 ```
 
 ### Launch NeoVim
@@ -62,43 +77,74 @@ $ sudo apt install make gcc ripgrep unzip git xclip neovim
 $ nvim
 ```
 
-## 2. kickstart.nvim
+## 3. lazy.vim
 
-Install **kickstart** config file for an easy configuration.
+### 3.1. Installation and configuration
+
+- Download lazy.vim starter:
+
+`$ git clone https://github.com/LazyVim/starter.git`
+
+- From the downloaded `starter` directory, copy to `~/.config/nvim/` the following: `init.lua`, `stylua.toml` and `lua/`
+
+- Launch NeoVim. Lazy.vim will start installing and configuring plugins automatically.
+
+- When all plugins are installed, add this snipped in `~/.config/nvim/lua/plugins/example.lua`
+
+```lua
+  -- add GDSCript to lspconfig
+  {
+    require("lspconfig")["gdscript"].setup({
+      name = "godot",
+      cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
+    }),
+  },
+```
+- Make the following changes in Godot `Editor`->`Editor Settings...`:
+  - **Text Editor** -> **External**:
+    - Use External Editor: `On`
+    - Exec Path: `/usr/bin/nvim`
+    - Exec Flags: `--server /tmp/godot.pipe --remote-send "<esc>:n {file}<CR>:call cursor({line},{col})<CR>"`
+
+### 3.2. Usage
+
+1. Start NeoVim like this: `$ nvim --listen /tmp/godot.pipe`.
+2. Launch Godot and open a project.
+3. An automatic connection should happen with the following message in Godot: `[LSP] Connection Taken`
+4. Go back to NeoVim to start editing. Any saved change will reflected in the Godot editor.
+5. If an automatic connection is not happening, click on a `.gd` file within Godot editor.
+
+## 4. kickstart.nvim
+
+### 4.1. Installation and configuration
 
 Readme Page: [https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file](https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file)
+- Download lazy.vim starter: `$ git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim`
 
-### Installation
-```bash
-$ git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
-$ nvim
-```
+- Launch NeoVim. Kickstart.vim will start installing and configuring plugins automatically.
 
-### Edit config file
-Within NeoVim, type: `:e $MYVIMRC`
-
-### GDScript support
-1. Edit the config file and under `capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())` add these lines:
-```lua
-      require('lspconfig').gdscript.setup { capabilities = capabilities }
+- When all plugins are installed, edit `~/.config/nvim/init.lua` :
+  - Under `capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())` add these lines:
+    
+    ```lua
+          require('lspconfig').gdscript.setup { capabilities = capabilities }
       vim.keymap.set('n', '<leader>sg', function() vim.fn.serverstart '127.0.0.1:6005' end, { noremap = true })
-```
 
-2. Edit the config file and add 'gdscript' to this line:
-```lua
-ensure_installed = { 'gdscript', 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-```
-Run `:TSUpdate`
+    ```
 
-4. Restart your computer
+  - Add `gdscript` to this line:
+    ```lua
+    ensure_installed = { 'gdscript', 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+    ```
 
-### Launch Godot and NeoVim
+### 4.2. Usage
 
-Now all you have to do is to launch **Godot** and then launch **NeoVim**.
+1. Launch **Godot**.
+2. Launch **NeoVim**.
 
 If you get the error: `could not connect to 127.0.0.1:6005, reason : "ECONNREFUSED"`, go to your **Godot** editor and be sure that the server settings at **Editor** -> **Editor Settings** -> **Network** -> **Language Server** are correctly setup.
 
-### Useful commands
+### 4.3. Useful commands
 - **Space** + **s** + **g** -\> Search for any word in the whole project
 - **Space** + **s** + **w** -\> Search for the word where the cursor is on in the whole project
 - **Space** + **s** + **f** -\> Search for files in the project
