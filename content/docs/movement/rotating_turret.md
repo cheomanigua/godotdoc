@@ -89,7 +89,9 @@ func _on_body_exited(body):
 func _shoot():
 	if detected and locked:
 		var new_bullet = BULLET.instantiate()
-		add_child(new_bullet)
+        get_parent().add_child(new_bullet)              # option 1
+        # get_tree().current_scene.add_child(new_bullet)  # option 2
+        # get_tree().root.add_child(new_bullet)           # option 3
 		new_bullet.global_position = muzzle.global_position
 		new_bullet.look_at(shoot_at.global_position)
 ```

@@ -77,9 +77,43 @@ $ sudo apt-get install neovim
 $ nvim
 ```
 
-## 3. lazy.vim
+## 3. vim-plug
 
-### 3.1. Installation and configuration
+### Installation and configuration
+
+- Download vim vim-plug
+
+`sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
+
+- Add vim-plug and plugin names to `~/.config/nvim/init.vim` file:
+
+```
+" vim-plug
+call plug#begin('~/.vim/plugged')
+
+Plug 'nvim-treesitter/nvim-treesitter' " Treesitter for better syntax highlighting
+Plug 'neovim/nvim-lspconfig'    " LSP Configuration
+Plug 'mfussenegger/nvim-dap'	" Debugger
+Plug 'habamax/vim-godot'
+
+" end vim-plug
+call plug#end()
+```
+
+- If you are editing the `~/.config/nvim/init.vim` file with NeoVim, save and exit.
+
+- Launch NeoVim again and run: `:PlugInstall`
+
+- Make the following changes in Godot `Editor`->`Editor Settings...`:
+  - **Text Editor** -> **External**:
+    - Use External Editor: `On`
+    - Exec Path: `/usr/bin/nvim`
+    - Exec Flags: `--server /tmp/godot.pipe --remote-send "<esc>:n {file}<CR>:call cursor({line},{col})<CR>"`
+
+## 4. lazy.vim
+
+### 4.1. Installation and configuration
 
 - Download lazy.vim starter:
 
@@ -106,7 +140,7 @@ $ nvim
     - Exec Path: `/usr/bin/nvim`
     - Exec Flags: `--server /tmp/godot.pipe --remote-send "<esc>:n {file}<CR>:call cursor({line},{col})<CR>"`
 
-### 3.2. Usage
+### 4.2. Usage
 
 1. Start NeoVim like this: `$ nvim --listen /tmp/godot.pipe`.
 2. Launch Godot and open a project.
@@ -114,9 +148,9 @@ $ nvim
 4. Go back to NeoVim to start editing. Any saved change will reflected in the Godot editor.
 5. If an automatic connection is not happening, click on a `.gd` file within Godot editor.
 
-## 4. kickstart.nvim
+## 5. kickstart.nvim
 
-### 4.1. Installation and configuration
+### 5.1. Installation and configuration
 
 Readme Page: [https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file](https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file)
 - Download lazy.vim starter: `$ git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim`
@@ -137,14 +171,14 @@ Readme Page: [https://github.com/nvim-lua/kickstart.nvim?tab=readme-ov-file](htt
     ensure_installed = { 'gdscript', 'go', 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
     ```
 
-### 4.2. Usage
+### 5.2. Usage
 
 1. Launch **Godot**.
 2. Launch **NeoVim**.
 
 If you get the error: `could not connect to 127.0.0.1:6005, reason : "ECONNREFUSED"`, go to your **Godot** editor and be sure that the server settings at **Editor** -> **Editor Settings** -> **Network** -> **Language Server** are correctly setup.
 
-### 4.3. Useful commands
+### 5.3. Useful commands
 - **Space** + **s** + **g** -\> Search for any word in the whole project
 - **Space** + **s** + **w** -\> Search for the word where the cursor is on in the whole project
 - **Space** + **s** + **f** -\> Search for files in the project

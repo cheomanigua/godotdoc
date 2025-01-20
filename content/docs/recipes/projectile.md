@@ -97,7 +97,9 @@ func _ready() -> void:
 
 func _on_player_shoot(Bullet, direction, location):
 	var new_bullet = Bullet.instantiate()
-	add_child(new_bullet)
+    get_parent().add_child(new_bullet)              # option 1
+    # get_tree().current_scene.add_child(new_bullet)  # option 2
+    # get_tree().root.add_child(new_bullet)           # option 3
 	new_bullet.rotation = direction
 	new_bullet.position = location
 ```

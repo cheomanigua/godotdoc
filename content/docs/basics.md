@@ -134,7 +134,11 @@ const Bullet = preload("res://Bullet.tscn")
 
 some_function():
     var new_bullet = Bullet.instantiate()
-    get_tree().root.add_child(new_bullet)
+    get_parent().add_child(new_bullet)              # option 1
+    # get_tree().current_scene.add_child(new_bullet)  # option 2
+    # get_tree().root.add_child(new_bullet)           # option 3
+    # add_child(new_bullet) # don't use this if instance is a projectile like object
+
 ```
 
 or
@@ -143,7 +147,7 @@ or
 var new_bullet = preload("res://Bullet.tscn").instantiate()
 
 some_function():
-    get_tree().root.add_child(new_bullet)
+    get_parent().add_child(new_bullet)
 ```
 
 

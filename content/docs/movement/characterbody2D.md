@@ -66,7 +66,9 @@ func _physics_process(delta):
 
 func shoot():
 	var new_bullet = BULLET.instantiate()
-	owner.add_child(new_bullet)
+    get_parent().add_child(new_bullet)              # option 1
+    # get_tree().current_scene.add_child(new_bullet)  # option 2
+    # get_tree().root.add_child(new_bullet)           # option 3
 	new_bullet.global_position = global_position
 	new_bullet.look_at(get_global_mouse_position())
 ```
