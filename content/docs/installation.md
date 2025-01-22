@@ -86,17 +86,17 @@ $ sudo apt-get install neovim
 
 - Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/1TpSDZ2cLM1WEjDXKcd91sU2nnRhCvk18/view) file into `~/.config/nvim/` directory:
 
-- If you don't have `git` installed, run the command: `git apt install git`
+- If you don't have `git` and `libc6-dev` installed, run the command: `git apt install git libc6-dev`
 
 - Launch NeoVim by running the command `nvim` in your terminal. You'll see a bunch of errors. They will be fixed when we install the plugins. Just press enter.
 
 - To install the plugins, within NeoVim type: `:PlugInstall`
 
-- Vim-plug will start installing a bunch of plugins specified in the init.lua config file. When it finished, restart NeoVim.
+- Vim-plug will start installing a bunch of plugins and languages specified in the init.lua config file. When it finished, restart NeoVim.
 
-- Within NeoVim type: `:TSUpdate gdscript`. Check that **gdscript** is added to the Treesitter parser by typing: `:checkhealth nvim-treesitter`
+- Check that **gdscript** is added to the Treesitter parser by typing: `:checkhealth nvim-treesitter`
 
-- You may need to type: `:TSUpdate` and restart NeoVim.
+- If you don't see **gdscript** added, type: `:TSUpdate` and restart NeoVim.
 
 
 ## 4. Usage
