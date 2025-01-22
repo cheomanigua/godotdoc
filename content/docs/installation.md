@@ -84,7 +84,7 @@ $ sudo apt-get install neovim
 `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
 
-- Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/1TpSDZ2cLM1WEjDXKcd91sU2nnRhCvk18/view) file into `~/.config/nvim/` directory:
+- Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/14HtGZQ8FPXYxhtkC2kvlnWj35U-n7n1D/view?usp=drive_link) file into `~/.config/nvim/` directory:
 
 - If you don't have `git` and `libc6-dev` installed, run the command: `git apt install git libc6-dev`
 
