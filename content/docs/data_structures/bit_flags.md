@@ -126,8 +126,8 @@ const vEARTH = 4
 
 func _ready() -> void:
 	print(("User selected: %d / %s") % [elements, String.num_int64(elements,2,false)])
-    print_elements()
 	print(("%d is the 'elements' variable value and %s represents the 'elements' variable binary base conversion") % [elements, String.num_int64(elements,2,false)])
+    print_elements()
 	show_elements(elements)
 	print("")
 	
@@ -168,9 +168,19 @@ func _ready() -> void:
 	print("Water is not set") if is_flag_not_set(1<<1) else print("Water is set")
 
 
+func print_elements():
+	var elementsArray : Array[String] = ["Fire","Water","Earth"]
+	var elementsPrint : Array[String] = []
+	var elementsBinary: String = String.num_int64(elements,2,false).reverse()
+	for i in elementsBinary.length():
+		if elementsBinary[i] == "1":
+			elementsPrint.append(elementsArray[i])
+			print(elementsArray[i])
+	print(elementsPrint)
+
+
 # This function shows how direct operators, lso and constants can be used.
 # Normaly you would stick to the same style and do not combine in order to avoid confussion.
-
 func show_elements(type: int):
 	match(type):
 		0:
@@ -214,16 +224,6 @@ func is_flag_set(flag) -> bool:
 # Function to check if a flag is unset
 func is_flag_not_set(flag) -> bool:
 	return (elements & flag) == 0
-
-
-func print_elements():
-	var elementsArray : Array[String] = ["Fire","Water","Earth"]
-	var elementsPrint : Array[String] = []
-	var elementsBinary: String = String.num_int64(elements,2,false).reverse()
-	for i in elementsBinary.length():
-		if elementsBinary[i] == "1":
-			elementsPrint.append(elementsArray[i])
-	print(elementsPrint)
 ```
 
 
@@ -233,7 +233,11 @@ Running the script will print:
 ```
 User selected: 7 / 111
 7 is the 'elements' variable value and 111 represents the 'elements' variable binary base conversion.
+Fire
+Water
+Earth
 ["Fire", "Water", "Earth"]
+Fire, Water and Earth
 
 a) Clearing bit 2 (WATER) using direct operator: 5 / 101
 b) Setting bit 2 (WATER) using left shift operator: 7 / 111
