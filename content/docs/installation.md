@@ -32,8 +32,8 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 2. Right click on the **'Menu'** icon and select **'Edit menu'**
 3. Select the menu you want to add **Godot** on the left.
 4. Click on **'New Item'**
-5. Type **godot** in the **'Name'** field
-6. Type **/usr/local/bin/your_godot_executable_file_name** in the **'Command Name'**
+5. Type `godot` in the **'Name'** field
+6. Type `/usr/local/bin/your_godot_executable_file_name` in the **'Command Name'**
 7. Tick the box **'Use dedicated GPU if available'**
 8. Clic on the **'OK'** button
 
@@ -46,24 +46,22 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 
 # NeoVim as editor
 
-If you wish, you can use **NeoVim** as your editor for **Godot** alongside a running instance of **Godot**. For that, you will have to install **NeoVim**, and then install either **vim-plug**. Also, you will have to change some configurations in **Godot**.
+If you wish, you can use **NeoVim** as your editor for **Godot** alongside a running instance of **Godot**. For that, you will have to install **NeoVim**, and then install **vim-plug**. Also, you will have to change some configurations in **Godot**.
 
 ## 1. Godot Configuration
 
 - Make the following changes in Godot `Editor`->`Editor Settings...`:
-  - **Network** -> **Language Server**:
-    - Remote Host: `127.0.0.1`
-    - Remote Port: `6005`
-    - Enable Smart Resolve: `On`
-    - Show Native Symbols in Editor: `On`
+    - **Network** -> **Language Server**:
+        - Remote Host: `127.0.0.1`
+        - Remote Port: `6005`
+        - Enable Smart Resolve: `On`
+        - Show Native Symbols in Editor: `On`
+    - **Text Editor** -> **External**:
+        - Use External Editor: `On`
+        - Exec Path: `/usr/bin/nvim`
+        - Exec Flags: `--server /tmp/godot.pipe --remote-send "<C-\><C-N>:n {file}<CR>:call cursor({line},{col})<CR>"`
 
-- Make the following changes in Godot `Editor`->`Editor Settings...`:
-  - **Text Editor** -> **External**:
-    - Use External Editor: `On`
-    - Exec Path: `/usr/bin/nvim`
-    - Exec Flags: `--server /home/cheo/.cache/nvim/server.pipe --remote-send "<C-\><C-N>:n {file}<CR>:call cursor({line},{col})<CR>"`
-
-## 2. Install last version of NeoVim (Ubuntu)
+## 2. NeoVim Installation - last version (Ubuntu)
 
 ```bash
 $ sudo add-apt-repository ppa:neovim-ppa/unstable -y
@@ -77,12 +75,6 @@ or
 $ sudo apt-get install neovim
 ```
 
-### Launch NeoVim
-
-```bash
-$ nvim
-```
-
 ## 3. vim-plug
 
 ### Installation and configuration
@@ -92,27 +84,40 @@ $ nvim
 `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
 
-- Configure vim-plug by downloading [init.lua](https://drive.google.com/file/d/1qQOjWBsL5SjElNMv5ylD-qlc117IWypJ/view) into `~/.config/nvim/` directory:
+- Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/1TpSDZ2cLM1WEjDXKcd91sU2nnRhCvk18/view) file into `~/.config/nvim/` directory:
 
-- Launch NeoVim and run: `:PlugInstall`
+- If you don't have `git` installed, run the command: `git apt install git`
 
-- Vim-plug will install a bunch of plugins. When it finished, restart NeoVim.
+- Launch NeoVim by running the command `nvim` in your terminal. You'll see a bunch of errors. They will be fixed when we install the plugins. Just press enter.
+
+- To install the plugins, within NeoVim type: `:PlugInstall`
+
+- Vim-plug will start installing a bunch of plugins specified in the init.lua config file. When it finished, restart NeoVim.
+
+- Within NeoVim type: `:TSUpdate gdscript`. Check that **gdscript** is added to the Treesitter parser by typing: `:checkhealth nvim-treesitter`
+
+- You may need to type: `:TSUpdate` and restart NeoVim.
+
 
 ## 4. Usage
 
-- It doesn't matter if you open first Godot or NeoVim.
-- Open an instance of NeoVim.
-- Launch Godot and double click on your chosen gdscript file.
-- If successful, a log message in Godot will appear: `[LSP] Connection Taken`. You can now start editing in NeoVim.
-- If you double click on a new gscript file in Godot, the new file will open in the same instance and the same panel of NeoVim.
+- Open both Godot and NeoVim. It doesn't matter which one you open first.
+- In Godot, double click on a gdscript file.
+- If successful, a log message in Godot will appear: `[LSP] Connection Taken`. You can now start editing the file in NeoVim.
 - Changes will apply each time you save in NeoVim.
-- Godot will ignore any new tab you open in NeoVim, so if you double click in another gdscript file in Godot, it will open in the original tab, and not the new one.
+- If you double click on a new gscript file in Godot, the new file will open in the same instance and the same panel of NeoVim, hiding the previous code.
+- Godot will ignore any new tab you open in NeoVim, so if you open a new tab and double click in another gdscript file in Godot, it will open in the original tab, and not the new tab.
 - If you want to have several gdscript files open in the same NeoVim instance:
-    1. Split NeoVim screen with the command `:vs`
+    1. Split NeoVim screen with the commands `:sp` or `:vs`
     2. Move to the new panel with `Ctrl` + `w` + `w`
     3. In Godot, double click on the new gdscript
     4. You can repeat this process splitting further the NeoVim screen.
 - When you close the instance/tab in NeoVim, a log message will appear in Godot: `[LSP] Disconnected`
+
+## 5. Key bindings
+
+- **Ctrl** + **]**: Jump to the definition of a function.
+- **Ctrl** + **k**: Read documentation of a fuction.
 
 # Tmux
 
