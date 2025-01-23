@@ -147,6 +147,7 @@ const SPEED = 300.0
 	"dexterity" : 5,
 }
 
+
 func pickup(item: String) -> void:
 	inventory.append(item) # Item should not be added to inventory as it has been consumed
 	print(inventory) # but I add it anyway just for an inventory's sake

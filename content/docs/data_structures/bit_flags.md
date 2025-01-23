@@ -54,13 +54,13 @@ In the five examples above, we have set the variable `elements` and the left shi
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
 
-## Bitwise operations
+## Bitwise operations in single bits
 
-There are two types of bitwise operators: Left Shift/Right Shift operators and direct operators. Both accomplish the same goal, but use slightly different approach.
+There are two ways to access/target a single bit in the variable: using a value for the variable, or using left shift bitwise operations. They both accomplish the same goal, but use slightly different approaches.
 
-### Direct bitwise operations
+### Variable value
 
-In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position value. In this particular example, only one bit is affected by the bitwise operations.
+In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
@@ -72,7 +72,7 @@ bit_index = 1		bit_index = 2		bit_index = 4
 
 ### Left Shift bitwise operations
 
-In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `left_shift` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting. In this particular example, only one bit is affected by the bitwise operations.
+In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `left_shift` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
@@ -83,7 +83,7 @@ left_shift = 0		left_shift = 1		left_shift = 2
 
 ### Operations
 
-| Operation | Direct operator | Left Shift Operator |
+| Operation | Variable Value | Left Shift Operator |
 |-|-|-|
 | Set a bit | `elements \|= bit_index` | `elements \|= 1 << left_shift` |
 | Clear a bit | `elements &= ~bit_index` | `elements &= ~(1 << left_shift)` |
@@ -101,6 +101,15 @@ left_shift = 0		left_shift = 1		left_shift = 2
 | `func flip_flag(flag):` | `elements ^= flag` | `3` or `(1<<0)+(1<<1)` |
 | `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `4` or `1<<2` |
 | `func is_flag_not_set(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
+
+Example:
+
+```gdscript
+func set_flag(flag):
+    elements |= flag
+```
+
+We can run the function: `set_flag(4)` or `set_flag(1<<2)` to set the bit.
 
 ### Queries
 
