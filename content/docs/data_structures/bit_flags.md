@@ -126,19 +126,21 @@ As per `elements`, **Fire** and **Water** are represented by the value `011` in 
 - In order to check if **ONLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`
 
 
-||||| |
-|-|-|-|-|-|
-|| Scenario 1 | Scenario 2 | Scenario 3 | Scenario 4 |
-| elements | `111` | `110` | `011` | `111` |
-| query | `011` | `011` | `011` | `011` |
-|| Bitwise AND | Bitwise AND | Comparison == | Comparison == |
-| result | `011` | `010` | N/A | N/A |
-| | true | false | true | false |
+||||| | | |
+|-|-|-|-|-|-|-|
+|| Scenario 1 | Scenario 2 | Scenario 3 | Scenario 4 | Scenario 5.1 | Scenario 5.2 |
+| elements | `111` | `110` | `011` | `111` | `11011` | |
+| query | `011` | `011` | `011` | `011` | `01110` | `01110` |
+|| Bitwise AND | Bitwise AND | Comparison == | Comparison == | Bitwise AND | Bitwise XOR |
+| result | `011` | `010` | N/A | N/A | `01010` | `01010` |
+| | true | false | true | false | false | `00100` result |
 
 - In scenario 1, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is true.
 - In scenario 2, `elements` has bits **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is false.
 - In scenario 3, `elements` has bits **Fire** and **Water** set, and we are querying only for **Fire** and **Water**, hence, the query is true.
 - In scenario 4, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying only for **Fire** and **Water**, hence, the query is false.
+- In scenario 5.1, `elements` has five bits: **A**, **B**, **C**, **D**, **E**, with **A**, **B**, **D** and **E** set. We are querying for at least **B**, **C** and **D**, hence, the query is false. In scenario 5.1 we find out which elements of the query are `true`.
+- In scenario 5.2 we want to find out which bits are making the query `false`, so we query again **B**, **C** and **D** with `XOR` againts the result of scenario 5.1. The final result is **C**, which is the bit that triggered `false` in scenario 5.1. In scenario 5.2 we find out which elements of the original query are `false`.
 
 #### Scenario 1 & 2 - Efficient version
 
@@ -179,6 +181,28 @@ if (elements == query):
 else:
     print("False")
 ```
+
+#### Scenario 5
+
+
+```gdscript
+var elements: int = 0b11011
+var query: int = 0b01110
+if elements & query == query:
+	print("True")
+else:
+    print("False")
+	print(elements)						#11011
+	print(query)						#01110
+	print(elements & query)				#01010
+	print((elements & query) ^ query)	#00100   <- the missing bit
+```
+
+- With `elements & query` we find out which elements of the query are `true`.
+- With `(elements & query) ^ query` we find out which elements of the query are `false`.
+
+
+
 
 
 ## Example
