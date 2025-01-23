@@ -102,6 +102,75 @@ left_shift = 0		left_shift = 1		left_shift = 2
 | `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `4` or `1<<2` |
 | `func is_flag_not_set(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
 
+### Queries
+
+Bit flags can be used to query small or large bit sets. Continuing with our example set:
+
+```gdscript
+@export_flags ("FIRE", "WATER", "EARTH") var elements: int
+```
+
+As per `elements`, **Fire** and **Water** are represented by the value `011` in binary and `3` in decimal (Remember we read from right to left in binary).
+
+
+- In order to check if **AT LEAST** `Fire` and `Water` are set in `elements`, we perform a bitwise `AND` operation between the value of `elements` againts the value `011` using the bitwise operator `&`
+- In order to check if **ONLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`
+
+
+||||| |
+|-|-|-|-|-|
+|| Scenario 1 | Scenario 2 | Scenario 3 | Scenario 4 |
+| elements | `111` | `110` | `011` | `111` |
+| query | `011` | `011` | `011` | `011` |
+|| Bitwise AND | Bitwise AND | Comparison == | Comparison == |
+| result | `011` | `010` | N/A | N/A |
+| | true | false | true | false |
+
+- In scenario 1, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is true.
+- In scenario 2, `elements` has bits **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is false.
+- In scenario 3, `elements` has bits **Fire** and **Water** set, and we are querying only for **Fire** and **Water**, hence, the query is true.
+- In scenario 4, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying only for **Fire** and **Water**, hence, the query is false.
+
+#### Scenario 1 & 2 - Efficient version
+
+```gdscript
+var query: int = 0b011 # or `var query: int = 3`
+if elements & query == query:
+	print("True")
+else:
+    print("False")
+```
+
+#### Scenario 1 & 2 - Inefficient version
+
+```gdscript
+if (elements & 1<<0 && elements & (1<<0 + 1<<1)):
+	print("True")
+else:
+    print("False")
+```
+
+With both examples shown above, you may have noticed that we could query large sets very easily using the efficient version. For instance, we could query for eight set bits easily:
+
+```gdscript
+var query: int = 0b00110010100110011 # or `var query: int = 25907`
+if elements & query == query:
+	print("True")
+else:
+    print("False")
+```
+
+Imagine querying the above using the inefficient version.
+
+#### Scenario 3
+
+```gdscript
+if (elements == query):
+	print("True")
+else:
+    print("False")
+```
+
 
 ## Example
 

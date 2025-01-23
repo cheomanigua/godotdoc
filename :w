@@ -1,0 +1,144 @@
+extends Node
+
+@export_flags("FIRE","WATER","EARTH","WIND") var elements: int = 0
+@export_flags("Peter","John","Alex","Manuel","Igor","Rafaelle","Pedro","Sergio","Gregory") var members: int = 0
+
+func bits(integer: int):
+	return int(String.num_int64(integer,2,false))
+
+func _ready() -> void:
+	#print(("User selected: %d / %s") % [elements, String.num_int64(elements,2,false)])
+	#print(("%d is the 'elements' variable value and %s represents the 'elements' variable binary base conversion") % [elements, String.num_int64(elements,2,false)])
+
+	#show_elements(elements)
+	print("")
+	#var bit: int = 2
+
+	var selected_elements = 11
+	print_elements()
+	print("Elements:")
+	print(elements)
+	print(bits(elements))
+	print("Selected Elements:")
+	print(selected_elements)
+	print("Elements & Selected Elements:")
+	print(elements & bits(selected_elements))
+	print(elements & selected_elements)
+	print("After operation:")
+	print(bits(elements) & selected_elements)
+	if elements & selected_elements == selected_elements:
+		print("Yes")
+	else:
+		print("No")
+	print("")
+
+	var selected_members = 10010001
+	print_members()
+	print(members)
+	print(bits(members))
+	print(selected_members)
+	print(members & bits(selected_members))
+	print("After operation: "  + (str(bits(members) & selected_members)))
+	print(members)
+	if bits(members) & selected_members == selected_members:
+		print("Yes")
+	else:
+		print("No")
+	print("")
+	
+	#clear_flag(bit)
+	#elements &= ~bit
+	#print(("Clearing bit %d: %d or %s") % [bit, elements, String.num_int64(elements,2,false)])
+	#show_elements(elements)
+	#print("")
+	#
+	##set_flag(bit)
+	#elements |= bit
+	#print(("Setting bit %d: %d or %s") % [bit, elements, String.num_int64(elements,2,false)])
+	#show_elements(elements)
+	#if (5 & elements) == 5:
+	#	print("It's Fire and Earth")
+	#print("")
+	#
+	##flip_flag(bit)
+	#elements ^= bit
+	#print(("Flipping bit %d: %d or %s") % [bit, elements, String.num_int64(elements,2,false)])
+	#show_elements(elements)
+	#if (2 & elements) == 2:
+	#	print("It's Water")
+	#else:
+	#	print("No Water, my friend")
+	#if (4 & elements) == 4:
+	#	print("It's Earth")
+	#else:
+	#	print("No Earth, my friend")
+	#print("")
+	#
+	#print("Checking if bit %d is not set:" % [bit])
+	#print("Water is not set") if is_flag_not_set(2) else print("Water is set")
+	#print("")
+
+
+func show_elements(type: int):
+	match(type):
+		0:
+			print("N/A")
+		1:
+			print("Fire")
+		2:
+			print("Water")
+		3:
+			print("Fire and Water")
+		4:
+			print("Earth")
+		5:
+			print("Fire and Earth")
+		6:
+			print("Water and Earth")
+		7:
+			print("Fire, Water and Earth")
+
+
+func print_elements():
+	var elementsArray : Array[String] = ["Fire","Water","Earth","Wind"]
+	var elementsPrint : Array[String] = []
+	var elementsBinary: String = String.num_int64(elements,2,false).reverse()
+	for i in elementsBinary.length():
+		if elementsBinary[i] == "1":
+			elementsPrint.append(elementsArray[i])
+			#print(elementsArray[i])
+	print(elementsPrint)
+
+func print_members():
+	var elementsArray : Array[String] = ["Peter","John","Alex","Manuel","Igor","Rafaelle","Pedro","Sergio","Gregory"]
+	var elementsPrint : Array[String] = []
+	var elementsBinary: String = String.num_int64(members,2,false).reverse()
+	for i in elementsBinary.length():
+		if elementsBinary[i] == "1":
+			elementsPrint.append(elementsArray[i])
+			#print(elementsArray[i])
+	print(elementsPrint)
+
+# Function to set a flag
+func set_flag(flag):
+	elements |= flag
+
+
+# Function to clear a flag
+func clear_flag(flag):
+	elements &= ~flag
+
+
+# Function to flip a flag
+func flip_flag(flag):
+	elements ^= flag
+
+
+# Function to check if a flag is set
+func is_flag_set(flag) -> bool:
+	return (elements & flag) != 0
+
+
+# Function to check if a flag is unset
+func is_flag_not_set(flag) -> bool:
+	return (elements & flag) == 0
