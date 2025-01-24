@@ -19,71 +19,69 @@ Since one bit can only be set to 1 or 0, bit flags are used for dual state param
 
 ```gdscript
 
-@export_flags ("FIRE", "WATER", "EARTH") var elements: int = 0
+@export_flags ("FIRE", "WATER", "EARTH") var elements: int
 ```
 
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
 
-In the above code, we have created the integer variable `elements` which contains the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`, or better said, set or unset. There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
+In the above code, we have created the integer variable `elements` which contains the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`, or better said, set or unset.
+
+In the graphic below there are five different representations of the first three bits of the `element` variable where the three flags (E, W, F) are contained.
+
+{{< alert text="Flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left." />}}
 
 ```
-_____________		_____________		_____________		_____________		__E___W___F__   E: Earth, W: Water, F: Fire
+__E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 0 | 1 | 1 |		| 1 | 0 | 0 |		| 1 | 0 | 1 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
-  4   2   1			  4   2   1			  4   2   1			  4   2   1			  4   2   1		bit index by value
-  2   1   0			  2   1   0			  2   1   0			  2   1   0			  2   1   0		bit index by LSO
+  4   2   1			  4   2   1			  4   2   1			  4   2   1			  4   2   1		variable "index"
+  2   1   0			  2   1   0			  2   1   0			  2   1   0			  2   1   0		LSO "index"
 
 1					2					3					4					5				variable value
 1<<0				1<<1				1<<0 + 1<<1			1<<2				1<<0 + 1<<2		LSO
 ```
 
-{{< alert text="Flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left." />}}
 
-In the graphic above, the **bit index by value/LSO** is a visual representation that help us see which **variable/LSO** to use. The **value** is the sum of the **indexes**. I say **indexes** to help visualize the graph above, but there are no actual indexes in the variable.
+There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
 
-In the five examples above, we have set the variable `elements` and the left shift operator to the following values (note that `1<<0` can also be written as `1`):
+We can set 1, 2 or 3 bits at the same time by using the variable value. For the first three bits, values range from 1 to 7. The **value** is the sum of the *indexes*. I said *indexes* to help visualize the graphic above, but there are no actual indexes in the variable. So, if we want to set the first two bits, we sum 1 + 2. To set all three bits, we sum 1 + 2 + 4.
 
-| | variable | LSO v1 | LSO v2 |
+The LSO can set 1, 2 or 3 bits at the same time, but it's better used for setting individual bits. Check the table below to see how they are set.
+
+In the five examples above, we have set the variable `elements` value and the left shift operator (LSO) to the following:
+
+| Flags affected | variable | LSO v1 | LSO v2 |
 |-|-|-|-|
-| FIRE | `1` | `1` | `1<<0`
+| FIRE | `1` | `1` | `1<<0` |
 | WATER | `2` | `1<<1` | `1<<1` |
 | FIRE and WATER | `3` | `1 + (1<<1)` | `(1<<0) + (1<<1)` |
 | EARTH | `4` | `1<<2` | `1<<2` |
 | FIRE and EARTH | `5` | `1 + (1<<2)` | `(1<<0) + (1<<2)` |
 
-... and so on.
+If we finish the table:
+
+| Flags affected | variable | LSO v1 | LSO v2 |
+|-|-|-|-|
+| WATER and EARTH | `6` | `(1<<1) + (1<<2)` | `(1<<1) + (1<<2)` |
+| FIRE, WATER and EARTH | `7` | `1 + (1<<1) + (1<<2)` | `(1<<0) + (1<<1) + (1<<2)` |
+
 
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
+### Bitwise Operations
 
-## Single bits operations
+The power of bit flags comes with bitwise operations. Depending on now we set the bit (variable value of LSO), it is performed slightly different. For this section, we are only setting one individual bit. Some explanation first:
 
-There are two ways to access/target a single bit in the variable: using the variable value, or using left shift bitwise operations. They both accomplish the same goal, but use slightly different approaches.
-
-### Variable value
-
-`bit_index` is a made up index, there are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with.
+`bit_index` and `left_shift` are made up indexex. There are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with. Since we are only setting one single bit, we don't take into account the values 3, 5, 6 and 7. `left_shift` is to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
 bit_index = 1		bit_index = 2		bit_index = 4
-```
-
-
-### Left Shift bitwise operations
-
-`left_shift` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
-
-```
-__4___2___1__		__4___2___1__		__4___2___1__
-| 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
-¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
 left_shift = 0		left_shift = 1		left_shift = 2
 ```
 
-### Operations
 
 | Operation | Variable Value | Left Shift Operator |
 |-|-|-|
@@ -95,6 +93,8 @@ left_shift = 0		left_shift = 1		left_shift = 2
 | is bit not set? | `if (elements & (bit_index == 0)):` | `if (elements & (1 << left_shift == 0)):` |
 
 ### Custom functions
+
+We can create custom functions to make our life a bit easier. The column **Flag** appears ordered, but they can be used in any row.
 
 | Name and parameter | Body | Flag |
 |-|-|-|
