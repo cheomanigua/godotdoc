@@ -86,7 +86,7 @@ $ sudo apt-get install neovim
 
 - Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/14HtGZQ8FPXYxhtkC2kvlnWj35U-n7n1D/view?usp=drive_link) file into `~/.config/nvim/` directory:
 
-- If you don't have `git` and `libc6-dev` installed, run the command: `git apt install git libc6-dev`
+- If you don't have `git` and `libc6-dev` installed, run the command: `sudo apt install git libc6-dev`
 
 - Launch NeoVim by running the command `nvim` in your terminal. You'll see a bunch of errors. They will be fixed when we install the plugins. Just press enter.
 
@@ -112,6 +112,7 @@ $ sudo apt-get install neovim
     2. Move to the new panel with `Ctrl` + `w` + `w`
     3. In Godot, double click on the new gdscript
     4. You can repeat this process splitting further the NeoVim screen.
+    5. When switching panels on NeoVim, be sure to click on the corresponding gdscript in Godot. Otherwise, the changes will not sync.
 - When you close the instance/tab in NeoVim, a log message will appear in Godot: `[LSP] Disconnected`
 
 ## 5. Key bindings

@@ -13,7 +13,7 @@ toc: true
 
 Bit flags are boolean values stored in each bit of an integer variable, in binary order (power of 2). In Godot, an integer has 64 bits, which means you can hold 64 different boolean values in one single integer variable.
 
-Bit flags are good for creating multiple choice boolean selections with one single variable, each selection being one bit of the variable.
+Since one bit can only be set to 1 or 0, bit flags are used for dual state parameters: on/off, enable/disable, true/false. Bit flags are good for creating multiple choice selections or sets of common parameters, with one single integer variable, each selection being one bit of the variable.
 
 
 
@@ -24,20 +24,20 @@ Bit flags are good for creating multiple choice boolean selections with one sing
 
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
 
-In the above code, we have created the integer variable `elements` which hosts the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`. There are two ways to set the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
+In the above code, we have created the integer variable `elements` which contains the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`, or better said, set or unset. There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
 
 ```
 _____________		_____________		_____________		_____________		_____________
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 0 | 1 | 1 |		| 1 | 0 | 0 |		| 1 | 0 | 1 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
-  4   2   1			  4   2   1			  4   2   1			  4   2   1			  4   2   1		bit index by variable
+  4   2   1			  4   2   1			  4   2   1			  4   2   1			  4   2   1		bit index by value
   2   1   0			  2   1   0			  2   1   0			  2   1   0			  2   1   0		bit index by LSO
 
 1					2					3					4					5				variable value
-1<<0				1<<1				1<<0 + 1<<1			1<<2				1<<0 + 1<<2		LSO value
+1<<0				1<<1				1<<0 + 1<<1			1<<2				1<<0 + 1<<2		LSO
 ```
 
-In the image above, the **bit index by variable/LSO** is a visual representation that help us see which **variable/LSO value** to use. The **value** is the sum of the **indexes**. Note that the flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left.
+In the graphic above, the **bit index by value/LSO** is a visual representation that help us see which **variable/LSO** to use. The **value** is the sum of the **indexes**. Note that the flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left.
 
 In the five examples above, we have set the variable `elements` and the left shift operator to the following values (note that `1<<0` can also be written as `1`):
 
@@ -54,13 +54,13 @@ In the five examples above, we have set the variable `elements` and the left shi
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
 
-## Bitwise operations in single bits
+## Single bits operations
 
-There are two ways to access/target a single bit in the variable: using a value for the variable, or using left shift bitwise operations. They both accomplish the same goal, but use slightly different approaches.
+There are two ways to access/target a single bit in the variable: using the variable value, or using left shift bitwise operations. They both accomplish the same goal, but use slightly different approaches.
 
 ### Variable value
 
-In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `bit_index` is a made up index. It has to be replaced by an actual value: 1, 2 or 4 and represents the bit position.
+`bit_index` is a made up index, there are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
@@ -72,7 +72,7 @@ bit_index = 1		bit_index = 2		bit_index = 4
 
 ### Left Shift bitwise operations
 
-In the following examples, we are only working with 3 bits, although you could use up to 64 bits. `left_shift` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting.
+`left_shift` is a made up index. It has to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
@@ -100,7 +100,7 @@ left_shift = 0		left_shift = 1		left_shift = 2
 | `func clear_flag(flag):` | `elements &= ~flag` | `2` or `1<<1` |
 | `func flip_flag(flag):` | `elements ^= flag` | `3` or `(1<<0)+(1<<1)` |
 | `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `4` or `1<<2` |
-| `func is_flag_not_set(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
+| `func is_flag_unset(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
 
 Example:
 
@@ -140,7 +140,7 @@ As per `elements`, **Fire** and **Water** are represented by the value `011` in 
 - In scenario 3, `elements` has bits **Fire** and **Water** set, and we are querying only for **Fire** and **Water**, hence, the query is true.
 - In scenario 4, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying only for **Fire** and **Water**, hence, the query is false.
 - In scenario 5.1, `elements` has five bits: **A**, **B**, **C**, **D**, **E**, with **A**, **B**, **D** and **E** set. We are querying for at least **B**, **C** and **D**, hence, the query is false. In scenario 5.1 we find out which elements of the query are `true`.
-- In scenario 5.2 we want to find out which bits are making the query `false`, so we query again **B**, **C** and **D** with `XOR` againts the result of scenario 5.1. The final result is **C**, which is the bit that triggered `false` in scenario 5.1. In scenario 5.2 we find out which elements of the original query are `false`.
+- In scenario 5.2 we want to find out which bits are making the query `false` in scenario 5.1, so we query again **B**, **C** and **D** with `XOR` againts the result of scenario 5.1. The final result is **C**, which is the bit that triggered `false` in scenario 5.1
 
 #### Scenario 1 & 2 - Efficient version
 
@@ -184,6 +184,7 @@ else:
 
 #### Scenario 5
 
+This is useful if we want to list which elements we've got and which elements are missing to fulfill whatever condition presented by query.
 
 ```gdscript
 var elements: int = 0b11011
@@ -192,15 +193,14 @@ if elements & query == query:
 	print("True")
 else:
     print("False")
-	print(elements)						#11011
-	print(query)						#01110
-	print(elements & query)				#01010
-	print((elements & query) ^ query)	#00100   <- the missing bit
+	print(elements)						# 11011		<- all the bits currently set
+	print(query)						# 01110		<- bits to fulfill condition
+	print(elements & query)				# 01010		<- bits achieved to fulfill condition
+	print((elements & query) ^ query)	# 00100		<- bits missing to fulfill condition
 ```
 
 - With `elements & query` we find out which elements of the query are `true`.
 - With `(elements & query) ^ query` we find out which elements of the query are `false`.
-
 
 
 
@@ -267,7 +267,7 @@ func _ready() -> void:
 	print("")
 	
 	print("i) Checking if bit index 2 (WATER) is not set using custom fuction:")
-	print("Water is not set") if is_flag_not_set(1<<1) else print("Water is set")
+	print("Water is not set") if is_flag_unset(1<<1) else print("Water is set")
 
 
 func print_elements():
