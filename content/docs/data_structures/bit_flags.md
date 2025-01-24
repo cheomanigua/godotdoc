@@ -27,7 +27,7 @@ Since one bit can only be set to 1 or 0, bit flags are used for dual state param
 In the above code, we have created the integer variable `elements` which contains the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`, or better said, set or unset. There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
 
 ```
-_____________		_____________		_____________		_____________		_____________
+_____________		_____________		_____________		_____________		__E___W___F__   E: Earth, W: Water, F: Fire
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 0 | 1 | 1 |		| 1 | 0 | 0 |		| 1 | 0 | 1 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
   4   2   1			  4   2   1			  4   2   1			  4   2   1			  4   2   1		bit index by value
@@ -37,7 +37,9 @@ _____________		_____________		_____________		_____________		_____________
 1<<0				1<<1				1<<0 + 1<<1			1<<2				1<<0 + 1<<2		LSO
 ```
 
-In the graphic above, the **bit index by value/LSO** is a visual representation that help us see which **variable/LSO** to use. The **value** is the sum of the **indexes**. Note that the flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left.
+{{< alert text="Flags are read from right to left, so `FIRE` is on the right, `WATER` is on the center and `EARTH` is on the left." />}}
+
+In the graphic above, the **bit index by value/LSO** is a visual representation that help us see which **variable/LSO** to use. The **value** is the sum of the **indexes**. I say **indexes** to help visualize the graph above, but there are no actual indexes in the variable.
 
 In the five examples above, we have set the variable `elements` and the left shift operator to the following values (note that `1<<0` can also be written as `1`):
 
