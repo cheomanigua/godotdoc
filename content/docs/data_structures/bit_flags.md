@@ -194,9 +194,9 @@ if elements & query == query:
 else:
     print("False")
 	print(elements)						# 11011		<- all the bits currently set
-	print(query)						# 01110		<- bits to fulfill condition
-	print(elements & query)				# 01010		<- bits achieved to fulfill condition
-	print((elements & query) ^ query)	# 00100		<- bits missing to fulfill condition
+	print(query)						# 01110		<- bits asked/queried to fulfill condition
+	print(elements & query)				# 01010		<- bits currently set (achieved) to fulfill condition
+	print((elements & query) ^ query)	# 00100		<- bits currently unset (missing) to fulfill condition
 ```
 
 - With `elements & query` we find out which elements of the query are `true`.
