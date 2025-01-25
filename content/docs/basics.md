@@ -96,11 +96,59 @@ func _input(event):
 # For the left click to work, add "mouse_left_button" to Project Settings -> Input Map
 ```
 
-## .new() vs .instantiate()
+## get() vs .instantiate() vs .new()
+
+```gdscript
+@onready var foo: CharacterBody2D = %foo
+@onready var foo = preload("res://foo.tscn").instantiate()
+@onready var foo = preload("res://foo.tscn").new()
+```
+What's the difference?
+
+### get()
+
+**get()** is used to reference a node. It will not instantiate or create anything.
+
+```gdscript
+@onready var airplane: CharacterBody2D = %airplane
+
+func locate():
+    print(airplane.position)
+```
+
+
+### .instantiate()
+
+**.instantiate()** is used to instantiate **scenes**:
+
+```gdscript
+var new_bullet = preload("res://Bullet.tscn").instantiate()
+
+some_function():
+    get_parent().add_child(new_bullet)
+```
+
+or
+
+```gdscript
+const BULLET = preload("res://Bullet.tscn")
+
+some_function():
+    var new_bullet = BULLET.instantiate()
+    get_parent().add_child(new_bullet)              # option 1
+    # get_tree().current_scene.add_child(new_bullet)  # option 2
+    # get_tree().root.add_child(new_bullet)           # option 3
+    # add_child(new_bullet) # don't use this if instance is a projectile like object
+
+```
+
+**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectiles objects.
+
 
 ### .new()
 
-**.new()** is used to instantiate **scripts** and **single nodes**:
+
+**.new()** is used to call **scripts**:
 
 ```gdscript
 @onready var data = load("res://Scripts/data.gd").new()
@@ -125,31 +173,6 @@ Note that if you don't use `@onready` and `add_child()`, all instance nodes will
 More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#classes)
 
 
-### .instantiate()
-
-**.instantiate()** is used to instantiate **scenes**:
-
-```gdscript
-const Bullet = preload("res://Bullet.tscn")
-
-some_function():
-    var new_bullet = Bullet.instantiate()
-    get_parent().add_child(new_bullet)              # option 1
-    # get_tree().current_scene.add_child(new_bullet)  # option 2
-    # get_tree().root.add_child(new_bullet)           # option 3
-    # add_child(new_bullet) # don't use this if instance is a projectile like object
-
-```
-
-or
-
-```gdscript
-var new_bullet = preload("res://Bullet.tscn").instantiate()
-
-some_function():
-    get_parent().add_child(new_bullet)
-```
-
 
 ## Instantiate a scene using parameters
 
@@ -170,7 +193,7 @@ func bar():
 	item_object.position = Player.position
 ```
 
-- **item_object.sd** is used to instantiate scenes:
+- **item_object.gd** is used to instantiate scenes:
 
 ```gdscript
 export (String) var item_name
@@ -183,7 +206,7 @@ func initialize(name: String, quantity: int):
 
 Note the we can instantiate the item scene both via editor at compile time with the export variables, and via code at run time with the rest of the code. 
 
-Also note that you cannot instantiate an object from its own script (You cannot instantiate **item_object** from **item_object.sd**)
+Also note that you cannot instantiate an object from its own script (You cannot instantiate **item_object** from **item_object.gd**)
 
 
 ## load() vs preload()

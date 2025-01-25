@@ -72,7 +72,7 @@ At the example script at the end of the page you can see how to use integer vari
 
 The power of bit flags comes with bitwise operations. Depending on now we set the bit (variable value of LSO), it is performed slightly different. For this section, we are only setting one individual bit. Some explanation first:
 
-`bit_index` and `left_shift` are made up indexex. There are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with. Since we are only setting one single bit, we don't take into account the values 3, 5, 6 and 7. `left_shift` is to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
+`bit_index` and `left_shift` are made up indexes. There are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with. Since we are only setting one single bit, we don't take into account the values 3, 5, 6 and 7. `left_shift` is to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
