@@ -75,18 +75,18 @@ or
 $ sudo apt-get install neovim
 ```
 
-## 3. vim-plug
+## 3. NeoVim Configuration
 
-### Installation and configuration
+### Config file and vim-plug installation
 
-- Install vim-plug
+- Download this custom [init.lua](https://drive.google.com/file/d/14HtGZQ8FPXYxhtkC2kvlnWj35U-n7n1D/view?usp=drive_link) configuration file into `~/.config/nvim/` directory. This file contains configuration settings for NeoVim, including the list of plugins to be installed via vim-plug.
+
+- Install vim-plug:
 
 `sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'`
 
-- Configure vim-plug by downloading this custom [init.lua](https://drive.google.com/file/d/14HtGZQ8FPXYxhtkC2kvlnWj35U-n7n1D/view?usp=drive_link) file into `~/.config/nvim/` directory:
-
-- If you don't have `git` and `libc6-dev` installed, run the command: `sudo apt install git libc6-dev`
+- If you don't have `git` and `libc6-dev` installed, run the command: `sudo apt install git libc6-dev`. They are needed for the next steps.
 
 - Launch NeoVim by running the command `nvim` in your terminal. You'll see a bunch of errors. They will be fixed when we install the plugins. Just press enter.
 

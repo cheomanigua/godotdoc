@@ -101,7 +101,7 @@ func _input(event):
 ```gdscript
 @onready var foo: CharacterBody2D = %foo
 @onready var foo = preload("res://foo.tscn").instantiate()
-@onready var foo = preload("res://foo.tscn").new()
+@onready var foo = preload("res://foo.gd").new()
 ```
 What's the difference?
 
@@ -112,7 +112,8 @@ What's the difference?
 ```gdscript
 @onready var airplane: CharacterBody2D = %airplane
 
-func locate():
+func some_function():
+    airplane.update_destination()
     print(airplane.position)
 ```
 
