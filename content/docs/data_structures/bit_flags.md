@@ -58,22 +58,25 @@ In the five examples above, we have set the variable `elements` value and the le
 | EARTH | `4` | `1<<2` | `1<<2` |
 | FIRE and EARTH | `5` | `1 + (1<<2)` | `(1<<0) + (1<<2)` |
 
-If we finish the table:
+<br>
+If we complete the table:
 
 | Flags affected | variable | LSO v1 | LSO v2 |
 |-|-|-|-|
 | WATER and EARTH | `6` | `(1<<1) + (1<<2)` | `(1<<1) + (1<<2)` |
 | FIRE, WATER and EARTH | `7` | `1 + (1<<1) + (1<<2)` | `(1<<0) + (1<<1) + (1<<2)` |
 
-
+<br>
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
-### Bitwise Operations
+## Bitwise Operations
 
-| AND | OR | XOR| NOT |
-|-|-|-|-|
-| `x & y` | `x \| y` | `x ^ y` | `~x` |
-
+| | AND | OR | XOR| NOT |
+|-|-|-|-|-|
+| | `x & y` | `x \| y` | `x ^ y` | `~x` |
+| `x` | `11100` | `11100` | `11100` | `11100` |
+| `y` | `10101` | `10101` | `10101` |  |
+| `result` | `10100` | `11101` | `01001` | `00011` |
 
 <br>
 
@@ -100,7 +103,7 @@ lshift = 0		    lshift = 1		    lshift = 2
 | is bit not set? | `if (elements & (bitx == 0)):` | `if (elements & (1 << lshift == 0)):` | |
 
 
-### Queries
+## Queries
 
 Bit flags can be used to query small or large bit sets. Continuing with our example set:
 
@@ -123,6 +126,9 @@ As per `elements`, **Fire** and **Water** are represented by the value `011` in 
 || Bitwise AND | Bitwise AND | Comparison == | Comparison == | Bitwise AND | Bitwise XOR |
 | result | `011` | `010` | N/A | N/A | `01010` | `01010` |
 | | true | false | true | false | false | `00100` result |
+
+
+<br>
 
 - In scenario 1, `elements` has bits **Fire**, **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is true.
 - In scenario 2, `elements` has bits **Water** and **Earth** set, and we are querying for at least **Fire** and **Water**, hence, the query is false.
@@ -317,7 +323,7 @@ func is_flag_not_set(flag) -> bool:
 	return (elements & flag) == 0
 ```
 
-
+<br>
 
 Running the script will print:
 
