@@ -63,17 +63,21 @@ func _on_my_signal(arg1):
 ```
 
 
-### Connecting from a different scene
+### Connecting from a different scene/node
 
 Preferred:
 
 ```gdscript
-@onready var projectile = preload("res://projectile.tscn")
+@onready var player: CharacterBody2D = %Player # if you are referencing a node
+@onready var projectile = preload("res://projectile.tscn") # if you are instantiating a scene
 
 func _ready():
+	player.my_signal.connect(_on_my_signal_function)
+
 	var new_projectile = projectile.instantiate()
 	new_projectile.my_signal.connect(_on_my_signal_function)
 ```
+
 Less preferred:
 
 ```gdscript

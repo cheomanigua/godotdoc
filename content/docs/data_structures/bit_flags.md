@@ -70,48 +70,35 @@ At the example script at the end of the page you can see how to use integer vari
 
 ### Bitwise Operations
 
-The power of bit flags comes with bitwise operations. Depending on now we set the bit (variable value of LSO), it is performed slightly different. For this section, we are only setting one individual bit. Some explanation first:
+| AND | OR | XOR| NOT |
+|-|-|-|-|
+| `x & y` | `x \| y` | `x ^ y` | `~x` |
 
-`bit_index` and `left_shift` are made up indexes. There are no actual indexes in bit flags. `bit_index` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with. Since we are only setting one single bit, we don't take into account the values 3, 5, 6 and 7. `left_shift` is to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
+
+<br>
+
+The power of bit flags comes with bitwise operations. Depending on now we set the bit (variable value or LSO), it is performed slightly different. For this section, we are only setting one individual bit. Some explanation first:
+
+`bitx` and `lshift` are made up indexes. There are no actual indexes in bit flags. `bitx` is to be replaced by an actual variable value: 1, 2 or 4 and represents the bit to be operated with. Since we are only setting one single bit, we don't take into account the values 3, 5, 6 and 7. `lshift` is to be replaced by an actual value: 0, 1 or 2 and represents the bit shifting towards the bit to be operated with.
 
 ```
 __4___2___1__		__4___2___1__		__4___2___1__
 | 0 | 0 | 1 |		| 0 | 1 | 0 |		| 1 | 0 | 0 |
 ¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯		¯¯¯¯¯¯¯¯¯¯¯¯¯
-bit_index = 1		bit_index = 2		bit_index = 4
-left_shift = 0		left_shift = 1		left_shift = 2
+bitx = 1		    bitx = 2		    bitx = 4
+lshift = 0		    lshift = 1		    lshift = 2
 ```
 
 
-| Operation | Variable Value | Left Shift Operator |
-|-|-|-|
-| Set a bit | `elements \|= bit_index` | `elements \|= 1 << left_shift` |
-| Clear a bit | `elements &= ~bit_index` | `elements &= ~(1 << left_shift)` |
-| Flip a bit | `elements ^= bit_index` | `elements ^= 1 << left_shift` |
-| are all bits set? | `if elements != 0:` | `if elements != 0:` |
-| is bit set? | `if elements & bit_index:` | `if elements & (1 << left_shift):` |
-| is bit not set? | `if (elements & (bit_index == 0)):` | `if (elements & (1 << left_shift == 0)):` |
+| Operation | Variable Value | Left Shift Operator | Same as |
+|-|-|-|-|
+| Set a bit | `elements \|= bitx` | `elements \|= 1 << lshift` | `elements = elements \| value` |
+| Clear a bit | `elements &= ~bitx` | `elements &= ~(1 << lshift)` | `elements = elements & ~value`|
+| Flip a bit | `elements ^= bitx` | `elements ^= 1 << lshift` | `elements = elements ^ value`|
+| are all bits set? | `if elements != 0:` | `if elements != 0:` | |
+| is bit set? | `if elements & bitx:` | `if elements & (1 << lshift):` | |
+| is bit not set? | `if (elements & (bitx == 0)):` | `if (elements & (1 << lshift == 0)):` | |
 
-### Custom functions
-
-We can create custom functions to make our life a bit easier. The column **Flag** appears ordered, but they can be used in any row.
-
-| Name and parameter | Body | Flag |
-|-|-|-|
-| `func set_flag(flag):` | `elements \|= flag` | `1` or `1<<0` |
-| `func clear_flag(flag):` | `elements &= ~flag` | `2` or `1<<1` |
-| `func flip_flag(flag):` | `elements ^= flag` | `3` or `(1<<0)+(1<<1)` |
-| `func is_flag_set(flag) -> bool:` | `return (elements & flag)` | `4` or `1<<2` |
-| `func is_flag_unset(flag) -> bool:` | `return (elements & flag) == 0` | `5` or `(1<<0)+(1<<2)` |
-
-Example:
-
-```gdscript
-func set_flag(flag):
-    elements |= flag
-```
-
-We can run the function: `set_flag(4)` or `set_flag(1<<2)` to set the bit.
 
 ### Queries
 
