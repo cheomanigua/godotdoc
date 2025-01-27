@@ -276,7 +276,7 @@ func show_elements(type: int):
 			print("Water")
 		vFIRE + vWATER:
 			print("Fire and Water")
-		4:
+		0b100:
 			print("Earth")
 		1 + (1<<2):
 			print("Fire and Earth")

@@ -11,6 +11,8 @@ toc: true
 
 Signals are Godot's implementation of the observer pattern. They allow a node to send out a message that other nodes can listen for and respond to. For example, rather than continuously checking a button to see if it's being pressed, the button can emit a signal when it's pressed.
 
+[Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_signal.html)
+
 There are to types of signals in Godot:
 
 #### 1. Built-in
@@ -102,7 +104,8 @@ You can also use either of these (Note that these methods are **much** slower th
 ```gdscript
 if body.is_in_group("players"):
 if body.has_method("pickup"):
-if body.has_signal("player_spotted"):
+if body.has_signal("body_entered"):
+if body.has_user_signal("my_custom_signal"):
 if body.variable == "holy"
 if body is MyCustomClass
 ```

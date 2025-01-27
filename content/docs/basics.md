@@ -89,25 +89,20 @@ func _draw():
 	set_process_input(true)
 
 func _input(event):
-	if (event.is_action_pressed("mouse_left_button")): 
+	if (event.is_action_pressed("mouse_left_button")):
 		clicked=!clicked
 		queue_redraw()
 
 # For the left click to work, add "mouse_left_button" to Project Settings -> Input Map
 ```
 
-## get() vs .instantiate() vs .new()
+## Node vs Scene
 
-```gdscript
-@onready var foo: CharacterBody2D = %foo
-@onready var foo = preload("res://foo.tscn").instantiate()
-@onready var foo = preload("res://foo.gd").new()
-```
-What's the difference?
+### Nodes
 
-### get()
+Nodes are referenced, and nothing will be instantiated or created.
 
-**get()** is used to reference a node. It will not instantiate or create anything.
+Example:
 
 ```gdscript
 @onready var airplane: CharacterBody2D = %airplane
@@ -117,22 +112,36 @@ func some_function():
     print(airplane.position)
 ```
 
+#####  Node Paths
 
-### .instantiate()
+You can access nodes using $Node or get_node("Node"). Knowind this, then:
 
-**.instantiate()** is used to instantiate **scenes**:
+| | |
+|-|-|
+|$NodeA/NodeB                |access children|
+|$".." or get_parent()       |access parent|
+|$".."/NodeA                 |access sibling|
+|$"." or self                |access current node|
+|%Node                       |access node everywhere|
+
+
+### Scenes
+
+Scenes are instantiated. One or several instances are created.
 
 ```gdscript
-var new_bullet = preload("res://Bullet.tscn").instantiate()
-
-some_function():
-    get_parent().add_child(new_bullet)
+const MyScene = preload("my_scene.tscn") # A scene in a constant can only be preloaded, but not loaded
+var my_scene = load("my_scene.tscn")
+var my_scene = preload("my_scene.tscn")
+@onready var my_scene = preload("my_scene.tscn") # multiple instances when add_child()
+@onready var my_scene = preload("my_scene.tscn").instantiate() # Only one instance
 ```
+**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectiles objects.
 
-or
+Example:
 
 ```gdscript
-const BULLET = preload("res://Bullet.tscn")
+const BULLET = preload("res://Bullet.tscn") # multiple instances when add_child
 
 some_function():
     var new_bullet = BULLET.instantiate()
@@ -142,23 +151,30 @@ some_function():
     # add_child(new_bullet) # don't use this if instance is a projectile like object
 
 ```
-
-**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectiles objects.
-
-
-### .new()
-
-
-**.new()** is used to call **scripts**:
+or
 
 ```gdscript
-@onready var data = load("res://Scripts/data.gd").new()
-func _ready():
-    add_child(data)
+var new_bullet = preload("res://Bullet.tscn").instantiate() # only one instance
+
+some_function():
+    get_parent().add_child(new_bullet)
 ```
 
-Note that if you have defined the name of the class in the script **data.gd** by using the line `class_name Data`, you can instantiate the script like this:
+### .new() vs .instantiate()
 
+##### .new()
+
+**.new()** is used to instantiate **Objects**, that is, classes and built-in nodes.
+
+```gdscript
+var node = Node2D.new()
+node.rotation = 1.5
+var a = node.get("rotation") # a is 1.5
+```
+
+You can check for stray nodes by using `print_stray_nodes()` and the **Debugger->Monitors->Object->Orphan Nodes**
+
+If you have defined a class in the custom script **data.gd** by using the line `class_name Data`, you can instantiate the class like this:
 
 ```gdscript
 @onready var data = Data.new()
@@ -169,15 +185,18 @@ or inherits like this:
 ```gdscript
 extends Data
 ```
-Note that if you don't use `@onready` and `add_child()`, all instance nodes will produce orphan nodes (stray nodes). You can check for stray nodes by using `print_stray_nodes()` and the **Debugger->Monitors->Object->Orphan Nodes**
+
 
 More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#classes)
 
+##### .instantiate()
+
+**.instantiate()** is used to instantiate **Scenes**.
 
 
-## Instantiate a scene using parameters
+### Instantiate a scene using parameters
 
-The following code will instantiate 1 Gem in the player position. 
+The following code will instantiate 1 Gem in the player position.
 
 
 - **foo.gd** 
@@ -246,7 +265,9 @@ You can choose exactly when to free the queue by adding the following code in an
 
 Holds an Object, but does not contribute to the reference count if the object is a reference.
 
-## Changing Node instances textures in the editor
+## Changing Node instances textures
+
+### In the editor
 
 Add this script to the parent node where the Sprite node is a child:
 
@@ -266,9 +287,9 @@ func texture_get():
 
 You will now be able to select a different texture for each node instance in the editor. This is great for level creation, as you will be able to differentiate between several types of potions, keys, etc.
 
-## Changing Node instances textures in a script
+### In a script
 
-#### At run time
+##### At run time
 
 ```gdscript
 
@@ -277,7 +298,7 @@ func _ready():
 	%Sprite.texture = ctexture
 ```
 
-#### At compile time
+##### At compile time
 
 ```gdscript
 
@@ -331,14 +352,14 @@ func pause():
 
 A good game arquitecture is to structure the game in small components
 
-#### 1. What are components
+##### 1. What are components
 
 - Small blocks of useful functionality
 - Work independently of another component
 - Can be re-configured for easy prototyping
 - Ideally know as little as possible outside of the component
 
-#### 2. Accessing components
+##### 2. Accessing components
 
 - $SomeNode or get_node("SomeNode")
 - %SomeNode
@@ -348,7 +369,7 @@ A good game arquitecture is to structure the game in small components
 - autoloads
 - @export NodePath
 
-#### 3. Component communication
+##### 3. Component communication
 
 Can be done with minimal coupling using:
 
@@ -357,16 +378,4 @@ Can be done with minimal coupling using:
 - signal relays
 - propagate_call
 
-
-##  Node Paths
-
-You can access nodes using $Node or get_node("Node"). Knowind this, then:
-
-| | |
-|-|-|
-|$NodeA/NodeB                |access children|
-|$".." or get_parent()       |access parent|
-|$".."/NodeA                 |access sibling|
-|$"." or self                |access current node|
-|%Node                       |access node everywhere|
 
