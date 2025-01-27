@@ -76,7 +76,7 @@ At the example script at the end of the page you can see how to use integer vari
 | | `x & y` | `x \| y` | `x ^ y` | `~x` |
 | `x` | `11100` | `11100` | `11100` | `11100` |
 | `y` | `10101` | `10101` | `10101` |  |
-| `result` | `10100` | `11101` | `01001` | `00011` |
+| **Result** | `10100` | `11101` | `01001` | `00011` |
 
 <br>
 
@@ -111,11 +111,11 @@ Bit flags can be used to query small or large bit sets. Continuing with our exam
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int
 ```
 
-As per `elements`, **Fire** and **Water** are represented by the value `011` in binary and `3` in decimal (Remember we read from right to left in binary).
+As per `elements`, **Fire** and **Water** are represented by the value `011` in binary and `3` in decimal (remember that we read from right to left in binary).
 
 
 - In order to check if **AT LEAST** `Fire` and `Water` are set in `elements`, we perform a bitwise `AND` operation between the value of `elements` againts the value `011` using the bitwise operator `&`
-- In order to check if **ONLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`
+- In order to check if **ONLY/EXACTLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`
 
 
 ||||| | | |
@@ -147,26 +147,15 @@ else:
     print("False")
 ```
 
-#### Scenario 1 & 2 - Inefficient version
+You may have noticed that we could query large sets very easily. For instance, we could query for nine particular bits in a 17 bits group:
 
 ```gdscript
-if (elements & 1<<0 && elements & (1<<0 + 1<<1)):
-	print("True")
-else:
-    print("False")
-```
-
-With both examples shown above, you may have noticed that we could query large sets very easily using the efficient version. For instance, we could query for eight set bits easily:
-
-```gdscript
-var query: int = 0b00110010100110011 # or `var query: int = 25907`
+var query: int = 0b10110010100110011 # or `var query: int = 91443`
 if elements & query == query:
 	print("True")
 else:
     print("False")
 ```
-
-Imagine querying the above using the inefficient version.
 
 #### Scenario 3
 
@@ -204,63 +193,62 @@ else:
 
 If the user has enabled all elements (set all flags): Fire, Water and Earth in the Godot editor, the following script is an example of how to use bit flags.
 
-You could use just left shift operators for the whole script, but in this case we use a combination of direct operators, left shift operators, custom functions and constants just to show how they can be used. In real life you should stick to only one style.
+You could use just left shift operators for the whole script, but in this case we use a combination of variable values, left shift operators, custom functions and constants just to show how they can be used. In real life you should stick to only one style.
 
 
 ```gdscript
 
 extends Node
 
-@export_flags ("FIRE", "WATER", "EARTH") var elements: int = 0
+@export_flags ("FIRE", "WATER", "EARTH") var elements: int = 7
 
 const lsoFIRE = 1<<0
 const lsoWATER = 1<<1
 const lsoEARTH = 1<<2
-const vFIRE = 1
-const vWATER = 2
-const vEARTH = 4
-
+const vFIRE = 1  # or 0b001
+const vWATER = 2 # or 0b010
+const vEARTH = 4 # or 0b100
 
 func _ready() -> void:
 	print(("User selected: %d / %s") % [elements, String.num_int64(elements,2,false)])
 	print(("%d is the 'elements' variable value and %s represents the 'elements' variable binary base conversion") % [elements, String.num_int64(elements,2,false)])
-    print_elements()
+	print_elements()
 	show_elements(elements)
 	print("")
-	
-	# Clear bit 2 (WATER) using direct operator
+
+	# Clear bit 2 (WATER) using variable value in decimal
 	elements &= ~2
-	print(("a) Clearing bit %d (WATER) using direct operator: %d / %s") % [2,elements, String.num_int64(elements,2,false)])
-	
+	print(("a) Clearing bit %d (WATER) using decimal variable value: %d / %s") % [2,elements, String.num_int64(elements,2,false)])
+
 	# Set bit 2 (WATER) using left shift operator
 	elements |= 1 << 1
 	print(("b) Setting bit %d (WATER) using left shift operator: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
-	
+
 	# Flip bit 2 (WATER) using lso constant
 	elements ^= lsoWATER
 	print(("c) Flipping bit %d (WATER) using lso constant: %d / %s") % [lsoWATER, elements, String.num_int64(elements,2,false)])
-	
-	# Flip bit 2 (WATER) using v constant
-	elements ^= vWATER
-	print(("d) Flipping bit %d (WATER) using v constant: %d / %s") % [vWATER, elements, String.num_int64(elements,2,false)])
-	
-	# Set bit 2 (WATER) using custom function
-	set_flag(2)
-	print(("e) Setting bit %d (WATER) using custom function: %d / %s") % [2,elements, String.num_int64(elements,2,false)])
-	
-	# Clear bit 2 (WATER) using custom function
-	clear_flag(1<<1)
-	print(("f) Clearing bit %d (WATER) using custom function: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
-	
-	# Flip bit 2 (WATER) using custom function
-	flip_flag(lsoWATER)
-	print(("g) Flipping bit %d (WATER) using custom function: %d / %s") % [lsoWATER,elements, String.num_int64(elements,2,false)])
+
+	# Setting bit 2 (WATER) using variable value in binary
+	elements |= 0b010
+	print(("d) Setting bit %d (WATER) using binary variable value: %d / %s") % [0b010, elements, String.num_int64(elements,2,false)])
+
+	# Clearing bit 2 (WATER) using custom function with decimal variable value
+	clear_flag(2)
+	print(("e) Clearing bit %d (WATER) using custom function with decimal variable value: %d / %s") % [2,elements, String.num_int64(elements,2,false)])
+
+	# SettingV bit 2 (WATER) using custom function with lso
+	set_flag(1<<1)
+	print(("f) Setting bit %d (WATER) using custom function with lso: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
+
+	# Flip bit 2 (WATER) using custom function with variable value constant
+	flip_flag(vWATER)
+	print(("g) Flipping bit %d (WATER) using custom function with variable value constant: %d / %s") % [vWATER,elements, String.num_int64(elements,2,false)])
 	print("")
 
 	print("h) Checking if bit index 2 (WATER) is set using lso:")
 	print("Water is set") if elements & (1<<1) else print("Water is not set")
 	print("")
-	
+
 	print("i) Checking if bit index 2 (WATER) is not set using custom fuction:")
 	print("Water is not set") if is_flag_unset(1<<1) else print("Water is set")
 
@@ -276,7 +264,7 @@ func print_elements():
 	print(elementsPrint)
 
 
-# This function shows how direct operators, lso and constants can be used.
+# This function shows how variable values, lso and constants can be used.
 # Normaly you would stick to the same style and do not combine in order to avoid confussion.
 func show_elements(type: int):
 	match(type):
@@ -319,7 +307,7 @@ func is_flag_set(flag) -> bool:
 
 
 # Function to check if a flag is unset
-func is_flag_not_set(flag) -> bool:
+func is_flag_unset(flag) -> bool:
 	return (elements & flag) == 0
 ```
 
@@ -329,20 +317,20 @@ Running the script will print:
 
 ```
 User selected: 7 / 111
-7 is the 'elements' variable value and 111 represents the 'elements' variable binary base conversion.
+7 is the 'elements' variable value and 111 represents the 'elements' variable binary base conversion
 Fire
 Water
 Earth
 ["Fire", "Water", "Earth"]
 Fire, Water and Earth
 
-a) Clearing bit 2 (WATER) using direct operator: 5 / 101
+a) Clearing bit 2 (WATER) using decimal variable value: 5 / 101
 b) Setting bit 2 (WATER) using left shift operator: 7 / 111
 c) Flipping bit 2 (WATER) using lso constant: 5 / 101
-d) Flipping bit 2 (WATER) using v constant: 7 / 111
-e) Clearing bit 2 (WATER) using custom function: 5 / 101
-f) Setting bit 2 (WATER) using custom function: 7 / 111
-g) Flipping bit 2 (WATER) using custom function: 5 / 101
+d) Setting bit 2 (WATER) using binary variable value: 7 / 111
+e) Clearing bit 2 (WATER) using custom function with decimal variable value: 5 / 101
+f) Setting bit 2 (WATER) using custom function with lso: 7 / 111
+g) Flipping bit 2 (WATER) using custom function with variable value constant: 5 / 101
 
 h) Checking if bit index 2 (WATER) is set using lso:
 Water is not set
