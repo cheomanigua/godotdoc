@@ -103,7 +103,8 @@ func _on_body_entered(body):
 	if body.name == "Player":
 	if body.is_in_group("enemy"):
 	if body.has_method("pickup"):
-	if body.has_signal("player_spotted"):
+	if body.has_signal("body_entered"):
+	if body.has_user_signal("my_custom_signal"):
 	if body.variable == "holy"
 	if body is ClassName
 ```

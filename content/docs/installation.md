@@ -79,7 +79,7 @@ $ sudo apt-get install neovim
 
 ### Config file and vim-plug installation
 
-- Download this custom [init.lua](https://drive.google.com/file/d/14HtGZQ8FPXYxhtkC2kvlnWj35U-n7n1D/view?usp=drive_link) configuration file into `~/.config/nvim/` directory. This file contains configuration settings for NeoVim, including the list of plugins to be installed via vim-plug.
+- Download this custom [init.lua](https://drive.google.com/file/d/1LxVKnPmmdMlAu3UM1eAwM37DKdBN3MtK/view?usp=drive_link) configuration file into `~/.config/nvim/` directory. This file contains configuration settings for NeoVim, including the list of plugins to be installed via vim-plug.
 
 - Install vim-plug:
 

@@ -98,19 +98,23 @@ func _input(event):
 
 ## Node vs Scene
 
+[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
+
 ### Nodes
 
-Nodes are referenced, and nothing will be instantiated or created.
+Nodes are generally referenced, but they can also be instantiated with `.new()`. In order to reference a node, we use `get_node("NodeName")`, or the short notation `$NodeName` or `%NodeName`.
 
 Example:
 
 ```gdscript
-@onready var airplane: CharacterBody2D = %airplane
+@onready var airplane: CharacterBody2D = %Airplane
 
 func some_function():
     airplane.update_destination()
     print(airplane.position)
 ```
+
+The `@onready` annotation makes the member variable to initalize right before the `_ready()` callback. If you omit it, it will be initialized in the `_ready()` callback.
 
 #####  Node Paths
 
@@ -127,16 +131,16 @@ You can access nodes using $Node or get_node("Node"). Knowing this, then:
 
 ### Scenes
 
-Scenes are instantiated. One or several instances are created.
+Scenes are instantiated. One or several instances can be created.
 
 ```gdscript
-const MyScene = preload("myscene.tscn") # A scene in a constant can only be preloaded, but not loaded
+const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
 @onready var MyScene = preload("myscene.tscn") # multiple instances when add_child()
 @onready var MyScene = preload("myscene.tscn").instantiate() # Only one instance
 ```
-**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectiles objects.
+**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 
 Example:
 

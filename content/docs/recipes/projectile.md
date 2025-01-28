@@ -1,6 +1,6 @@
 ---
 weight: 5250
-title: "Projectile"
+title: "Projectiles"
 description: "Projectile behaviour. Born and death of a bullet"
 icon: "article"
 date: "2024-09-17T09:39:26+02:00"
@@ -98,7 +98,11 @@ func _on_body_entered(body):
 ```
 
 
-## Example
+## Instantiating a bullet with signals
+
+In the previous examples, if we try to test our "Player" scene independently, it will crash on shooting, because there is no parent node to access. The solution to this is to use a signal to "emit" the bullets from the player. The player then has no need to "know" what happens to the bullets after that.
+
+[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/instancing_with_signals.html)
 
 ### Steps
 
@@ -188,9 +192,7 @@ func _ready() -> void:
 
 func _on_player_shoot(Bullet, direction, location):
 	var new_bullet = Bullet.instantiate()
-    get_parent().add_child(new_bullet)              # option 1
-    # get_tree().current_scene.add_child(new_bullet)  # option 2
-    # get_tree().root.add_child(new_bullet)           # option 3
+    add_child(new_bullet)
 	new_bullet.rotation = direction
 	new_bullet.position = location
 ```
