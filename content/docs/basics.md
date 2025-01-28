@@ -102,7 +102,7 @@ func _input(event):
 
 ### Nodes
 
-Nodes are generally referenced, but they can also be instantiated with `.new()`. In order to reference a node, we use `get_node("NodeName")`, or the short notation `$NodeName` or `%NodeName`.
+Nodes are generally referenced, but they can also be instantiated with `.new()`. In order to reference a node, we use `get_node("NodeName")`, or the short notation `$NodeName` (Check **Node Paths** below for all possible options).
 
 Example:
 
@@ -126,8 +126,13 @@ You can access nodes using $Node or get_node("Node"). Knowing this, then:
 |$".." or get_parent()       |access parent|
 |$".."/NodeA                 |access sibling|
 |$"." or self                |access current node|
-|%Node                       |access node everywhere|
+|%Node                       |access node everywhere in current scene|
 
+<br>
+
+Instead of using `%Node`, we could use `@export var my_node: Node` and drag the node to the properties panel in the Editor.
+
+{{< alert context="primary" text="It is considered good practice to communicate down the Tree Node using `get_node()` and to communicate up the Tree Node using **signals**. The reason for this is to decouple as much as possible." />}}
 
 ### Scenes
 
@@ -240,8 +245,8 @@ When importing a resource, you can use either load or preload.
 - **preload()** is run at compile time
 
 ```gdscript
-@onready var data = load("res://Scripts/data.gd").new()
-@onready var data = preload("res://Scripts/data.gd").new()
+@onready var Data = load("res://Scripts/data.gd").new()
+@onready var Data = preload("res://Scripts/data.gd").new()
 ```
 
 If you prefer to use a constant:

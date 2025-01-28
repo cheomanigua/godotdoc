@@ -20,13 +20,13 @@ A bullet can be an Aread2D node or a CharacterBody2D node. The shooter can be a 
 ```gdscript
 extends CharacterBody2D
 
-var Bullet = preload("res://bullet.tscn")
+var bullet = preload("res://bullet.tscn")
 
 func shoot():
 	# "Muzzle" is a Marker2D placed at the barrel of the gun.
-	var bullet = Bullet.instantiate()
-	bullet.start($Muzzle.global_position, rotation)
-	get_parent().add_child(bullet)
+	var new_bullet = bullet.instantiate()
+	new_bullet.start($Muzzle.global_position, rotation)
+	get_parent().add_child(new_bullet)
 ```
 
 ### 1.2 bullet.gd

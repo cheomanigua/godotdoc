@@ -42,6 +42,7 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 - **Ctrl** + **K**: Comment/uncomment selected text
 - **Ctrl** + **R**: Find and replace selected text
 - **Alt** + **Up/Down**: Move selected text up/down a line
+- **Alt** + **Return**: Move cursor one line below keeping indentation
 
 
 # NeoVim as editor
