@@ -114,7 +114,7 @@ func some_function():
 
 #####  Node Paths
 
-You can access nodes using $Node or get_node("Node"). Knowind this, then:
+You can access nodes using $Node or get_node("Node"). Knowing this, then:
 
 | | |
 |-|-|
@@ -130,11 +130,11 @@ You can access nodes using $Node or get_node("Node"). Knowind this, then:
 Scenes are instantiated. One or several instances are created.
 
 ```gdscript
-const MyScene = preload("my_scene.tscn") # A scene in a constant can only be preloaded, but not loaded
-var my_scene = load("my_scene.tscn")
-var my_scene = preload("my_scene.tscn")
-@onready var my_scene = preload("my_scene.tscn") # multiple instances when add_child()
-@onready var my_scene = preload("my_scene.tscn").instantiate() # Only one instance
+const MyScene = preload("myscene.tscn") # A scene in a constant can only be preloaded, but not loaded
+var MyScene = load("myscene.tscn")
+var MyScene = preload("myscene.tscn")
+@onready var MyScene = preload("myscene.tscn") # multiple instances when add_child()
+@onready var MyScene = preload("myscene.tscn").instantiate() # Only one instance
 ```
 **instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectiles objects.
 

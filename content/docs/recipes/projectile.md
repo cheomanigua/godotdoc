@@ -1,13 +1,104 @@
 ---
 weight: 5250
 title: "Projectile"
-description: "Creating and destroying a projectile object"
+description: "Projectile behaviour. Born and death of a bullet"
 icon: "article"
 date: "2024-09-17T09:39:26+02:00"
 lastmod: "2024-09-17T09:39:26+02:00"
 draft: false
 toc: true
 ---
+
+There are several ways to implement a projectile behaviour. It depends on the type of node the projectile is, and the type of node the shooter is. For this tutorial, we'll call the projectile a bullet.
+
+A bullet can be an Aread2D node or a CharacterBody2D node. The shooter can be a CharacterBody2D or a RigidBody2D. Combining the type of bullet and the type of shooter requires slighty different code.
+
+## 1. CharacterBody2D shooter
+
+### 1.1 shooter.gd
+
+```gdscript
+extends CharacterBody2D
+
+var Bullet = preload("res://bullet.tscn")
+
+func shoot():
+	# "Muzzle" is a Marker2D placed at the barrel of the gun.
+	var bullet = Bullet.instantiate()
+	bullet.start($Muzzle.global_position, rotation)
+	get_parent().add_child(bullet)
+```
+
+### 1.2 bullet.gd
+
+```gdscript
+extends CharacterBody2D
+
+var speed = 750
+
+func start(_position, _direction):
+	rotation = _direction
+	position = _position
+	velocity = Vector2(speed, 0).rotated(rotation)
+
+func _physics_process(delta):
+	var collision = move_and_collide(velocity * delta)
+	if collision:
+		velocity = velocity.bounce(collision.get_normal())
+		if collision.get_collider().has_method("hit"):
+			collision.get_collider().hit()
+
+func _on_VisibilityNotifier2D_screen_exited():
+	# Deletes the bullet when it exits the screen.
+	queue_free()
+```
+
+## 2. RigidBody2D shooter
+
+### 2.1 shooter.gd
+
+For a RigidBody2D shooter, you need two Marker2D for the bullet to shoot straight. The **Muzzle** marker represents the position of the instantiated bullet, and the **ShootAt** marker represents the direction of the instantiated bullet. Align both markers to the gun barrel and the bullet will shoot straight.
+
+```gdscript
+extends RigidBody2D
+
+const BULLET = preload("res://Projectile/Bullet/bullet.tscn")
+
+func _shoot():
+	# "%Muzzle" and "%ShootAt" are two lined up Marker2Ds placed at the barrel of the gun.
+    var bullet = BULLET.instantiate()
+    get_parent().add_child(bullet)
+    bullet.global_position = %Muzzle.global_position
+    bullet.look_at(%ShootAt.global_position)
+```
+
+### 2.2 bullet.gd
+
+```gdscript
+extends Area2D
+
+var speed:float = 500
+@export var damage: float = 1
+@onready var vosn2d: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
+
+func _ready() -> void:
+	body_entered.connect(_on_body_entered)
+	vosn2d.screen_exited.connect(_on_screen_exited)
+
+func _physics_process(delta: float) -> void:
+	global_position += transform.x * speed * delta
+
+func _on_screen_exited() -> void:
+	queue_free()
+
+func _on_body_entered(body):
+	queue_free()
+	if body.has_method("take_damage"):
+		body.take_damage(damage)
+```
+
+
+## Example
 
 ### Steps
 
