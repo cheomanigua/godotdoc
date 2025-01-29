@@ -97,15 +97,15 @@ lshift = 0		    lshift = 1		    lshift = 2
 |-|-|-|-|
 | Set a bit | `elements \|= bitx` | `elements \|= 1 << lshift` | `elements = elements \| value` |
 | Clear a bit | `elements &= ~bitx` | `elements &= ~(1 << lshift)` | `elements = elements & ~value`|
-| Flip a bit | `elements ^= bitx` | `elements ^= 1 << lshift` | `elements = elements ^ value`|
+| Toggle a bit | `elements ^= bitx` | `elements ^= 1 << lshift` | `elements = elements ^ value`|
 | are all bits set? | `if elements != 0:` | `if elements != 0:` | |
 | is bit set? | `if elements & bitx:` | `if elements & (1 << lshift):` | |
 | is bit not set? | `if (elements & (bitx == 0)):` | `if (elements & (1 << lshift == 0)):` | |
 
 
-## Queries
+## Bitmasks (like queries)
 
-Bit flags can be used to query small or large bit sets. Continuing with our example set:
+Bitmasks can be used to query small or large bit sets. Continuing with our example set:
 
 ```gdscript
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int
@@ -114,9 +114,10 @@ Bit flags can be used to query small or large bit sets. Continuing with our exam
 As per `elements`, **Fire** and **Water** are represented by the value `011` in binary and `3` in decimal (remember that we read from right to left in binary).
 
 
-- In order to check if **AT LEAST** `Fire` and `Water` are set in `elements`, we perform a bitwise `AND` operation between the value of `elements` againts the value `011` using the bitwise operator `&`
-- In order to check if **ONLY/EXACTLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`
+- In order to check if **AT LEAST** `Fire` and `Water` are set in `elements`, we perform a bitwise `AND` operation between the value of `elements` againts the value `011` using the bitwise operator `&`. In this operation, `011` is the bitmask or "query".
+- In order to check if **ONLY/EXACTLY** `Fire` and `Water` are set in `elements`, we compare the value of `elements` with the value `011` using the comparison operator `==`. In this operation, `011` is the bitmask or "query".
 
+From now on, "query" and "querying" are used instead of **bitmask** and **bitmasking**. It's easier to understand as a concept for game development.
 
 ||||| | | |
 |-|-|-|-|-|-|-|
@@ -224,9 +225,9 @@ func _ready() -> void:
 	elements |= 1 << 1
 	print(("b) Setting bit %d (WATER) using left shift operator: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
 
-	# Flip bit 2 (WATER) using lso constant
+	# Toggle bit 2 (WATER) using lso constant
 	elements ^= lsoWATER
-	print(("c) Flipping bit %d (WATER) using lso constant: %d / %s") % [lsoWATER, elements, String.num_int64(elements,2,false)])
+	print(("c) Toggling bit %d (WATER) using lso constant: %d / %s") % [lsoWATER, elements, String.num_int64(elements,2,false)])
 
 	# Setting bit 2 (WATER) using variable value in binary
 	elements |= 0b010
@@ -240,9 +241,9 @@ func _ready() -> void:
 	set_flag(1<<1)
 	print(("f) Setting bit %d (WATER) using custom function with lso: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
 
-	# Flip bit 2 (WATER) using custom function with variable value constant
-	flip_flag(vWATER)
-	print(("g) Flipping bit %d (WATER) using custom function with variable value constant: %d / %s") % [vWATER,elements, String.num_int64(elements,2,false)])
+	# Toggle bit 2 (WATER) using custom function with variable value constant
+	toggle_flag(vWATER)
+	print(("g) Toggling bit %d (WATER) using custom function with variable value constant: %d / %s") % [vWATER,elements, String.num_int64(elements,2,false)])
 	print("")
 
 	print("h) Checking if bit index 2 (WATER) is set using lso:")
@@ -296,8 +297,8 @@ func clear_flag(flag):
 	elements &= ~flag
 
 
-# Function to flip a flag
-func flip_flag(flag):
+# Function to toggle a flag
+func toggle_flag(flag):
 	elements ^= flag
 
 
@@ -306,7 +307,7 @@ func is_flag_set(flag) -> bool:
 	return (elements & flag) != 0
 
 
-# Function to check if a flag is unset
+# Function to check if a flag is unset (clear)
 func is_flag_unset(flag) -> bool:
 	return (elements & flag) == 0
 ```
@@ -326,11 +327,11 @@ Fire, Water and Earth
 
 a) Clearing bit 2 (WATER) using decimal variable value: 5 / 101
 b) Setting bit 2 (WATER) using left shift operator: 7 / 111
-c) Flipping bit 2 (WATER) using lso constant: 5 / 101
+c) Toggling bit 2 (WATER) using lso constant: 5 / 101
 d) Setting bit 2 (WATER) using binary variable value: 7 / 111
 e) Clearing bit 2 (WATER) using custom function with decimal variable value: 5 / 101
 f) Setting bit 2 (WATER) using custom function with lso: 7 / 111
-g) Flipping bit 2 (WATER) using custom function with variable value constant: 5 / 101
+g) Toggling bit 2 (WATER) using custom function with variable value constant: 5 / 101
 
 h) Checking if bit index 2 (WATER) is set using lso:
 Water is not set

@@ -136,38 +136,42 @@ Instead of using `%Node`, we could use `@export var my_node: Node` and drag the 
 
 ### Scenes
 
-Scenes are instantiated. One or several instances can be created.
+Scenes are instantiated. Only one or multiple instances can be created.
 
 ```gdscript
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
-@onready var MyScene = preload("myscene.tscn") # multiple instances when add_child()
-@onready var MyScene = preload("myscene.tscn").instantiate() # Only one instance
+@onready var MyScene = preload("myscene.tscn") # multiple instances can be created
+@onready var MyScene = preload("myscene.tscn").instantiate() # only one instance can be created.
 ```
-**instantiate()** is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 
 Example:
 
 ```gdscript
-const BULLET = preload("res://Bullet.tscn") # multiple instances when add_child
+const BULLET = preload("res://Bullet.tscn") # multiple instances
 
 some_function():
     var new_bullet = BULLET.instantiate()
-    get_parent().add_child(new_bullet)              # option 1
-    # get_tree().current_scene.add_child(new_bullet)  # option 2
-    # get_tree().root.add_child(new_bullet)           # option 3
-    # add_child(new_bullet) # don't use this if instance is a projectile like object
+    get_parent().add_child(new_bullet)                  # option 1
+    # get_tree().current_scene.add_child(new_bullet)    # option 2
+    # get_tree().root.add_child(new_bullet)             # option 3
+    # add_child(new_bullet)                             # option 4, but not for RigidBody2D instantiating projectiles
 
 ```
+
+{{< alert context="success" text="When `.instantiate()` in a fuction, you can create as many instances as you want." />}}
+
 or
 
 ```gdscript
-var new_bullet = preload("res://Bullet.tscn").instantiate() # only one instance
+var final_boss = preload("res://FinalBoss.tscn").instantiate() # only one instance, constants not allowed.
 
 some_function():
-    get_parent().add_child(new_bullet)
+    get_parent().add_child(final_boss)
 ```
+
+{{< alert context="danger" text="When `.instantiate()` on `preload`, don't instantiate projectiles or scenes that can have more than one instance. Otherwise Godot will crash when instantiating a second time." />}}
 
 ### .new() vs .instantiate()
 
@@ -200,7 +204,7 @@ More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutori
 
 ##### .instantiate()
 
-**.instantiate()** is used to instantiate **Scenes**.
+**.instantiate()** is used to instantiate **Scenes**. It is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 
 
 ### Instantiate a scene using parameters
