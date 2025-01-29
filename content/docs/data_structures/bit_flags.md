@@ -138,7 +138,7 @@ From now on, "query" and "querying" are used instead of **bitmask** and **bitmas
 - In scenario 5.1, `elements` has five bits: **A**, **B**, **C**, **D**, **E**, with **A**, **B**, **D** and **E** set. We are querying for at least **B**, **C** and **D**, hence, the query is false. In scenario 5.1 we find out which elements of the query are `true`.
 - In scenario 5.2 we want to find out which bits are making the query `false` in scenario 5.1, so we query again **B**, **C** and **D** with `XOR` againts the result of scenario 5.1. The final result is **C**, which is the bit that triggered `false` in scenario 5.1
 
-#### Scenario 1 & 2 - Efficient version
+#### Scenario 1 & 2
 
 ```gdscript
 var query: int = 0b011 # or `var query: int = 3`

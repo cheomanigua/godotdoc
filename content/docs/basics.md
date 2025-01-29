@@ -142,11 +142,13 @@ Scenes are instantiated. Only one or multiple instances can be created.
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
-@onready var MyScene = preload("myscene.tscn") # multiple instances can be created
-@onready var MyScene = preload("myscene.tscn").instantiate() # only one instance can be created.
+@onready var MyScene = preload("myscene.tscn")                  # multiple instances can be created
+@onready var MyScene = preload("myscene.tscn").instantiate()    # only one instance can be created
 ```
 
-Example:
+Example 1:
+
+{{< alert context="success" text="When `.instantiate()` is in a fuction, you can create as many instances as you want." />}}
 
 ```gdscript
 const BULLET = preload("res://Bullet.tscn") # multiple instances
@@ -159,10 +161,9 @@ some_function():
     # add_child(new_bullet)                             # option 4, but not for RigidBody2D instantiating projectiles
 
 ```
+Example 2:
 
-{{< alert context="success" text="When `.instantiate()` in a fuction, you can create as many instances as you want." />}}
-
-or
+{{< alert context="danger" text="When `.instantiate()` is on `preload`, you can create only one instance. Do not use to instantiate scenes that need more than one instance, like projectiles. If you do, Godot will crash when instantiating a second time." />}}
 
 ```gdscript
 var final_boss = preload("res://FinalBoss.tscn").instantiate() # only one instance, constants not allowed.
@@ -171,7 +172,6 @@ some_function():
     get_parent().add_child(final_boss)
 ```
 
-{{< alert context="danger" text="When `.instantiate()` on `preload`, don't instantiate projectiles or scenes that can have more than one instance. Otherwise Godot will crash when instantiating a second time." />}}
 
 ### .new() vs .instantiate()
 
