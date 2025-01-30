@@ -118,21 +118,25 @@ The `@onready` annotation makes the member variable to initalize right before th
 
 #####  Node Paths
 
-You can access nodes using $Node or get_node("Node"). Knowing this, then:
+You can access a node using $Node or get_node("Node"). Knowing this, then:
 
 | | |
 |-|-|
-|$NodeA/NodeB                |access children|
-|$".." or get_parent()       |access parent|
-|$".."/NodeA                 |access sibling|
-|$"." or self                |access current node|
-|%Node                       |access node everywhere in current scene|
+|`$NodeA/NodeB`             | access children|
+|`$".."` or `get_parent()`  | access parent|
+|`$".."/NodeA`              | access sibling|
+|`$"."` or `self`           | access current node|
+|`%Node`                    | Unique node, access node everywhere in current scene|
 
 <br>
 
-Instead of using `%Node`, we could use `@export var my_node: Node` and drag the node to the properties panel in the Editor.
+There is a better way to access a node in the same scene:
 
-{{< alert context="primary" text="It is considered good practice to communicate down the Tree Node using `get_node()` and to communicate up the Tree Node using **signals**. The reason for this is to decouple as much as possible." />}}
+```gdscript
+@export var my_node: Node
+```
+
+The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
 
 ### Scenes
 
@@ -181,11 +185,12 @@ some_function():
 
 ```gdscript
 var node = Node2D.new()
+add_child(node)
 node.rotation = 1.5
 var a = node.get("rotation") # a is 1.5
 ```
 
-You can check for stray nodes by using `print_stray_nodes()` and the **Debugger->Monitors->Object->Orphan Nodes**
+If you don't `add_child`, it will generate a stray node (orphan node). You can check for orphan nodes by using `print_orphan_nodes()` and the **Project->Tools->Orphan Resource Explorer...**
 
 If you have defined a class in the custom script **data.gd** by using the line `class_name Data`, you can instantiate the class like this:
 
@@ -376,6 +381,7 @@ A good game arquitecture is to structure the game in small components
 
 - $SomeNode or get_node("SomeNode")
 - %SomeNode
+- @export var my_node: Node
 - creating a class
 - using the physics engine (Areas, etc.)
 - groups

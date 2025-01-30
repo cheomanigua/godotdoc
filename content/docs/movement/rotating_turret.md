@@ -18,23 +18,19 @@ In this example we show how a **turret** will rotate towards the **player** when
 
 [Area2D] "turret"						S
 	|-[CollisionBody2D] "Radar"
-	|-[CollisionBody2D] "Base"			%
 	|	|-[CollisionBody2D] "Cannon"
 	|		|-[Marker2D] "Muzzle"		%
 	|		|-[Marker2D] "ShootAt"		%
-	|-[Timer]							%
 ```
 
 
 ### Node layout
 
-- The base of the **turret** is a circle with a **cannon** sticking out of it.
 - There are two markers along the longitudinal axis of the **cannon** at the end point of the **cannon**: the **muzzle** and **shoot-at**.
 - The **muzzle** marker is the spawing point of the bullets.
 - The **shoot-at** marker is the direction where the bullets move towards from the **muzzle**. 
 - From a 2D top view, the **cannon** (====), the **muzzle** marker (+) and the **shoot-at** marker(x) are positioned like this from left to right: **====+x**
 - There is a **radar** area around the **turret** scanning for the **player**.
-- There is a **timer** in charge of shooting the **cannon** every second when **player** is detectedand within 180º cannon front area.
 
 
 ### Scripting
@@ -48,26 +44,28 @@ const BULLET = preload("res://Projectile/Bullet/bullet.tscn")
 var detected: bool = false
 var locked: bool = false
 var elapse: float = 5.0
-var original_angle: float
-@onready var base: CollisionShape2D = %Base
+var direction: float
+var timer = Timer.new()
+
 @onready var muzzle: Marker2D = %Muzzle
 @onready var shoot_at: Marker2D = %ShootAt
-@onready var timer: Timer = %Timer
 @onready var player: Player = %Player
 
 
 func _ready():
-	original_angle = base.global_rotation
+	add_child(timer)
+	timer.wait_time = 0.5
+	direction = rotation
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
 
 func _physics_process(delta: float) -> void:
 	if detected:
-		var angle: float = (player.global_position - base.global_position).angle()
-		if (angle_difference(original_angle, angle) < PI/2 && angle_difference(original_angle, angle) > -PI/2):
+		var angle: float = (player.global_position - global_position).angle()
+		if (angle_difference(direction, angle) < PI/2 && angle_difference(direction, angle) > -PI/2):
 			locked = true
-			base.global_rotation= lerp_angle(base.global_rotation, angle, elapse * delta)
+			rotation= lerp_angle(rotation, angle, elapse * delta)
 		else:
 			locked = false
 
@@ -75,9 +73,8 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body):
 	if body is Player:
 		detected = !detected
-		timer.timeout.connect(_shoot)
 		timer.start()
-		
+		timer.timeout.connect(_shoot)
 
 func _on_body_exited(body):
 	if body is Player:
@@ -87,7 +84,7 @@ func _on_body_exited(body):
 
 
 func _shoot():
-	if detected and locked:
+	if locked:
 		var new_bullet = BULLET.instantiate()
         get_parent().add_child(new_bullet)              # option 1
         # get_tree().current_scene.add_child(new_bullet)  # option 2

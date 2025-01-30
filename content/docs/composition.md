@@ -21,6 +21,7 @@ toc: true
 2. Accessing components
     - get_node("SomeNode") or $SomeNode
     - %SomeNode
+    - @export var my_node: Node
     - creating a class
     - using the physics engine (Areas, etc.)
     - groups
@@ -36,18 +37,24 @@ Can be done with minimal coupling using:
 
 
 ### Node Paths
-- You can access nodes by using `$Node` or `get_node("Node")`. Knowing this, then:
+- You can access a node by calling the node using `$Node` or `get_node("Node")`. Knowing this, then:
 | | |
 |-|-|
-| `$NodeA/NodeB` | access children |
+| `$NodeA/NodeB`            | access children |
 | `$".."` or `get_parent()` | access parent |
-| `$".."/NodeA` | access sibling |
-| `$"."` or `self` | access current node |
+| `$".."/NodeA`             | access sibling |
+| `$"."` or `self`          | access current node |
+|`%Node`                    | Unique node, access node everywhere in current scene|
 
-- Scene's Unique Nodes can be found with `%Node` from anywhere in the scene:
-| | |
-|-|-|
-| `%Node` | access node everywhere |
+<br>
+
+There is a better way to access a node in the same scene:
+
+```gdscript
+@export var my_node: Node
+```
+
+The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
 
 
 ### Call down, Signal up

@@ -77,14 +77,32 @@ func _ready():
 
 ### Timer
 
-The code below shows a message during 5 seconds. It creates a one-shot timer and wait for it to finish.
+Timers can be created in three different ways:
+
+1. Adding a Timer node in the Editor and referencing it in code:
+
+```gdscript
+@onready var timer: Timer = %Timer
+```
+
+2. Creating the Timer node directly in code:
+
+```gdscript
+var timer = Timer.new()
+
+somefunction():
+    add_child(timer)
+    timer.wait_time = 2
+```
+
+3. Creating a one-shot ephemeral timer. The code below shows a message during 5 seconds. The timer is deleted afterward automatically:
 
 ```gdscript
 $Label.text = message
 await get_tree().create_timer(5.0).timeout
 $Label.text = ""
 ```
-
+[Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_timer.html)
 
 ### Autoload (Singleton)
 
