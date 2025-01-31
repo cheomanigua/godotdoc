@@ -199,4 +199,4 @@ func _on_player_shoot(Bullet, direction, location):
 
 ### Full implementation
 
-{{< alert text="You can see a full implementation of a projectile at [Rotating Gun](../../movement/rotating_gun)" />}}
+{{< alert text="You can see a full implementation of a projectile at [Rotating Weapon](../../movement/rotating_weapon)" />}}
