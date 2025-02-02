@@ -26,6 +26,7 @@ Access:
 - `inventory.keys()[0]` will return **coin**
 - `inventory.values()` will return **[5, 2, green]**
 - `inventory.values()[0]` will return **5**
+- `inventory.get("coin")` will return **5**
 
 Assignments:
 - `inventory["coin"] = 2` will change the value of **coin** from **5** to **2**
@@ -35,9 +36,16 @@ Math:
 - `inventory["coin"] += 2` will increment the value of **coin** by **2**
 - `inventory["coin"] -= 2` will decrease the value of **coin** by **2**
 
-Creating:
+Creating an entry:
 - `inventory["potion"] = 3` will create the key **potion** with the value **3**
 - `inventory.potion = 3` is the same as above
+
+Deleting an entry:
+- `inventory.erase("coin")`
+
+Clearing the whole dictionary:
+- `inventory.clear()`
+
 
 ### Printing dictionaries
 

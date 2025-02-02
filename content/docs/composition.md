@@ -54,7 +54,7 @@ There is another way to access a node in the same scene:
 @export var my_node: Node
 ```
 
-The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
+The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we **move** or **rename** the node later, the reference won't be affected and still works. However, changing the name of the variable `my_node` will break the path in all instances. You will need to rename all the variables and re-drag the node to the property panel in the Inspector for the new variable name to work.
 
 
 #### Call down, Signal up
