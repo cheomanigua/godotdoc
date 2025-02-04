@@ -98,11 +98,27 @@ func _input(event):
 
 ## Node vs Scene
 
-[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
+A node is a built in or custom component with certain functionality. A group of nodes form a tree. When you organize nodes in a tree, it is called a scene, and nodes can communicate between them.
+
+When you organize nodes in a tree, we call this construct a scene. Once saved, scenes work like new node types in the editor, where you can add them as a child of an existing node. In that case, the instance of the scene appears as a single node with its internals hidden.
+
+On top of acting like nodes, scenes have the following characteristics:
+
+1. They always have one root node, like "Player" or "Enemy".
+2. You can save them to your local drive and load them later.
+3. You can create as many instances of a scene as you'd like. You could have five or ten characters in your game, created from your Character scene.
+
+[Godot documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html)
+
 
 ### Nodes
 
-Nodes are generally referenced, but they can also be instantiated with `.new()`. In order to reference a node, we use `get_node("NodeName")`, or the short notation `$NodeName` (Check **Node Paths** below for all possible options).
+#### Referencing a node
+
+You can get a reference to a node by calling the `get_node("NodeName")` method, or the short notation `$NodeName`. For this to work, the child node must be present in the scene tree. Getting it in the parent node's _ready() function guarantees that.
+
+
+[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
 
 Example:
 
@@ -118,7 +134,7 @@ The `@onready` annotation makes the member variable to initalize right before th
 
 #####  Node Paths
 
-You can access a node using $Node or get_node("Node"). Knowing this, then:
+As mentioned earlier, you can access a child node using `$Node` or `get_node("Node")`. Nodes in the scene tree can access other nodes in the scene tree:
 
 | | |
 |-|-|
@@ -138,9 +154,19 @@ There is a better way to access a node in the same scene:
 
 The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
 
+#### Creating a node
+
+To create a node from code, call its `new()` method like for any other class-based datatype. You can store the newly created node's reference in a variable and call `add_child()` to add it as a child of the node to which you attached the script.
+
+```gdscript
+func _ready():
+	var timer = Timer.new() # Create a new Timer.
+	add_child(timer) # Add it as a child of this node.
+```
+
 ### Scenes
 
-Scenes are instantiated. Only one or multiple instances can be created.
+Scenes are templates from which you can create as many reproductions as you'd like. This operation is called instancing.
 
 ```gdscript
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
@@ -149,6 +175,7 @@ var MyScene = preload("myscene.tscn")
 @onready var MyScene = preload("myscene.tscn")                  # multiple instances can be created
 @onready var MyScene = preload("myscene.tscn").instantiate()    # only one instance can be created
 ```
+At that point, `scene` is a packed scene resource, not a node. To create the actual node, you need to call `PackedScene.instantiate()`. It returns a tree of nodes that you can use as a child of your current node.
 
 Example 1:
 

@@ -37,7 +37,7 @@ toc: true
 
 ### Node Paths
 
-- You can access a node in the same scene by calling the node using `$Node` or `get_node("Node")`. Knowing this, then:
+- You can access a node in the same scene by calling the node using `$Node` or `get_node("Node")`. Nodes in the scene tree can access other nodes in the scene tree:
 | | |
 |-|-|
 | `$NodeA/NodeB`            | access children |
@@ -100,13 +100,13 @@ func calculate_angle_to_player():
 
 ### Groups
 
-If we want any node to access Player and its properties, we can create a *Project Settings -> Globals -> Group* called **Player** and add the node `Player` to it. Then, we can run this code in a completely different node to access Player:
+If we want any node to access Player and its properties, we can create a *Project Settings -> Globals -> Group* called **Foo** and add the node `Player` to it. Then, we can run this code in a completely different node to access Player:
 
 ```gdscript
 var player: RigidBody2D
 
 func _ready():
-	for node in get_tree().get_nodes_in_group("Player"):
+	for node in get_tree().get_nodes_in_group("Foo"):
 		if node.name == "Player":
 			player = node
 
