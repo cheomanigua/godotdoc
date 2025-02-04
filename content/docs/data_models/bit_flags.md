@@ -42,7 +42,7 @@ __E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__
 ```
 
 
-There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using a left shift bit operator (LSO):
+There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using the left shift bit operator (LSO):
 
 We can set 1, 2 or 3 bits at the same time by using the variable value. For the first three bits, values range from 1 to 7. The **value** is the sum of the *indexes*. I said *indexes* to help visualize the graphic above, but there are no actual indexes in the variable. So, if we want to set the first two bits, we sum 1 + 2. To set all three bits, we sum 1 + 2 + 4.
 

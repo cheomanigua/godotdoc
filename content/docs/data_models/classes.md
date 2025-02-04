@@ -21,7 +21,10 @@ For reference on this article:
 
 ## Approach
 
-There are are two approaches for defining classes in Godot: inner classes and non-inner classes. Inner classes are defined and generally used in the same script, whereas non-inner classes are defined in their own separate script and act as Godot **Objects**:
+There are are two approaches for defining classes in Godot:
+
+- Inner classes are defined and generally used in the same script.
+- Non-inner classes are defined in their own separate script and act as Godot **Objects**, and hence, can be used by other scripts.
 
 ### Inner class
 

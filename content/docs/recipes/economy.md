@@ -11,9 +11,9 @@ toc: true
 
 In this article we are going to create an economy simulation between cities. We present four solutions:
 
-1. The first solution uses two **Classes** and an two **Arrays** to store the instances of the class.
+1. The first solution uses two **Classes** and an **Array** to store the instances of one of the classes.
 2. The second solution uses a **Class** and a **Dictionary** to store the instances of the class.
-3. The third solution is slighthy different implementation of the second solution.
+3. The third solution is a slighthy different implementation of the second solution.
 4. The forth solution uses only **Dictionaries**.
 
 ## Solution 1. Class to Array
@@ -316,7 +316,7 @@ func initialize_data():
 			ciudades[city].stock[product] = randi_range(10, 1000)
 			ciudades[city].price[product] = randf_range(1.0, 10.0)
 
-	# METHOD 2 - Creates direct access to instance in dictionary. Check sim_class_to_dict1.gd
+	# METHOD 2 - Creates direct access to instance in dictionary. Check Solution 2.
 	#for city in cities:
 		#var temp = City.new(city, {}, {}, {}, {})
 		#ciudades[temp] = temp

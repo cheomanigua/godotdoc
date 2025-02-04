@@ -144,9 +144,10 @@ func _on_body_entered(body,item):
 
 ## More complex dictionaries
 
+Dictionaries can be more complex that the examples prior.
+
 ### 1. Array within dictionary
 
-Dictionaries can be more complex that the examples prior.
 
 ```gdscript
 var inventory {
@@ -184,7 +185,58 @@ func _ready():
         print("%s: %s" % [inventory[key][0],inventory[key][1]])
 ```
 
-### 2. String keys. Loading JSON files
+### 2. Dictionary within dictionary
+
+Multi-dimentional dictionaries a.k.a. nested dictionaries
+
+```gdscript
+var cities: Array = ["Tarraco", "Ampuria"]
+var products: Array = ["Wheat", "Olives"]
+var urbes: Dictionary = {}
+
+func _ready() -> void:
+	# Create multiple cities at once
+	for city in cities:
+		urbes[city] = {}			# creates 1st level keys with "cities" for dictionary "urbes"
+		urbes[city]["stock"] = {}	# creates 2nd level dictionary with key "stock"
+		urbes[city]["price"] = {}	# creates 2nd level dictionary with key "price"
+	# Generate each product stocks and prices for each city in dictionary "urbes"
+	for city in urbes:
+		for product in products:
+			urbes[city]["stock"][product] = randi_range(0, 1000)
+			urbes[city]["price"][product] = randf_range(0.0, 2.0)
+	# Printing the whole dictionary
+	print(urbes)
+```
+
+It will print something like this (manually formatted for easy reading):
+
+```
+{
+	"Tarraco": {
+		"stock": {
+			"Wheat": 660,
+			"Olives": 925
+		},
+		"price": {
+			"Wheat": 0.92997416180484,
+			"Olives": 0.12390274271286
+		}
+	},
+	"Ampuria": {
+		"stock": {
+			"Wheat": 625,
+			"Olives": 888
+		},
+		"price": {
+			"Wheat": 0.22696960263633,
+			"Olives": 0.89867763460801
+		}
+	}
+}
+```
+
+## String keys. Loading JSON files
 
 Example file: [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view)
 
