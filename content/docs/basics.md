@@ -206,59 +206,116 @@ some_function():
 
 ### .new() vs .instantiate()
 
+<br>
+
 ##### .new()
 
-**.new()** is used to instantiate **Objects**, that is, classes and built-in nodes.
+**.new()** is used to instantiate **Objects**, that is, custom classes and built-in nodes.
+
+Example 1:
 
 ```gdscript
 var node = Node2D.new()
-add_child(node)
+node.position = 200, 300
 node.rotation = 1.5
+add_child(node)
 var a = node.get("rotation") # a is 1.5
 ```
 
-If you don't `add_child`, it will generate a stray node (orphan node). You can check for orphan nodes by using `print_orphan_nodes()` and the **Project->Tools->Orphan Resource Explorer...**
-
-If you have defined a class in the custom script **data.gd** by using the line `class_name Data`, you can instantiate the class like this:
+Example 2:
 
 ```gdscript
-@onready var data = Data.new()
+var city = City.new()
+city.name = "Tarraco"
+city.population = 3000
+add_child(city)
+var a = city.get("population") # a is 3000
 ```
 
-or inherits like this:
+Note in the code above that you can optionally set up inital values for the instance before calling `add_child()`.
+
+`add_child` will add the instance node to the scene tree. If you don't call `add_child`, Godot will generate a stray node (orphan node). You can check for orphan nodes by using `print_orphan_nodes()` and the **Project->Tools->Orphan Resource Explorer...**
+
+If you, on the other hand, have defined a class constructor in your `City.gd` class, you can instantiate the class using a constructor like this:
+
+- `City.gd`
 
 ```gdscript
-extends Data
+class_name City
+extend Node
+
+var name: String = ""
+var population: int = 0
+
+# Constructor
+func _init(_name: String, _population: int) -> void:
+	name = _name
+	population = _population
+```
+
+- `main.gd`
+
+```gdscript
+
+func _ready() -> void:
+	# Instantiaton
+	var city: City = City.new("Tarraco", 3000)
 ```
 
 
 More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#classes)
 
+<br>
+
 ##### .instantiate()
 
 **.instantiate()** is used to instantiate **Scenes**. It is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 
+However, with `.instantiate()` is not possible to add paramenters via constructor while instantiating a scene, as opposed to `.new()`. There is a solution, though. We can use a static method to work around the lack of a constructor. Keep reading:
 
-### Instantiate a scene using parameters
+The example below implements a turret that can select three different types of bullets to shoot. Each type of bullet produces a particular damage value. It's not the job of the turret to inflict the damage, that's the job of the bullet. Likewise, it is not the job of the bullet to select the type of munition the turret can shoot. The solution is for the tower to select the type of bullet to shoot and pass that information to the bullet class constructor. The bullet class deals with the damage calculations:
 
-The following code will instantiate 1 Gem in the player position.
-
-
-- **foo.gd** 
+- `Bullet.gd`
 
 ```gdscript
-const ItemObject = preload("res://scenes/item_object.tscn")
+class_name Bullet
+extends Area2D
 
-func bar():
-	var name = "Gem"
-	var quantity = 1
-	var item_object = ItemObject.instantiate()
-	item_object.initialize(name, quantity)
-	add_child(item_object)
-	item_object.position = Player.position
+const BULLET: PackedScene = preload("res://Projectile/Bullet/bullet.tscn")
+
+enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE, HIGH_DAMAGE }
+var munition_index: int = 0
+
+static func create_bullet(_munition_index: int) -> Bullet:
+	var new_bullet: Bullet = BULLET.instantiate()
+	new_bullet.munition_index = _munition_index
+	return new_bullet
+
+func _ready() -> void:
+	damage = munition_type.values()[munition_index]
 ```
 
-- **item_object.gd** is used to instantiate scenes:
+- `turret.gd`
+
+```gdscript
+extends StaticBody2D
+
+enum munition { LOW_DAMAGE, MEDIUM_DAMAGE, HIGH_DAMAGE }
+@export var munition_type: munition = munition.LOW_DAMAGE
+
+func _shoot():
+	var new_bullet: Bullet = Bullet.create_bullet(munition_type)
+	get_parent().add_child(new_bullet)
+	new_bullet.global_position = muzzle.global_position
+```
+
+<br>
+
+##### Instantiate a scene with parameters using custom inititalization method
+
+The following code will instantiate 1 Gem in the player position after the players drop the gem:
+
+- `item.gd`
 
 ```gdscript
 export (String) var item_name
@@ -269,10 +326,49 @@ func initialize(name: String, quantity: int):
 	item_quantity = quantity
 ```
 
-Note the we can instantiate the item scene both via editor at compile time with the export variables, and via code at run time with the rest of the code. 
+- `player.gd`
 
-Also note that you cannot instantiate an object from its own script (You cannot instantiate **item_object** from **item_object.gd**)
+```gdscript
+const ITEM = preload("res://scenes/item_object.tscn")
 
+var inventory: Array = [ "Gem", "Coin", "Scroll"]
+
+func drop(name: String):
+	var quantity = 1
+	var item = ITEM.instantiate()
+	item.initialize(name, quantity)
+	add_child(item)
+	item.position = position
+	inventory.erase(name)
+
+func ready():
+	drop(inventory[0])
+```
+
+Note that you cannot instantiate an object from its own script (You cannot instantiate **item** from **item.gd**)
+
+<br>
+
+##### Instantiate a scene with parameters using variables directly
+
+We can also set up the instance properties before adding the instance to the scene via `add_child`:
+
+```gdscript
+const ITEM = preload("res://scenes/item_object.tscn")
+
+var inventory: Array = [ "Gem", "Coin", "Scroll"]
+
+func drop():
+	var item = ITEM.instantiate()
+	item.name = inventory[0]
+	item.quantity = 1
+	add_child(item)
+	item.position = position
+	inventory.erase(name)
+
+func ready():
+	drop()
+```
 
 ## load() vs preload()
 When importing a resource, you can use either load or preload.
