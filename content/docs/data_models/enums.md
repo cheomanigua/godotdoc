@@ -52,7 +52,7 @@ Exporting the **enum** will let the developer choose the attribute for the playe
 
 extends Area2D
 
-enum attributes {STRENGTH, INTELLIGENCE, DEXTERITY}
+enum attributes { STRENGTH, INTELLIGENCE, DEXTERITY }
 @export var attribute: attributes = attributes.STRENGTH
 @export var item_name: String
 @export var attribute_value: float = 0
@@ -63,7 +63,7 @@ func _ready() -> void:
 
 
 func _on_body_entered(body):
-	var attribute_name: String = str(attributes.keys()[attribute]).capitalize()
+	var attribute_name: String = attributes.keys()[attribute].capitalize() # enums are dictionaries, so we can use their keys() and values()
 	if body.has_method("pickup"):
 		body.pickup(item_name) # Just to show how to pickup an item. It is not necessary as the item is consumed instantly
 		body.change_attribute(attribute_name, attribute_value)
@@ -164,3 +164,56 @@ func _physics_process(_delta):
 	move_and_slide()
 ```
 
+## Enums as Dictionaries
+
+Enums are a dictionary type. They hold a `key: value` structure. As such, we can use enums like dictionaries for certain situations. In the first example at the beginning we saw one of such situations:
+
+```gdscript
+var attribute_name: String = attributes.keys()[attribute].capitalize()
+```
+
+This is another example:
+
+```gdscript
+enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE, HIGH_DAMAGE }   # values(): 1, 2 and 3
+var munition_index: int = 0     # --> LOW_DAMAGE keys()
+
+func _ready() -> void:
+	damage = munition_type.values()[munition_index] # damage = 1
+	munition_index = 2      # --> HIGH_DAMAGE keys()
+	damage = munition_type.values()[munition_index] # damage = 3
+```
+<br>
+
+By default, enums start with a value of `0` for the first key and auto-increments by `1` for the next keys. However, as we saw in the code above, we can change the value of any key and will auto-increment from this value unless it finds a key witn another custom value:
+
+```gdscript
+enum munition_type { LOW_DAMAGE = 1 =, MEDIUM_DAMAGE, HIGH_DAMAGE }
+```
+
+The code above has the following key-values:
+- LOW_DAMAGE: 1
+- MEDIUM_DAMAGE: 2
+- HIGH_DAMAGE: 3
+
+<br>
+
+```gdscript
+enum munition_type { LOW_DAMAGE, MEDIUM_DAMAGE = 2, HIGH_DAMAGE }
+```
+
+The code above has the following key-values:
+- LOW_DAMAGE: 0
+- MEDIUM_DAMAGE: 2
+- HIGH_DAMAGE: 3
+
+<br>
+
+```gdscript
+enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE = 6, HIGH_DAMAGE }
+```
+
+The code above has the following key-values:
+- LOW_DAMAGE: 1
+- MEDIUM_DAMAGE: 6
+- HIGH_DAMAGE: 7

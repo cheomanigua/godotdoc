@@ -11,6 +11,8 @@ toc: true
 
 While Godot uses a more modular approach to game design, it can also use Object Oriented Programming approach by the use of Classes.
 
+{{< alert context="info" text="In this article we explain how to use clases in the context of data models. Classes has more features than just being a data model solution." />}}
+
 For reference on this article:
 
 - A variable defined in a class is called property.

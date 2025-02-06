@@ -53,16 +53,9 @@ func _physics_process(_delta: float) -> void:
 	previous_velocity = linear_velocity
 	
 func _integrate_forces(state):
-
 	if Input.is_action_pressed("ui_up"):
 		state.apply_force(thrust.rotated(rotation))
-	else:
-		state.apply_force(Vector2())
-	var rotation_direction = 0
-	if Input.is_action_pressed("ui_right"):
-		rotation_direction += 1
-	if Input.is_action_pressed("ui_left"):
-		rotation_direction -= 1
+	var rotation_direction = Input.get_axis("ui_left", "ui_right")
 	state.apply_torque(rotation_direction * torque)
 	
 func _on_body_entered(body):

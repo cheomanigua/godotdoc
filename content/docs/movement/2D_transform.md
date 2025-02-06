@@ -1,7 +1,7 @@
 ---
 weight: 10050
-title: "2D Basics"
-description: "2D fundamental theory in Godot"
+title: "2D Transform"
+description: "2D movement in Godot: vectors, matrices, rotation and position"
 icon: "article"
 date: "2025-01-24T19:24:58+02:00"
 lastmod: "2025-01-24T19:24:58+02:00"
@@ -9,9 +9,17 @@ draft: false
 toc: true
 ---
 
+On this artile we explain how **Transform2D** works in the context of creating movement of a node. Matrices and vectors are used to change the **rotation** and **position** of a node, that is, to create movement.
+
+References:
+
+- Transform2D: [Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_transform2d.html)
+- Matrices and transforms: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/matrices_and_transforms.html)
+- Vector math: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html#doc-vector-math)
+
 ## Rotation
 
-In Godot, the property `rotation` can be set via editor or via code. Setting the rotation in the editor will visually show degrees, but internally the engine is using radians.
+In Godot, the property `rotation` can be set via inspector or via code. Setting the rotation in the inspector will visually show degrees, but internally the engine is using radians.
 
 However, if we set the property `rotation` via code, the value we input will be radians. If we prefer to use degress, we must enclose the value with the function `deg_to_rad()`.
 
@@ -49,37 +57,47 @@ There are some built in helpers and convertion functions:
 
 #### Functions
 
+##### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
+
 - float **deg_to_rad(deg:** float **)** 
 
-Converts an angle expressed in degrees to radians.
+*(Globals)* Converts an angle expressed in degrees to radians.
 
 `var r = deg_to_rad(180) # r is 3.141593`
 
 ***
 
+##### rotation_degrees [](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-rotation-degrees)
+
 - float **rotation_degrees** - getter ------ float **rotation_degrees(value)** - setter
 
-Helper property to access `rotation` in degrees instead of radians.
+*(Control)* Helper property to access `rotation` in degrees instead of radians.
 
 `print(rotation_degrees)` or `print(get_rotation_degrees())` and `set_rotation_degrees(-90)`
 
 ***
 
+##### angle_difference() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-angle-difference)
+
 - float **angle_difference(from:** float, **to:** float **)** 
 
-Returns the difference between the two angles, in the range of `[-PI, +PI]`. When `from` and `to` are opposite, returns `-PI` if `from` is smaller than `to`, or `PI` otherwise.
+*(Globals)* Returns the difference between the two angles, in the range of `[-PI, +PI]`. When `from` and `to` are opposite, returns `-PI` if `from` is smaller than `to`, or `PI` otherwise.
 
 ***
+
+##### rotate() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
 
 - void **rotate(radians**: float **)**
 
-Applies a rotation to the node, in radians, starting from its current rotation.
+*(Vector2)* Applies a rotation to the node, in radians, starting from its current rotation.
 
 ***
 
+##### rotate_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-rotate-toward)
+
 - float **rotate_toward(from**: float, **to**: float, **delta**: float **)**
 
-Rotates `from` toward `to` by the `delta` amount. Will not go past `to`.
+*(Globals)* Rotates `from` toward `to` by the `delta` amount. Will not go past `to`.
 
 Similar to `move_toward()`, but interpolates correctly when the angles wrap around `@GDScript.TAU`.
 
@@ -87,9 +105,11 @@ If `delta` is negative, this function will rotate away from `to`, toward the opp
 
 ***
 
+##### lerp_angle() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp-angle)
+
 - float **lerp_angle(from:** float, **to:** float, **weight:** float **)**
 
-Linearly interpolates between two angles (in radians) by a `weight` value between 0.0 and 1.0.
+*(Globals)* Linearly interpolates between two angles (in radians) by a `weight` value between 0.0 and 1.0.
 
 Similar to lerp, but interpolates correctly when the angles wrap around @GDScript.TAU. To perform eased interpolation with lerp_angle, combine it with ease or smoothstep.
 
@@ -105,12 +125,92 @@ func _process(delta):
 
 **Note**: This function lerps through the shortest path between `from` and `to`. However, when these two angles are approximately `PI + k * TAU` apart for any integer `k`, it's not obvious which way they lerp due to floating-point precision errors. For example, `lerp_angle(0, PI, weight)` lerps counter-clockwise, while `lerp_angle(0, PI + 5 * TAU, weight)` lerps clockwise.
 
+***
+
+##### direction_to() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-direction-to)
+
+- Vector2 **direction_to(to:** Vector2)
+
+*(Vector2)* Returns the normalized vector pointing from this vector to `to`. This is equivalent to using `(b - a).normalized()`.
+
+`position.direction_to(player.position)`
+
+***
+
+##### dot() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-dot)
+
+- float **dot**(with: Vector2)
+
+*(Vector2)* Returns the dot product of this vector and `with`. This can be used to compare the angle between two vectors. For example, this can be used to determine whether an enemy is facing the player and to setup a field of view.
+
+
+
+```gdscript
+var to_target: Vector2 = position.direction_to(player.position)
+var facing = Vector2(cos(cannon_pivot.rotation), sin(cannon_pivot.rotation))
+var fov = to_target.dot(facing)
+
+if fov > 0.5:
+	print("Player dectected, face the target!")
+	rotation = lerp_angle(rotation, to_target.angle(), elapse * delta)
+```
+- `to_target`: Gets the vector that goes from node to player. Node is the user. Player is the target.
+- `facing`: Gets the vector that the node is currently facing to.
+- `fov`: Setups the field of view of the node in relation to the target.
+- Finaly we check if the target is within 90º arc in front of the node.
+
+How does the field of view work? What `0.5` represents and what it has to do with `90`º arc in front of node?
+
+`0.5` is the result of the **dot** product. When using unit (normalized) vectors, the result will always be between `-1.0` (180º angle) when the vectors are facing opposite directions, and `1.0` (0º angle) when the vectors are aligned. If the target is exactly 45º in front of the smiley node, left or right, the dot product result will be `0.5`.
+
+![dot](/images/fov.webp)
+
+So as per the graphic above, and given that the blue arrow indicates where the smiley node is facing, if we wanted to check if the target was in a 180º arc in front of smiley node, we'd have used:
+
+```gdscript
+if fov > 0:     # 180 degree arc in front of smiley
+
+# other values
+if fov > 0.5:   #  90 degree arc in front of smiley
+if fov > -0.5:  # 270 degree arc in front of smiley
+if fov = 1:     # right in front of smiley
+if fov = -1:    # right behind of smiley
+if fov < -0.5:  #  90 degree arc behind smiley
+```
+
+We could have achieved the same result with this code. However, past the set field of view arc, the smiley node could not rotate further, and hence, will lose the target.
+
+```gdscript
+var direction: float = rotation
+var angle: float = (player.position - position).normalized().angle()
+
+if angle_difference(direction, angle) < PI/2 and angle_difference(direction, angle) > -PI/2:
+	print("Player dectected, face the target!")
+	rotation = lerp_angle(rotation, angle, elapse * delta)
+```
+
+***
+
+
 #### Custom code
 
-- float **angle = (from:** Vector2 **- to:** Vector2 **).angle()**
+- Vector2 **(from:** Vector2 **- to:** Vector2 **).normalized()**
 
-Calculate the angle between two points
+Returns the normalized vector pointing from this vector to `to`. This is equivalent to using: Vector2 **direction_to(to:** Vector2)
 
+`var towards: Vector2 = (player.position - position).normalized()`
+
+- float **(from:** Vector2 **- to:** Vector2 **).normalized().angle()**
+
+Returns the angle between two points
+
+`var angle: float = (player.position - position).normalized().angle()`
+
+- Vector2 **(cos**(float), **(sin**(float))
+
+Returns a Vector2 with the direction the node is facing
+
+`var facing = Vector2(cos(rotation), sin(rotation))`
 
 ## Translation
 
@@ -121,10 +221,15 @@ Translation or movement is obtained by updating the `position` value every frame
     - `transform.x`
     - `Vector2(1, 0).rotated(rotation`
     - `Vector2.RIGHT.rotated(rotation)`
+    - `Vector2.from_angle(rotation)`
 
-    **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)`, the node will be moving to the same direction regardless of the rotation.
+
+
+    **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
 - `velocity` has to be declared and defined, except for **CharacterBody2D** nodes, which comes built in.
 - **CharacterBody2D** is recommended to use the function `move_and_slide()` or `move_and_collide()` instead of `position += velocity * delta`.
+- `delta` is a parameter that represents the time elapsed since the previous frame. Velocity measures the change in position per unit of time. The new position is found by adding the velocity multiplied by `delta` (here assumed to be one unit, e.g. 1 s) to the previous position.
+- In a typical 2D game scenario, you would have a velocity in pixels per second, and multiply it by the delta parameter (time elapsed since the previous frame) from the `_process()` or `_physics_process()` callbacks. This way, `velocity` is time dependent and not frame dependent. We don't want a computer to move the node faster just because it has a better graphic card with higher frame per seconds processing.
 
 
 ### Key binding
@@ -136,23 +241,51 @@ When setting up the key binding for moving forward, backward, right and left, we
 - Moving right is on the `transform.y` axis, or `Vector2(0, 1)`, or `Vector2.DOWN`
 - Moving left is on the `-transform.y` axis, or `Vector2(0, -1)`, or `Vector2.UP`
 
-**Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)`, the node will be moving to the same direction regardless of the rotation.
+**Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
 
 ![translation](/images/translation.webp)
 
 
 ### Recipes
 
-#### Circular Translation
+#### 4 Axis movement
 
 ```gdscript
-var speed = 400
-var rotation_speed = PI
+var speed: int = 400
+var velocity = Vector2.ZERO			# Use for non CharacterBody2D. Don't use for CharacterBody2D
 
-func _process(delta):
-	rotation += rotation_speed * delta
-	var velocity = Vector2.UP.rotated(rotation) * speed
-	position += velocity * delta
+func get_input():
+	if Input.is_action_pressed("ui_up"):
+		velocity = Vector2.RIGHT.rotated(rotation) * speed
+	elif Input.is_action_pressed("ui_down"):
+		velocity = Vector2.LEFT.rotated(rotation) * speed
+	elif Input.is_action_pressed("ui_right"):
+		velocity = Vector2.DOWN.rotated(rotation) * speed
+	elif Input.is_action_pressed("ui_left"):
+		velocity = Vector2.UP.rotated(rotation) * speed
+	else:
+		velocity = Vector2.ZERO
+
+func _physics_process(delta):
+	get_input()
+	position += velocity * delta    # Option 1 use for any node
+	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
+```
+
+#### 8 Axis movement
+
+```gdscript
+var speed: int = 400
+var velocity = Vector2.ZERO			# Use for non CharacterBody2D. Don't use for CharacterBody2D
+
+func get_input():
+	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	velocity = input_direction * speed
+
+func _physics_process(delta):
+	get_input()
+	position += velocity * delta    # Option 1 use for any node
+	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
 ```
 
 #### Rotate and move (push forward/backward)
@@ -251,43 +384,24 @@ func get_input():
 		velocity = -transform.x * speed
 ```
 
-
-#### 4 Axis movement
+#### Circular Translation
 
 ```gdscript
-var speed: int = 400
-var velocity = Vector2.ZERO			# Use for non CharacterBody2D. Don't use for CharacterBody2D
+var speed = 400
+var rotation_speed = PI
 
-func get_input():
-	if Input.is_action_pressed("ui_up"):
-		velocity = Vector2.RIGHT.rotated(rotation) * speed
-	elif Input.is_action_pressed("ui_down"):
-		velocity = Vector2.LEFT.rotated(rotation) * speed
-	elif Input.is_action_pressed("ui_right"):
-		velocity = Vector2.DOWN.rotated(rotation) * speed
-	elif Input.is_action_pressed("ui_left"):
-		velocity = Vector2.UP.rotated(rotation) * speed
-	else:
-		velocity = Vector2.ZERO
-
-func _physics_process(delta):
-	get_input()
-	position += velocity * delta    # Option 1 use for any node
-	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
+func _process(delta):
+	rotation += rotation_speed * delta
+	var velocity = Vector2.UP.rotated(rotation) * speed
+	position += velocity * delta
 ```
 
-#### 8 Axis movement
+#### Ricochet/Bounce
 
 ```gdscript
-var speed: int = 400
-var velocity = Vector2.ZERO			# Use for non CharacterBody2D. Don't use for CharacterBody2D
-
-func get_input():
-	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	velocity = input_direction * speed
-
-func _physics_process(delta):
-	get_input()
-	position += velocity * delta    # Option 1 use for any node
-	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
+var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+if collision:
+	var reflect = collision.get_remainder().bounce(collision.get_normal())
+	velocity = velocity.bounce(collision.get_normal())
+	move_and_collide(reflect)
 ```

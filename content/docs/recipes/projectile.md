@@ -200,3 +200,15 @@ func _on_player_shoot(Bullet, direction, location):
 ### Full implementation
 
 {{< alert text="You can see a full implementation of a projectile at [Rotating Weapon](../../movement/rotating_weapon)" />}}
+
+
+
+## Ricochet/Bounce
+
+```gdscript
+var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+if collision:
+	var reflect = collision.get_remainder().bounce(collision.get_normal())
+	velocity = velocity.bounce(collision.get_normal())
+	move_and_collide(reflect)
+```
