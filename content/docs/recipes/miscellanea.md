@@ -104,6 +104,76 @@ $Label.text = ""
 ```
 [Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_timer.html)
 
+```gdscript
+var timer: Timer = Timer.new()
+
+func _ready():
+	add_child(timer)
+	timer.wait_time = 2.0
+	body_entered.connect(_on_body_entered)
+	body.exited.connect(_on_body_exited)
+
+
+func _on_body_entered(body):
+	player = body
+	timer.start()
+	timer.timeout.connect(_shoot)
+
+
+func _on_body_exited():
+	timer.timeout.disconnect(_shoot)
+	timer.stop()
+
+
+func _shoot():
+	print("This message is printed every 2 seconds when body is entered,
+    but stop being printed when body exited")
+```
+<br>
+
+```gdscript
+var can_shoot: bool = true
+@onready var timer: Timer = Timer.new()
+
+func _ready():
+	add_child(timer)
+	timer.timeout.connect(_on_timer_timeout)
+	timer.wait_time = 1.0 # default value
+	body_entered.connect(_on_body_entered)
+	body_exited.connect(_on_body_exited)
+
+
+func _physics_process(delta: float) -> void:
+	if raycast.is_colliding():
+		var collider = raycast.get_collider()
+		if collider != player:
+			timer.set_paused(true)
+		else:
+			timer.set_paused(false)
+			if can_shoot:
+				_shoot()
+				can_shoot = false
+				timer.start()
+
+func _on_body_entered(body):
+	player = body
+	raycast.enabled = true
+
+
+func _on_body_exited():
+	raycast.enabled = false
+
+
+func _on_timer_timeout() -> void:
+	can_shoot = true
+
+
+func _shoot():
+	[shoot code here]
+```
+
+
+
 ### Autoload (Singleton)
 
 - When autoloading the Player, ALWAYS use the Player scene, and not the Player script. Otherwise, you will get `get_node: "node not found"` error when trying to call the children nodes from a script.

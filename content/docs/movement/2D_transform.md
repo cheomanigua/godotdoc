@@ -17,7 +17,7 @@ References:
 - Matrices and transforms: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/matrices_and_transforms.html)
 - Vector math: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html#doc-vector-math)
 
-## Rotation
+# 1. Rotation
 
 In Godot, the property `rotation` can be set via inspector or via code. Setting the rotation in the inspector will visually show degrees, but internally the engine is using radians.
 
@@ -36,7 +36,7 @@ So, if we want to rotate an object to face up, there are four ways we can do it:
 3. Via code: `rotation = deg_to_rad(-90)`
 4. Via code: `set_rotation_degrees(-90)`
 
-#### Values
+## Values
 
 In Godot, `180`º is the same as `-180`º. Likewise, `3.14` is the same as `-3.14`, and `0` is the same as `-0`. Some examples:
 
@@ -57,11 +57,11 @@ There are some built in helpers and convertion functions:
 
 <br>
 
-#### Functions
+## Functions
 
 ***
 
-##### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
+### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
 
 - float **deg_to_rad(deg:** float **)** 
 
@@ -71,7 +71,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### rotation_degrees [](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-rotation-degrees)
+### rotation_degrees [](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-rotation-degrees)
 
 - float **rotation_degrees** - getter ------ float **rotation_degrees(value)** - setter
 
@@ -81,7 +81,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### angle_difference() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-angle-difference)
+### angle_difference() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-angle-difference)
 
 - float **angle_difference(from:** float, **to:** float **)** 
 
@@ -89,7 +89,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### rotate() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-rotate)
+### rotate() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-rotate)
 
 - void **rotate(radians**: float **)**
 
@@ -97,7 +97,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### rotated() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
+### rotated() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
 
 - Vector2 **rotated(angle**: float **)**
 
@@ -105,7 +105,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### look_at() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-look-at)
+### look_at() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-look-at)
 
 - void **look_at(point**: Vector2)
 
@@ -119,7 +119,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### rotate_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-rotate-toward)
+### rotate_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-rotate-toward)
 
 - float **rotate_toward(from**: float, **to**: float, **delta**: float **)**
 
@@ -137,7 +137,7 @@ To calculate `angle_to_target`, check [Custom code](#custom-code)
 
 ***
 
-##### lerp_angle() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp-angle)
+### lerp_angle() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp-angle)
 
 - float **lerp_angle(from:** float, **to:** float, **weight:** float **)**
 
@@ -161,7 +161,7 @@ func _process(delta):
 
 ***
 
-##### direction_to() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-direction-to)
+### direction_to() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-direction-to)
 
 - Vector2 **direction_to(to:** Vector2)
 
@@ -171,7 +171,7 @@ func _process(delta):
 
 ***
 
-##### dot() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-dot)
+### dot() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-dot)
 
 - float **dot**(with: Vector2)
 
@@ -225,9 +225,11 @@ if angle_difference(direction, angle) < PI/4 and angle_difference(direction, ang
 
 <br>
 
-#### Custom code
+## Custom code
 
 ***
+
+### Return vector between to points
 
 - Vector2 **(from:** Vector2 **- to:** Vector2 **).normalized()**
 
@@ -236,6 +238,8 @@ Returns the normalized vector pointing from this vector to `to`. This is equival
 `var towards: Vector2 = (target.position - position).normalized()`
 
 ***
+
+### Return the angle between two points
 
 - float **(from:** Vector2 **- to:** Vector2 **).normalized().angle()**
 
@@ -251,9 +255,9 @@ Returns the angle between two points
 
 `var angle: float = position.direction_to(target.position).angle()`
 
-
-
 ***
+
+### Return vector with the facing direction
 
 - Vector2 **(cos**(float), **(sin**(float))
 
@@ -263,7 +267,15 @@ Returns a Vector2 with the direction the node is facing
 
 ***
 
-## Translation
+- Vector2 **(from:** Vector2 **+** Vector2))
+
+Returns a Vector2 with the direction the node is facing
+
+`var facing = Vector2.ZERO + Vector2.RIGHT.rotated(rotation)`
+
+***
+
+# 2. Translation
 
 
 Translation or movement is obtained by updating the `position` value every frame. `position` is a **Vector2** value relative to its node's parent. `position` can have its value updated by multiplying `velocity` and `delta`, like this: `position += velocity * delta`.
@@ -283,7 +295,7 @@ Translation or movement is obtained by updating the `position` value every frame
 - In a typical 2D game scenario, you would have a velocity in pixels per second, and multiply it by the delta parameter (time elapsed since the previous frame) from the `_process()` or `_physics_process()` callbacks. This way, `velocity` is time dependent and not frame dependent. We don't want a computer to move the node faster just because it has a better graphic card with higher frame per seconds processing.
 
 
-### Key binding
+## Key binding
 
 When setting up the key binding for moving forward, backward, right and left, we have to take into consideration the following:
 
@@ -297,9 +309,9 @@ When setting up the key binding for moving forward, backward, right and left, we
 ![translation](/images/translation.webp)
 
 
-### Recipes
+## Recipes
 
-#### 4 Axis movement
+### 4 Axis movement
 
 ```gdscript
 var speed: int = 400
@@ -323,7 +335,7 @@ func _physics_process(delta):
 	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
 ```
 
-#### 8 Axis movement
+### 8 Axis movement
 
 ```gdscript
 var speed: int = 400
@@ -339,7 +351,7 @@ func _physics_process(delta):
 	move_and_slide()                # Option 2 use for CharacterBody2D only (use it!!!)
 ```
 
-#### Rotate and move (push forward/backward)
+### Rotate and move (push forward)
 
 For this type of movement, where pressing the **UP** arrow keys move forward, it is recommended to use `transform.x` or `Vector2.RIGHT.rotated(rotation`. The reason for this is that Godot uses the positive `x` axis as default `0` rotation value (check the section [Rotation](#rotation) for further info). This means that moving along `transform.x` is moving towards the default direction, and no further convertions/tweekings are needed.
 
@@ -400,7 +412,7 @@ func _physics_process(delta):
 
 The following use cases take the principles of rotate and move, and adapt it to different type of vehicles. The use cases code are for `CharacterBody2D`. We are only changing the `get_input()` method. The rest of the code is exactly the same as above.
 
-##### Simulate wheeled vehicle (car, bus, etc)
+#### Simulate wheeled vehicle (car, bus, etc)
 
 To simulate the behavior of a wheeled vehicle, we can change the `get_input()` function to this:
 
@@ -418,7 +430,7 @@ func get_input():
 		rotation_direction = 0
 ```
 
-##### Simulate track vehicle (tank, APC, etc)
+#### Simulate track vehicle (tank, APC, etc)
 
 To simulate the behavior of a track vehicle, we can change the `get_input()` function to this:
 
@@ -435,7 +447,7 @@ func get_input():
 		velocity = -transform.x * speed
 ```
 
-#### Circular Translation
+### Circular Translation
 
 ```gdscript
 var speed = 400
@@ -447,7 +459,7 @@ func _process(delta):
 	position += velocity * delta
 ```
 
-#### Ricochet/Bounce
+### Ricochet/Bounce
 
 ```gdscript
 var collision: KinematicCollision2D = move_and_collide(velocity * delta)
