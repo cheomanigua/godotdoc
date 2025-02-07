@@ -55,7 +55,11 @@ There are some built in helpers and convertion functions:
 - If we want to convert from degrees to radians: `deg_to_rad(90)`
 - If we want to custom convert from radians to degrees: `180/PI*rotation`
 
+<br>
+
 #### Functions
+
+***
 
 ##### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
 
@@ -85,11 +89,33 @@ There are some built in helpers and convertion functions:
 
 ***
 
-##### rotate() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
+##### rotate() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-rotate)
 
 - void **rotate(radians**: float **)**
 
-*(Vector2)* Applies a rotation to the node, in radians, starting from its current rotation.
+*(Node2D)* Applies a rotation to the node, in radians, starting from its current rotation.
+
+***
+
+##### rotated() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
+
+- Vector2 **rotated(angle**: float **)**
+
+*(Vector2)* Returns the result of rotating this vector by angle (in radians).
+
+***
+
+##### look_at() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-look-at)
+
+- void **look_at(point**: Vector2)
+
+{{< alert context="primary" text="`rotate_toward()` and `lerp_angle()` are better alternatives." />}}
+
+*(Node2D)* Rotates **INSTANTLY** the node so that its local +X axis `points` towards the point, which is expected to use global coordinates.
+
+`point` should not be the same as the node's position, otherwise the node always looks to the right.
+
+`look_at(target.position)`
 
 ***
 
@@ -97,11 +123,17 @@ There are some built in helpers and convertion functions:
 
 - float **rotate_toward(from**: float, **to**: float, **delta**: float **)**
 
-*(Globals)* Rotates `from` toward `to` by the `delta` amount. Will not go past `to`.
+{{< alert context="success" text="A better alternative to `look_at()`" />}}
+
+*(Globals)* **SLOWLY** rotates `from` toward `to` by the `delta` amount. Will not go past `to`.
 
 Similar to `move_toward()`, but interpolates correctly when the angles wrap around `@GDScript.TAU`.
 
 If `delta` is negative, this function will rotate away from `to`, toward the opposite angle, and will not go past the opposite angle.
+
+`rotation = rotate_toward(rotation, angle_to_target, delta)`
+
+To calculate `angle_to_target`, check [Custom code](#custom-code)
 
 ***
 
@@ -109,9 +141,11 @@ If `delta` is negative, this function will rotate away from `to`, toward the opp
 
 - float **lerp_angle(from:** float, **to:** float, **weight:** float **)**
 
-*(Globals)* Linearly interpolates between two angles (in radians) by a `weight` value between 0.0 and 1.0.
+{{< alert context="success" text="A better alternative to `rotate_toward()`" />}}
 
-Similar to lerp, but interpolates correctly when the angles wrap around @GDScript.TAU. To perform eased interpolation with lerp_angle, combine it with ease or smoothstep.
+*(Globals)* Rotates **GRADUALLY**. Linearly interpolates between two angles (in radians) by a `weight` value between 0.0 and 1.0.
+
+Similar to lerp, but interpolates correctly when the angles wrap around `TAU`. To perform eased interpolation with `lerp_angle`, combine it with [ease](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-ease) or [smoothstep](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-smoothstep).
 
 ```gdscript
 extends Sprite
@@ -133,7 +167,7 @@ func _process(delta):
 
 *(Vector2)* Returns the normalized vector pointing from this vector to `to`. This is equivalent to using `(b - a).normalized()`.
 
-`position.direction_to(player.position)`
+`position.direction_to(target.position)`
 
 ***
 
@@ -141,31 +175,31 @@ func _process(delta):
 
 - float **dot**(with: Vector2)
 
-*(Vector2)* Returns the dot product of this vector and `with`. This can be used to compare the angle between two vectors. For example, this can be used to determine whether an enemy is facing the player and to setup a field of view.
+*(Vector2)* Returns the dot product of this vector and `with`. This can be used to compare the angle between two vectors. For example, this can be used to determine whether a node is facing another node, or to setup a field of view.
 
 
 
 ```gdscript
-var to_target: Vector2 = position.direction_to(player.position)
-var facing = Vector2(cos(cannon_pivot.rotation), sin(cannon_pivot.rotation))
+var to_target: Vector2 = position.direction_to(target.position)
+var facing = Vector2(cos(rotation), sin(rotation))
 var fov = to_target.dot(facing)
 
 if fov > 0.5:
-	print("Player dectected, face the target!")
+	print("Target detected, face the target!")
 	rotation = lerp_angle(rotation, to_target.angle(), elapse * delta)
 ```
-- `to_target`: Gets the vector that goes from node to player. Node is the user. Player is the target.
-- `facing`: Gets the vector that the node is currently facing to.
-- `fov`: Setups the field of view of the node in relation to the target.
-- Finaly we check if the target is within 90º arc in front of the node.
+- `to_target`: Gets the vector that goes from `self` to **target**.
+- `facing`: Gets the vector that `self` is currently facing to.
+- `fov`: Setups the field of view of `self` in relation to the target.
+- Finaly we check if the target is within a 90º arc in front `self`.
 
-How does the field of view work? What `0.5` represents and what it has to do with `90`º arc in front of node?
+How does the field of view work? What `0.5` represents and what it has to do with a `90`º arc in front `self`?
 
-`0.5` is the result of the **dot** product. When using unit (normalized) vectors, the result will always be between `-1.0` (180º angle) when the vectors are facing opposite directions, and `1.0` (0º angle) when the vectors are aligned. If the target is exactly 45º in front of the smiley node, left or right, the dot product result will be `0.5`.
+`0.5` is the result of the **dot** product. When using unit (normalized) vectors, the result will always be between `-1.0` (180º angle) when the vectors are facing opposite directions, and `1.0` (0º angle) when the vectors are aligned. If the target is exactly 45º in front of `self` (the **Smiley** in the image below), left or right, the dot product result will be `0.5`.
 
 ![dot](/images/fov.webp)
 
-So as per the graphic above, and given that the blue arrow indicates where the smiley node is facing, if we wanted to check if the target was in a 180º arc in front of smiley node, we'd have used:
+So as per the graphic above, and given that the blue arrow indicates where **Smiley** is facing, if we wanted to check if the target was in a 180º arc in front of **Smiley**, we'd have used:
 
 ```gdscript
 if fov > 0:     # 180 degree arc in front of smiley
@@ -174,43 +208,60 @@ if fov > 0:     # 180 degree arc in front of smiley
 if fov > 0.5:   #  90 degree arc in front of smiley
 if fov > -0.5:  # 270 degree arc in front of smiley
 if fov = 1:     # right in front of smiley
-if fov = -1:    # right behind of smiley
+if fov = -1:    # right behind smiley
 if fov < -0.5:  #  90 degree arc behind smiley
 ```
 
-We could have achieved the same result with this code. However, past the set field of view arc, the smiley node could not rotate further, and hence, will lose the target.
+We could have achieved the same result with the code below. However, past the set field of view arc, **Smiley** could not rotate further, and hence, will lose the target.
 
 ```gdscript
 var direction: float = rotation
-var angle: float = (player.position - position).normalized().angle()
+var angle: float = (target.position - position).normalized().angle()
 
-if angle_difference(direction, angle) < PI/2 and angle_difference(direction, angle) > -PI/2:
-	print("Player dectected, face the target!")
+if angle_difference(direction, angle) < PI/4 and angle_difference(direction, angle) > -PI/4:
+	print("Target detected, face the target!")
 	rotation = lerp_angle(rotation, angle, elapse * delta)
 ```
 
-***
-
+<br>
 
 #### Custom code
+
+***
 
 - Vector2 **(from:** Vector2 **- to:** Vector2 **).normalized()**
 
 Returns the normalized vector pointing from this vector to `to`. This is equivalent to using: Vector2 **direction_to(to:** Vector2)
 
-`var towards: Vector2 = (player.position - position).normalized()`
+`var towards: Vector2 = (target.position - position).normalized()`
+
+***
 
 - float **(from:** Vector2 **- to:** Vector2 **).normalized().angle()**
 
 Returns the angle between two points
 
-`var angle: float = (player.position - position).normalized().angle()`
+`var angle: float = (target.position - position).normalized().angle()`
+
+***
+
+- float **from:** Vector2 **(to:** Vector2).**angle()**
+
+Returns the angle between two points
+
+`var angle: float = position.direction_to(target.position).angle()`
+
+
+
+***
 
 - Vector2 **(cos**(float), **(sin**(float))
 
 Returns a Vector2 with the direction the node is facing
 
 `var facing = Vector2(cos(rotation), sin(rotation))`
+
+***
 
 ## Translation
 

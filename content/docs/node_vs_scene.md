@@ -226,6 +226,9 @@ func _shoot():
 	new_bullet.global_position = muzzle.global_position
 ```
 
+
+{{< alert context="success" text="The great advantage of using a **static method** is that the own original class loads its own **PackedScene**. This means that if five different scenes instantiate the original scene, they won't need to load the original **PackedScene**. This means that any changes in the scene path has to be updated only in the own original class." />}}
+
 <br>
 
 #### Instantiate a scene with parameters using custom inititalization method

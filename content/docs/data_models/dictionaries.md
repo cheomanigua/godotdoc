@@ -202,6 +202,7 @@ func _ready() -> void:
 		urbes[city]["price"] = {}	# creates 2nd level dictionary with key "price"
 	# Generate each product stocks and prices for each city in dictionary "urbes"
 	for city in urbes:
+		# creates 3rd level dictionary with keys "Wheat" and "Olives"
 		for product in products:
 			urbes[city]["stock"][product] = randi_range(0, 1000)
 			urbes[city]["price"][product] = randf_range(0.0, 2.0)

@@ -50,6 +50,7 @@ The LSO can set 1, 2 or 3 bits at the same time, but it's better used for settin
 
 In the five examples above, we have set the variable `elements` value and the left shift operator (LSO) to the following:
 
+
 | Flags affected | variable | LSO v1 | LSO v2 |
 |-|-|-|-|
 | FIRE | `1` | `1` | `1<<0` |
@@ -57,6 +58,8 @@ In the five examples above, we have set the variable `elements` value and the le
 | FIRE and WATER | `3` | `1 + (1<<1)` | `(1<<0) + (1<<1)` |
 | EARTH | `4` | `1<<2` | `1<<2` |
 | FIRE and EARTH | `5` | `1 + (1<<2)` | `(1<<0) + (1<<2)` |
+
+
 
 <br>
 If we complete the table:
