@@ -122,10 +122,8 @@ func _ready():
 			player = node
 
 func _physics_process(delta: float) -> void:
-	print(player.position)      # (683, 5660 correct
-	if detected:
-		print(player.position)  # (683, 566) correct
-		calculate_angle_to_player()
+	print(player.position)      # (683, 5660) correct
+	calculate_angle_to_player()
 
 func calculate_angle_to_player():
 	var angle: float = (player.position - position).angle()
