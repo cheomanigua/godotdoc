@@ -1,5 +1,5 @@
 ---
-weight: 600
+weight: 270
 title: "Composition"
 description: "A good game arquitecture is to structure the game in small components"
 icon: "article"

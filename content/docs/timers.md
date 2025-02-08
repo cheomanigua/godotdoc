@@ -46,7 +46,7 @@ $Label.text = ""
 - We can activate methods when timer reaches an end: `timer.timeout.connect(_shoot)`
 - We can detach from a connected method as well: `timer.timeout.disconnect(_shoot)`
 
-This is usefull to run a function every x seconds. A more detailed example can be found [further down](#timer-running-a-function-every-x-seconds).
+This is useful for running a function every x seconds. A more detailed example can be found [further down](#timer-connected-to-function-in-body_entered-signal).
 
 ### Properties
 
