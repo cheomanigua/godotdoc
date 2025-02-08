@@ -84,15 +84,25 @@ When trying to access data from a node in a different scene avoiding the need to
 
 If we want any node to access Player and its properties, we can create the signal `body_entered` in the node that wants access to Player.
 
+{{< alert context="warning" text="We have to let the block of code accessing Player to know that body has entered. For that we can use a boolean variable, like `detected`. Otherwise, the player object is `<null>` and we won't be able to access its properties." />}}
+
 ```gdscript
+var detected: bool = false
 var player: RigidBody2D
 
 func _ready():
 	body_entered.connect(_on_body_entered) # body could be the Player
 
+func _physics_process(delta: float) -> void:
+	print(player.position)      # <null> compilation error: Invalid access to property or key 'position' on a base object of type 'Nil'.
+	if detected:
+		print(player.position)  # (683, 566) correct
+		calculate_angle_to_player()
+
 _on_body_entered(body):
 	if body == "Player":
 		player = body
+		detected = !detected
 
 func calculate_angle_to_player():
 	var angle: float = (player.position - position).angle()
@@ -103,12 +113,19 @@ func calculate_angle_to_player():
 If we want any node to access Player and its properties, we can create a *Project Settings -> Globals -> Group* called **Foo** and add the node `Player` to it. Then, we can run this code in a completely different node to access Player:
 
 ```gdscript
+var detected: bool = false
 var player: RigidBody2D
 
 func _ready():
 	for node in get_tree().get_nodes_in_group("Foo"):
 		if node.name == "Player":
 			player = node
+
+func _physics_process(delta: float) -> void:
+	print(player.position)      # (683, 5660 correct
+	if detected:
+		print(player.position)  # (683, 566) correct
+		calculate_angle_to_player()
 
 func calculate_angle_to_player():
 	var angle: float = (player.position - position).angle()

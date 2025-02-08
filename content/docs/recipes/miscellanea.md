@@ -106,6 +106,7 @@ $Label.text = ""
 
 ```gdscript
 var timer: Timer = Timer.new()
+var detected: bool = false
 
 func _ready():
 	add_child(timer)
@@ -116,11 +117,13 @@ func _ready():
 
 func _on_body_entered(body):
 	player = body
+	detected != detected
 	timer.start()
 	timer.timeout.connect(_shoot)
 
 
 func _on_body_exited():
+	detected != detected
 	timer.timeout.disconnect(_shoot)
 	timer.stop()
 
@@ -133,6 +136,7 @@ func _shoot():
 
 ```gdscript
 var can_shoot: bool = true
+var detected: bool = false
 @onready var timer: Timer = Timer.new()
 
 func _ready():
@@ -144,23 +148,26 @@ func _ready():
 
 
 func _physics_process(delta: float) -> void:
-	if raycast.is_colliding():
-		var collider = raycast.get_collider()
-		if collider != player:
-			timer.set_paused(true)
-		else:
-			timer.set_paused(false)
-			if can_shoot:
-				_shoot()
-				can_shoot = false
-				timer.start()
+	if detected:
+    	if raycast.is_colliding():
+    		var collider = raycast.get_collider()
+    		if collider != player:
+    			timer.set_paused(true)
+    		else:
+    			timer.set_paused(false)
+    			if can_shoot:
+    				_shoot()
+    				can_shoot = false
+    				timer.start()
 
 func _on_body_entered(body):
 	player = body
+	detected != detected
 	raycast.enabled = true
 
 
 func _on_body_exited():
+	detected != detected
 	raycast.enabled = false
 
 
@@ -169,7 +176,8 @@ func _on_timer_timeout() -> void:
 
 
 func _shoot():
-	[shoot code here]
+	print("This message is printed every second when body is entered, 
+    but stop being printed when body exited")
 ```
 
 

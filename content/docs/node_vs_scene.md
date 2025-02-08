@@ -79,6 +79,8 @@ func _ready():
 
 # Scenes
 
+## Instantiating a scene
+
 Scenes are templates from which you can create as many reproductions as you'd like. This operation is called instancing.
 
 ```gdscript
@@ -119,11 +121,11 @@ some_function():
 
 ## .new() vs .instantiate()
 
-<br>
+When instantiating **Objects**, use `new()`. When instantiating **Scenes**, use `instantiate()`.
 
-### .new()
+## .new()
 
-**.new()** is used to instantiate **Objects**, that is, custom classes and built-in nodes.
+**.new()** is used to instantiate **Objects**, that is, custom classes (Player, Enemy) and built-in nodes (Timer, Sprite2D, RayCast2D).
 
 Example 1:
 
@@ -132,7 +134,8 @@ var node = Node2D.new()
 node.position = 200, 300
 node.rotation = 1.5
 add_child(node)
-var a = node.get("rotation") # a is 1.5
+var a = node.get("rotation")    # a is 1.5
+var b = node.rotation           # b is 1.5
 ```
 
 Example 2:
@@ -142,7 +145,8 @@ var city = City.new()
 city.name = "Tarraco"
 city.population = 3000
 add_child(city)
-var a = city.get("population") # a is 3000
+var a = city.get("population")  # a is 3000
+var b = city.population         # b is 3000
 ```
 
 Note in the code above that you can optionally set up inital values for the instance before calling `add_child()`.
@@ -182,7 +186,7 @@ More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutori
 
 <br>
 
-### .instantiate()
+## .instantiate()
 
 **.instantiate()** is used to instantiate **Scenes**. It is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 

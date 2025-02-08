@@ -37,12 +37,11 @@ func take_damage(damage):
 ```gdscript
 
 func _shoot():
-	if detected and locked:
-		var tween = create_tween()
-		tween.tween_property(cannon, "position", Vector2(-10, 0), 0.2).as_relative().set_trans(Tween.TRANS_SINE)
-		tween.tween_property(cannon, "position", Vector2(10, 0), 0.2).as_relative().set_trans(Tween.TRANS_SINE)
-		var new_bullet = BULLET.instantiate()
-		add_child(new_bullet)
-		new_bullet.global_position = muzzle.global_position
-		new_bullet.look_at(shoot_at.global_position)
+	var tween = create_tween()
+	tween.tween_property(cannon, "position", Vector2(-10, 0), 0.2).as_relative().set_trans(Tween.TRANS_SINE)
+	tween.tween_property(cannon, "position", Vector2(10, 0), 0.2).as_relative().set_trans(Tween.TRANS_SINE)
+	var new_bullet = BULLET.instantiate()
+	get_parent().add_child(new_bullet)
+	new_bullet.global_position = muzzle.global_position
+	new_bullet.look_at(shoot_at.global_position)
 ```

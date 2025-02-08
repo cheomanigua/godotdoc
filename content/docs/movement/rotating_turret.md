@@ -46,10 +46,10 @@ var locked: bool = false
 var elapse: float = 5.0
 var direction: float
 var timer = Timer.new()
+var player: CharacterBody2D
 
 @onready var muzzle: Marker2D = %Muzzle
 @onready var shoot_at: Marker2D = %ShootAt
-@onready var player: Player = %Player
 
 
 func _ready():
@@ -72,6 +72,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body):
 	if body is Player:
+		player = body
 		detected = !detected
 		timer.start()
 		timer.timeout.connect(_shoot)
