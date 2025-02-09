@@ -17,6 +17,16 @@ References:
 - Matrices and transforms: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/matrices_and_transforms.html)
 - Vector math: [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/math/vector_math.html#doc-vector-math)
 
+### `delta`
+
+Through this article, you'll see a lot of instances of the word `delta`. What is `delta`?
+
+`delta` is a parameter that represents the time elapsed since the previous frame. `delta` could be defined as a unit of time equivalent to *per second*.
+
+`delta` is used to adjust physics calculations to time per seconds instead of frames per seconds. If adjusted to frame per seconds, game consistency will vary depending of the hardwared used, which is not good. We want an object to move at the same speed regardless of the CPU or graphic card used.
+
+
+
 # 1. Rotation
 
 In Godot, the property `rotation` can be set via inspector or via code. Setting the rotation in the inspector will visually show degrees, but internally the engine is using radians.
@@ -181,7 +191,7 @@ func _process(delta):
 
 ```gdscript
 var to_target: Vector2 = position.direction_to(target.position)
-var facing = Vector2(cos(rotation), sin(rotation))
+var facing = Vector2.RIGHT.rotated(rotation)
 var fov = to_target.dot(facing)
 
 if fov > 0.5:
@@ -259,19 +269,23 @@ Returns the angle between two points
 
 ### Return vector with the facing direction
 
+- Vector2 **(from:** Vector2)
+
+Returns a Vector2 with the direction the node is facing
+
+`var facing = transform.x` or...
+
+`var facing = Vector2.from_angle(rotation)` or...
+
+`var facing = Vector2.RIGHT.rotated(rotation)`
+
+***
+
 - Vector2 **(cos**(float), **(sin**(float))
 
 Returns a Vector2 with the direction the node is facing
 
 `var facing = Vector2(cos(rotation), sin(rotation))`
-
-***
-
-- Vector2 **(from:** Vector2 **+** Vector2))
-
-Returns a Vector2 with the direction the node is facing
-
-`var facing = Vector2.ZERO + Vector2.RIGHT.rotated(rotation)`
 
 ***
 
@@ -286,13 +300,14 @@ Translation or movement is obtained by updating the `position` value every frame
     - `Vector2.RIGHT.rotated(rotation)`
     - `Vector2.from_angle(rotation)`
 
+Velocity measures the change in position per unit of time. The new position is found by adding the velocity multiplied by `delta` (here assumed to be one unit, e.g. 1 s) to the previous position.
 
+In a typical 2D game scenario, you would have a velocity in pixels per second, and multiply it by the delta parameter (time elapsed since the previous frame) from the `_process()` or `_physics_process()` callbacks. This way, `velocity` is time dependent and not frame dependent. We don't want a computer to move the node faster just because it has a better graphic card with higher frame per seconds processing.
 
-    **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
+ **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
+
 - `velocity` has to be declared and defined, except for **CharacterBody2D** nodes, which comes built in.
 - **CharacterBody2D** is recommended to use the function `move_and_slide()` or `move_and_collide()` instead of `position += velocity * delta`.
-- `delta` is a parameter that represents the time elapsed since the previous frame. Velocity measures the change in position per unit of time. The new position is found by adding the velocity multiplied by `delta` (here assumed to be one unit, e.g. 1 s) to the previous position.
-- In a typical 2D game scenario, you would have a velocity in pixels per second, and multiply it by the delta parameter (time elapsed since the previous frame) from the `_process()` or `_physics_process()` callbacks. This way, `velocity` is time dependent and not frame dependent. We don't want a computer to move the node faster just because it has a better graphic card with higher frame per seconds processing.
 
 
 ## Key binding
