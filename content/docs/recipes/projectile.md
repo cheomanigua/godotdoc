@@ -13,6 +13,8 @@ There are several ways to implement a projectile behaviour. It depends on the ty
 
 A bullet can be an Aread2D node or a CharacterBody2D node. The shooter can be a CharacterBody2D or a RigidBody2D. Combining the type of bullet and the type of shooter requires slighty different code.
 
+{{< alert context="warning" text="Don't forget to **ALWAYS** remove the projectile from the scene tree when it exits the screen. For that you have to create a `VisibleOnScreenEnabler2D` instance." />}}
+
 ## 1. CharacterBody2D shooter
 
 ### 1.1 shooter.gd
@@ -20,12 +22,13 @@ A bullet can be an Aread2D node or a CharacterBody2D node. The shooter can be a 
 ```gdscript
 extends CharacterBody2D
 
-var bullet = preload("res://bullet.tscn")
+const Bullet: PackedScene = preload("res://Scenes/Projectiles/bullet.tscn")
 
 func shoot():
-	# "Muzzle" is a Marker2D placed at the barrel of the gun.
-	var new_bullet = bullet.instantiate()
-	new_bullet.start($Muzzle.global_position, rotation)
+	# "Muzzle" is a Marker2D placed at the end of the barrel of the gun.
+	# "Pivot" is a Marker2D placed at beginning of the gun.
+	var new_bullet = Bullet.instantiate()
+	new_bullet.spawn(muzzle.global_position, pivot.rotation)
 	get_parent().add_child(new_bullet)
 ```
 
@@ -34,9 +37,14 @@ func shoot():
 ```gdscript
 extends CharacterBody2D
 
-var speed = 750
+var speed: float = 400
 
-func start(_position, _direction):
+func _ready() -> void:
+	var bullet_exited: VisibleOnScreenNotifier2D = VisibleOnScreenEnabler2D.new()
+	add_child(bullet_exited)
+	bullet_exited.screen_exited.connect(_on_screen_exited)
+
+func spawn(_position, _direction):
 	rotation = _direction
 	position = _position
 	velocity = Vector2(speed, 0).rotated(rotation)
@@ -44,12 +52,15 @@ func start(_position, _direction):
 func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 	if collision:
+		queue_free()
 		velocity = velocity.bounce(collision.get_normal())
+		# if the object collided has the custom function hit, execute function hit
 		if collision.get_collider().has_method("hit"):
 			collision.get_collider().hit()
 
-func _on_VisibilityNotifier2D_screen_exited():
-	# Deletes the bullet when it exits the screen.
+func _on_screen_exited():
+	# Deletes the bullet two seconds after it exits the screen.
+	await get_tree().create_timer(2.0).timeout
 	queue_free()
 ```
 
@@ -79,16 +90,18 @@ extends Area2D
 
 var speed:float = 500
 @export var damage: float = 1
-@onready var vosn2d: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
+@onready var bullet_exited: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
-	vosn2d.screen_exited.connect(_on_screen_exited)
+	bullet_exited.screen_exited.connect(_on_screen_exited)
 
 func _physics_process(delta: float) -> void:
 	global_position += transform.x * speed * delta
 
 func _on_screen_exited() -> void:
+	# Deletes the bullet two seconds after it exits the screen.
+	await get_tree().create_timer(2.0).timeout
 	queue_free()
 
 func _on_body_entered(body):
@@ -200,6 +213,48 @@ func _on_player_shoot(Bullet, direction, location):
 ### Full implementation
 
 {{< alert text="You can see a full implementation of a projectile at [Rotating Weapon](../../movement/rotating_weapon)" />}}
+
+## Instantiating with a static method constructor
+
+The example below implements a turret that can select three different types of bullets to shoot. Each type of bullet produces a particular damage value. It's not the job of the turret to inflict the damage, that's the job of the bullet. Likewise, it is not the job of the bullet to select the type of munition the turret can shoot. The solution is for the tower to select the type of bullet to shoot and pass that information to the bullet class constructor. The bullet class deals with the damage calculations:
+
+- `Bullet.gd`
+
+```gdscript
+class_name Bullet
+extends Area2D
+
+const BULLET: PackedScene = preload("res://Projectile/Bullet/bullet.tscn")
+
+enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE, HIGH_DAMAGE }
+var munition_index: int = 0
+
+static func create_bullet(_munition_index: int) -> Bullet:
+	var new_bullet: Bullet = BULLET.instantiate()
+	new_bullet.munition_index = _munition_index
+	return new_bullet
+
+func _ready() -> void:
+	damage = munition_type.values()[munition_index]
+```
+
+- `turret.gd`
+
+```gdscript
+extends StaticBody2D
+
+enum munition { LOW_DAMAGE, MEDIUM_DAMAGE, HIGH_DAMAGE }
+@export var munition_type: munition = munition.LOW_DAMAGE
+
+func _shoot():
+	var new_bullet: Bullet = Bullet.create_bullet(munition_type)
+	get_parent().add_child(new_bullet)
+	new_bullet.global_position = muzzle.global_position
+```
+
+
+{{< alert context="success" text="The great advantage of using a **static method** is that the own original class loads its own **PackedScene**. This means that if five different scenes instantiate the original scene, they won't need to load the original **PackedScene**. This means that any changes in the scene path has to be updated only in the own original class." />}}
+
 
 
 

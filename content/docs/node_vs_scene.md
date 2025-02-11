@@ -87,17 +87,14 @@ Scenes are templates from which you can create as many reproductions as you'd li
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
-@onready var MyScene = preload("myscene.tscn")                  # multiple instances can be created
-@onready var MyScene = preload("myscene.tscn").instantiate()    # only one instance can be created
+@onready var MyScene = preload("myscene.tscn")
 ```
 At that point, `scene` is a packed scene resource, not a node. To create the actual node, you need to call `PackedScene.instantiate()`. It returns a tree of nodes that you can use as a child of your current node.
 
 Example 1:
 
-{{< alert context="success" text="When `.instantiate()` is in a fuction, you can create as many instances as you want." />}}
-
 ```gdscript
-const BULLET = preload("res://Bullet.tscn") # multiple instances
+const BULLET = preload("res://Bullet.tscn")
 
 some_function():
     var new_bullet = BULLET.instantiate()
@@ -109,13 +106,11 @@ some_function():
 ```
 Example 2:
 
-{{< alert context="danger" text="When `.instantiate()` is on `preload`, you can create only one instance. Do not use to instantiate scenes that need more than one instance, like projectiles. If you do, Godot will crash when instantiating a second time." />}}
-
 ```gdscript
-var final_boss = preload("res://FinalBoss.tscn").instantiate() # only one instance, constants not allowed.
 
 some_function():
-    get_parent().add_child(final_boss)
+    var new_bullet = preload("res://Bullet.tscn").instantiate()
+    get_parent().add_child(new_bullet)
 ```
 
 
