@@ -42,17 +42,30 @@ To sweep over a region of 2D space, you can approximate the region with multiple
 
 ```gdscript
 var raycast: RayCast2D = RayCast2D.new()
-var ray_length: float = 300
 
 func _ready():
 	add_child(raycast)
-
-func _physics_process(delta: float) -> void:
-	raycast.target_position = Vector2(ray_length, 0)
+	raycast.enabled = true
+	raycast.target_position = Vector2(350, 0)
 ```
 
-The raycast origin is relative to the parent node, so there is no need to specify the **from:** Vector2.
+The above code creates a new raycast extending 350 pixeles in front of the node. The raycast origin is relative to the node position, so there is no need to specify the **from** position.
 
+
+### Make the raycast visible
+
+You can see the raycast in the screen for development by activating the **Debug** -> **Visible Collision Shapes**.
+
+If you want to make the raycast visible during game, you can draw lines, circles, etc relative to the raycast:
+
+```gdscript
+func _physics_process(delta: float) -> void:
+	queue_redraw()
+
+func _draw() -> void:
+	draw_line(raycast.position, raycast.target_position, Color.GREEN, 1.0)
+	draw_circle(Vector2(raycast.target_position), 8.0, Color.SKY_BLUE, false, -1.0, false)
+```
 
 <br>
 
@@ -62,7 +75,6 @@ The example below features a node that will shoot the player if the player stays
 
 We could had stopped and started the timer in the `body_entered` and `body_exited` methods, but decided to do it inside `_physics_process()` for more fine tunning.
 
-You can see the raycast in action by activating the **Debug** -> **Visible Collision Shapes**. On my case, I wanted to draw a line to make it visible in the game.
 
 
 ```gdscript
@@ -70,11 +82,11 @@ extends Area2D
 
 @export var reload_time: float = 1.0
 
+const Bullet = preload("res://Projectile/Bullet/bullet.tscn")
 var raycast: RayCast2D = RayCast2D.new()
-var ray_length: float = 350
 var detected: bool = false
 var can_shoot: bool = true
-var elapse: float = 10.0
+var elapsed: float = 10.0
 var player: RigidBody2D
 
 @onready var timer: Timer = Timer.new()
@@ -83,23 +95,22 @@ var player: RigidBody2D
 
 func _ready():
 	add_child(raycast)
+	raycast.target_position = Vector2(350, 0)
 	add_child(timer)
 	timer.timeout.connect(_on_timer_timeout)
 	timer.wait_time = reload_time
-	rotation = deg_to_rad(rotation)
 	radar.player_detected.connect(_on_player_detected)
 	radar.player_lost.connect(_on_player_lost)
 
 
 func _physics_process(delta: float) -> void:
+	queue_redraw()
 	if detected:
 		var target: Vector2 = position.direction_to(player.position)
 		var facing = Vector2(cos(rotation), sin(rotation))
 		var fov = target.dot(facing) # field of view
-		raycast.target_position = Vector2(ray_length, 0)
-		queue_redraw()
 		if fov > 0:
-			rotation = lerp_angle(rotation, target.angle(), elapse * delta)
+			rotation = lerp_angle(rotation, target.angle(), elapsed * delta)
 			if can_shoot:
 				if raycast.is_colliding():
 					var collider = raycast.get_collider()
@@ -121,8 +132,8 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	draw_line(raycast.position, raycast.target_position, Color.GREEN, 1.0)
-	draw_circle(Vector2(ray_length, 0), 8.0, Color.SKY_BLUE, false, -1.0, false)
-	
+	draw_circle(Vector2(raycast.target_position), 8.0, Color.SKY_BLUE, false, -1.0, false)
+
 
 func _on_player_detected(body):
 	player = body
@@ -143,7 +154,12 @@ func _on_timer_timeout() -> void:
 
 func _shoot():
 	var new_bullet: Bullet = Bullet.instantiate()
-	new_bullet.rotation = rotation
-	new_bullet.position = position
+	new_bullet.transform = Transform2D(rotation, position)
+	#new_bullet.rotation = rotation
+	#new_bullet.position = position
 	get_parent().add_child(new_bullet)
 ```
+
+### Hints
+
+- Always create the raycast in the node that directly cast it. For instance, if you have tank composed of a turret node and a vehicle node, and you need a raycast to detect enemies, create a script in the turret node and create a new `RayCast2D`. This way, you can move forward with the vehicle while scanning for enemies and locking onto targets with the rotating turret.

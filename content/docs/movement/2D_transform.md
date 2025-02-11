@@ -1,7 +1,7 @@
 ---
 weight: 10050
 title: "2D Transform"
-description: "2D movement in Godot: vectors, matrices, rotation and position"
+description: "2D movement in Godot: vectors, rotation and position"
 icon: "article"
 date: "2025-01-24T19:24:58+02:00"
 lastmod: "2025-01-24T19:24:58+02:00"
@@ -9,7 +9,7 @@ draft: false
 toc: true
 ---
 
-On this artile we explain how **Transform2D** works in the context of creating movement of a node. Matrices and vectors are used to change the **rotation** and **position** of a node, that is, to create movement.
+On this artile we explain how **Transform2D** works in the context of creating movement of a node. Vectors are used to change the **rotation** and **position** of a node, that is, to create movement.
 
 References:
 
@@ -21,10 +21,17 @@ References:
 
 Through this article, you'll see a lot of instances of the word `delta`. What is `delta`?
 
-`delta` is a parameter that represents the time elapsed since the previous frame. `delta` could be defined as a unit of time equivalent to *per second*.
+`delta` is a parameter that represents the time elapsed since the previous frame. `delta` is equivalent to *per second*. If you don't use `delta`, Godot calculates *per frame*.
+
+```gdscript
+var speed: float = 200
+
+func _physics_process(delta) -> void:
+	position += transform.x * speed * delta     # 200 units per second
+	position += transform.x * speed             # 200 units per frame
+```
 
 `delta` is used to adjust physics calculations to time per seconds instead of frames per seconds. If adjusted to frame per seconds, game consistency will vary depending of the hardwared used, which is not good. We want an object to move at the same speed regardless of the CPU or graphic card used.
-
 
 
 # 1. Rotation
@@ -71,7 +78,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
+#### deg_to_rad() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-deg-to-rad)
 
 - float **deg_to_rad(deg:** float **)** 
 
@@ -81,7 +88,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### rotation_degrees [](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-rotation-degrees)
+#### rotation_degrees [](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-rotation-degrees)
 
 - float **rotation_degrees** - getter ------ float **rotation_degrees(value)** - setter
 
@@ -91,7 +98,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### angle_difference() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-angle-difference)
+#### angle_difference() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-angle-difference)
 
 - float **angle_difference(from:** float, **to:** float **)** 
 
@@ -99,7 +106,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### rotate() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-rotate)
+#### rotate() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-rotate)
 
 - void **rotate(radians**: float **)**
 
@@ -107,7 +114,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### rotated() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
+#### rotated() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-rotated)
 
 - Vector2 **rotated(angle**: float **)**
 
@@ -115,7 +122,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### look_at() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-look-at)
+#### look_at() [](https://docs.godotengine.org/en/stable/classes/class_node2d.html#class-node2d-method-look-at)
 
 - void **look_at(point**: Vector2)
 
@@ -129,7 +136,7 @@ There are some built in helpers and convertion functions:
 
 ***
 
-### rotate_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-rotate-toward)
+#### rotate_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-rotate-toward)
 
 - float **rotate_toward(from**: float, **to**: float, **delta**: float **)**
 
@@ -147,7 +154,7 @@ To calculate `angle_to_target`, check [Custom code](#custom-code)
 
 ***
 
-### lerp_angle() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp-angle)
+#### lerp_angle() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp-angle)
 
 - float **lerp_angle(from:** float, **to:** float, **weight:** float **)**
 
@@ -159,7 +166,7 @@ Similar to lerp, but interpolates correctly when the angles wrap around `TAU`. T
 
 ```gdscript
 extends Sprite
-var elapsed = 0.0
+var elapsed = 10.0
 func _process(delta):
 	var min_angle = deg_to_rad(0.0)
 	var max_angle = deg_to_rad(90.0)
@@ -171,7 +178,7 @@ func _process(delta):
 
 ***
 
-### direction_to() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-direction-to)
+#### direction_to() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-direction-to)
 
 - Vector2 **direction_to(to:** Vector2)
 
@@ -181,7 +188,7 @@ func _process(delta):
 
 ***
 
-### dot() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-dot)
+#### dot() [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-dot)
 
 - float **dot**(with: Vector2)
 
@@ -196,7 +203,7 @@ var fov = to_target.dot(facing)
 
 if fov > 0.5:
 	print("Target detected, face the target!")
-	rotation = lerp_angle(rotation, to_target.angle(), elapse * delta)
+	rotation = lerp_angle(rotation, to_target.angle(), elapsed * delta)
 ```
 - `to_target`: Gets the vector that goes from `self` to **target**.
 - `facing`: Gets the vector that `self` is currently facing to.
@@ -230,7 +237,7 @@ var angle: float = (target.position - position).normalized().angle()
 
 if angle_difference(direction, angle) < PI/4 and angle_difference(direction, angle) > -PI/4:
 	print("Target detected, face the target!")
-	rotation = lerp_angle(rotation, angle, elapse * delta)
+	rotation = lerp_angle(rotation, angle, elapsed * delta)
 ```
 
 <br>
@@ -239,7 +246,7 @@ if angle_difference(direction, angle) < PI/4 and angle_difference(direction, ang
 
 ***
 
-### Return vector between to points
+#### Return vector between to points
 
 - Vector2 **(from:** Vector2 **- to:** Vector2 **).normalized()**
 
@@ -249,7 +256,7 @@ Returns the normalized vector pointing from this vector to `to`. This is equival
 
 ***
 
-### Return the angle between two points
+#### Return the angle between two points
 
 - float **(from:** Vector2 **- to:** Vector2 **).normalized().angle()**
 
@@ -267,7 +274,7 @@ Returns the angle between two points
 
 ***
 
-### Return vector with the facing direction
+#### Return vector with the facing direction
 
 - Vector2 **(from:** Vector2)
 
@@ -296,7 +303,7 @@ Translation or movement is obtained by updating the `position` value every frame
 
 - `velocity` is a Vector2 variable and is calculated by multiplying a custom variable like `speed` by either:
     - `transform.x`
-    - `Vector2(1, 0).rotated(rotation`
+    - `Vector2(1, 0).rotated(rotation)`
     - `Vector2.RIGHT.rotated(rotation)`
     - `Vector2.from_angle(rotation)`
 
@@ -309,10 +316,9 @@ In a typical 2D game scenario, you would have a velocity in pixels per second, a
 - `velocity` has to be declared and defined, except for **CharacterBody2D** nodes, which comes built in.
 - **CharacterBody2D** is recommended to use the function `move_and_slide()` or `move_and_collide()` instead of `position += velocity * delta`.
 
+## Moving Direction
 
-## Key binding
-
-When setting up the key binding for moving forward, backward, right and left, we have to take into consideration the following:
+When moving forward, backward, right and left, we have to take into consideration the following:
 
 - Moving foward is on the `transform.x` axis, or `Vector2(1, 0)`, or `Vector2.RIGHT`
 - Moving backwards is on the `-transform.x` axis, or `Vector2(-1, 0)`, or `Vector2.LEFT`
@@ -322,6 +328,78 @@ When setting up the key binding for moving forward, backward, right and left, we
 **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
 
 ![translation](/images/translation.webp)
+
+
+
+## Functions
+
+#### move_toward() - Vector2 [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-move-toward)
+
+- Vector2 **move_toward(to**: Vector2, **delta**: float) const 
+
+*(Vector 2)* Returns a new vector moved toward `to` by the fixed `delta` amount. Will not go past the final value.
+
+```gdscript
+position = position.move_toward((position + Vector2.RIGHT), delta * 200)    # move forward
+position = position.move_toward(get_global_mouse_position(), delta * 200)   # move to mouse position
+```
+
+#### move_toward() [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-move-toward)
+
+- float **move_toward(from**: float, **to**: float, **delta**: float) 
+
+Adds `delta` to first argument(`from`), but never goes over second argument (`to`).
+
+*(Globals)* Moves `from` toward `to` by the `delta` amount. Will not go past `to`.
+
+Use a negative `delta` value to move away.
+
+```gdscript
+move_toward(5, 10, 4)    # Returns 9
+move_toward(10, 5, 4)    # Returns 6
+move_toward(5, 10, 9)    # Returns 10
+move_toward(10, 5, -1.5) # Returns 11.5
+```
+
+```gdscript
+position += Vector2(move_toward(0, 2, 2), 0).rotated(rotation)
+```
+
+
+#### lerp() - Vector2 [](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-lerp)
+
+- Vector2 **lerp(to**: Vector2, **weight**: float) const 🔗
+
+*(Vector2)* Returns the result of the linear interpolation between this vector and `to` by amount `weight`. `weight` is on the range of `0.0` to `1.0`, representing the amount of interpolation.
+
+```gdscript
+position = position.lerp(player.position, delta)                    # move to player
+position = position.lerp((position + Vector2.RIGHT), delta * 200)   # move forward
+position = position.lerp(get_global_mouse_position(), delta * 5)    # move to mouse position
+```
+
+#### lerp() - Variant [](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerp)
+
+- Variant **lerp(from**: Variant, **to**: Variant, **weight**: Variant) 
+
+Lerp calculates de difference between `to` and `from` and multiplies it by `weight`.
+
+*(Globals)* Linearly interpolates between two values by the factor defined in `weight`. To perform interpolation, `weight` should be between `0.0` and `1.0` (inclusive). However, values outside this range are allowed and can be used to perform extrapolation. If this is not desired, use [clamp](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-clamp) on the result of this function.
+
+Both `from` and `to` must be the same type. Supported types: `int`, `float`, `Vector2`, `Vector3`, `Vector4`, `Color`, `Quaternion`, `Basis`.
+
+```gdscript
+lerp(0, 4, 0.75) # Returns 3.0
+```
+
+```gdscript
+position += lerp(Vector2.ZERO, Vector2.RIGHT, delta * 50).rotated(rotation)
+```
+
+See also [inverse_lerp](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-inverse-lerp) which performs the reverse of this operation. To perform eased interpolation with lerp, combine it with [ease](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-ease) or [smoothstep](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-smoothstep). See also [remap](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-remap) to map a continuous series of values to another.
+
+**Note**: For better type safety, use [lerpf](https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#class-globalscope-method-lerpf), [Vector2.lerp,](https://docs.godotengine.org/en/stable/classes/class_vector2.html#class-vector2-method-lerp) Vector3.lerp, Vector4.lerp, Color.lerp, Quaternion.slerp or Basis.slerp.
+
 
 
 ## Recipes
@@ -462,6 +540,33 @@ func get_input():
 		velocity = -transform.x * speed
 ```
 
+### Rotate and move (towards something)
+
+For this type of movement, the object rotates and then moves toward a particular position.
+
+The code below shows how to rotate and move towards the player when the player is detected. You can use any combination of the three rotation lines and five movement lines.
+
+```gdscript
+var elapsed: float = 10.0
+var speed: float = 50
+
+func _physics_process(delta) -> void:
+	if detected:
+		var target: Vector2 = position.direction_to(player.position)
+
+		# Rotate towards player (choose one)
+		rotation = lerp_angle(rotation, target.angle(), elapsed * delta)            # Option 1
+		rotation = rotate_toward(rotation, target.angle(), elapsed * delta)         # Option 2
+		look_at(player.position)                                                    # Option 3
+
+		# Move towards player (choose one)
+		position = position.lerp(player.position, delta)                            # Option 1, Vector2
+		position = position.move_toward(player.position, delta * 50)                # Option 2, Vector2
+		position += transform.x * speed * delta                                     # Option 3
+		position += lerp(Vector2.ZERO, Vector2.RIGHT, delta * 50).rotated(rotation) # Option 4, Variant
+		position += Vector2(move_toward(0, 2, 1), 0).rotated(rotation)              # Option 5, Variant
+```
+
 ### Circular Translation
 
 ```gdscript
@@ -483,3 +588,5 @@ if collision:
 	velocity = velocity.bounce(collision.get_normal())
 	move_and_collide(reflect)
 ```
+
+
