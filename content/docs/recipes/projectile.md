@@ -9,9 +9,7 @@ draft: false
 toc: true
 ---
 
-There are several ways to implement a projectile behaviour. It depends on the type of node the projectile is, and the type of node the shooter is. For this tutorial, we'll call the projectile a bullet.
-
-A bullet can be an Aread2D node or a CharacterBody2D node. The shooter can be a CharacterBody2D or a RigidBody2D. Combining the type of bullet and the type of shooter requires slighty different code.
+There are several ways to implement a projectile behaviour. It depends on the type of node the projectile is, and the type of node the shooter is. A RigidBody2D shooter uses a slightly different approach for the rotation and position of spawned projectiles. For this tutorial, we'll call the projectile a bullet.
 
 {{< alert context="warning" text="Don't forget to **ALWAYS** remove the projectile from the scene tree when it exits the screen. For that you have to create a `VisibleOnScreenEnabler2D` instance." />}}
 
@@ -38,6 +36,7 @@ func shoot():
 extends CharacterBody2D
 
 var speed: float = 400
+var damage: int = 1
 
 func _ready() -> void:
 	var bullet_exited: VisibleOnScreenNotifier2D = VisibleOnScreenEnabler2D.new()
@@ -47,16 +46,17 @@ func _ready() -> void:
 func spawn(_position, _direction):
 	rotation = _direction
 	position = _position
-	velocity = Vector2(speed, 0).rotated(rotation)
+	velocity = Vector2.RIGHT.rotated(rotation) * speed
+	#velocity = Vector2(speed, 0).rotated(rotation)
+
 
 func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 	if collision:
 		queue_free()
-		velocity = velocity.bounce(collision.get_normal())
-		# if the object collided has the custom function hit, execute function hit
-		if collision.get_collider().has_method("hit"):
-			collision.get_collider().hit()
+		# if the object collided has the custom function take_damage, call function take_damage
+		if collision.get_collider().has_method("take_damage"):
+			collision.get_collider().take_damage(damage)
 
 func _on_screen_exited():
 	# Deletes the bullet two seconds after it exits the screen.
@@ -146,12 +146,12 @@ extends Area2D
 var speed:float = 2000
 var damage:float = 1
 
-@onready var visible_on_screen_notifier_2d: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
+@onready var bullet_exited: VisibleOnScreenNotifier2D = %VisibleOnScreenNotifier2D
 
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
-	visible_on_screen_notifier_2d.screen_exited.connect(_on_screen_exited)
+	bullet_exited.screen_exited.connect(_on_screen_exited)
 
 
 func _physics_process(delta):

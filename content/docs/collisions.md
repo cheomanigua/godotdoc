@@ -140,3 +140,25 @@ func _on_body_entered(body):
 	if "pickup" in body:
 	if "player_spotted" in body:
 ```
+
+## Ricochet/Bounce
+
+Simple bounce:
+
+```gdscript
+func _physics_process(delta):
+	var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+	if collision:
+		velocity = velocity.bounce(collision.get_normal())
+```
+
+Advanced bounce, if info from collided object is needed: [](https://docs.godotengine.org/en/stable/classes/class_kinematiccollision2d.html#class-kinematiccollision2d-method-get-remainder)
+
+```gdscript
+func _physics_process(delta):
+	var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+	if collision:
+		var reflect = collision.get_remainder().bounce(collision.get_normal())
+		velocity = velocity.bounce(collision.get_normal())
+		move_and_collide(reflect)
+```

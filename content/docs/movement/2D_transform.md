@@ -313,8 +313,20 @@ In a typical 2D game scenario, you would have a velocity in pixels per second, a
 
  **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
 
-- `velocity` has to be declared and defined, except for **CharacterBody2D** nodes, which comes built in.
+- `velocity` has to be declared and defined. In **CharacterBody2D** nodes, `velocity` is already declared, but not defined.
 - **CharacterBody2D** is recommended to use the function `move_and_slide()` or `move_and_collide()` instead of `position += velocity * delta`.
+
+```gdscript
+var speed: float = 300
+
+func _physics_process(delta):
+	var velocity = Vector2.RIGHT.rotated(rotation) * speed
+	velocity = Vector2.RIGHT.rotated(rotation) * speed      # only for CharacterBody2D
+
+	position += velocity * delta
+	move_and_slide()    # only for CharacterBody2D
+```
+
 
 ## Moving Direction
 
@@ -581,12 +593,22 @@ func _process(delta):
 
 ### Ricochet/Bounce
 
+Simple bounce:
+
 ```gdscript
-var collision: KinematicCollision2D = move_and_collide(velocity * delta)
-if collision:
-	var reflect = collision.get_remainder().bounce(collision.get_normal())
-	velocity = velocity.bounce(collision.get_normal())
-	move_and_collide(reflect)
+func _physics_process(delta):
+	var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+	if collision:
+		velocity = velocity.bounce(collision.get_normal())
 ```
 
+Advanced bounce, if info from collided object is needed: [](https://docs.godotengine.org/en/stable/classes/class_kinematiccollision2d.html#class-kinematiccollision2d-method-get-remainder)
 
+```gdscript
+func _physics_process(delta):
+	var collision: KinematicCollision2D = move_and_collide(velocity * delta)
+	if collision:
+		var reflect = collision.get_remainder().bounce(collision.get_normal())
+		velocity = velocity.bounce(collision.get_normal())
+		move_and_collide(reflect)
+```
