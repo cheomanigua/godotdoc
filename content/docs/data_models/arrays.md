@@ -12,6 +12,8 @@ toc: true
 
 ### Basic inventory
 
+[Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_array.html)
+
 ```gdscript
 ...
 

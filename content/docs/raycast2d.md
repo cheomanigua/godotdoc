@@ -73,7 +73,7 @@ func _draw() -> void:
 
 The example below features a node that will shoot the player if the player stays within a 180º arc in front of the node. If the player exists the arc or the detection area, the node will forget about it. If the player moves behind obstacles, the node will stop shooting. In order to detect obstacles, the node uses a `RayCast2D`.
 
-We could had stopped and started the timer in the `body_entered` and `body_exited` methods, but decided to do it inside `_physics_process()` for more fine tunning.
+We could had stopped and started the timer in the `_on_player_detected()` and `_on_player_lost()` methods, but decided to do it inside `_physics_process()` for more fine tunning.
 
 
 
@@ -90,7 +90,7 @@ var elapsed: float = 10.0
 var player: RigidBody2D
 
 @onready var timer: Timer = Timer.new()
-@onready var radar: Area2D = $Radar
+@onready var radar: Area2D = %Radar
 
 
 func _ready():
@@ -99,8 +99,8 @@ func _ready():
 	add_child(timer)
 	timer.timeout.connect(_on_timer_timeout)
 	timer.wait_time = reload_time
-	radar.player_detected.connect(_on_player_detected)
-	radar.player_lost.connect(_on_player_lost)
+	radar.body_entered.connect(_on_player_detected)
+	radar.body_exited.connect(_on_player_lost)
 
 
 func _physics_process(delta: float) -> void:
@@ -136,16 +136,18 @@ func _draw() -> void:
 
 
 func _on_player_detected(body):
-	player = body
-	detected = !detected
-	raycast.enabled = true
-	#timer.start()
+	if body is Player:
+		player = body
+		detected = !detected
+		raycast.enabled = true
+		#timer.start()
 
 
-func _on_player_lost():
-	detected = !detected
-	raycast.enabled = false
-	#timer.stop()
+func _on_player_lost(body):
+	if body is Player:
+		detected = !detected
+		raycast.enabled = false
+		#timer.stop()
 
 
 func _on_timer_timeout() -> void:

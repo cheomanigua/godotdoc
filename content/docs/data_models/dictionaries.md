@@ -241,7 +241,7 @@ It will print something like this (manually formatted for easy reading):
 }
 ```
 
-## String keys. Loading JSON files
+## Load JSON files as dictionaries
 
 Example file: [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view)
 
@@ -253,8 +253,6 @@ Given the [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gS
 ```gdscript
 extends Node2D
 
-var creatures:Dictionary = {}
-
 func get_creatures_data() -> Dictionary:
 	var file = FileAccess.open("res://Data/test.json", FileAccess.READ)
 	var json = JSON.parse_string(file.get_as_text())
@@ -262,7 +260,7 @@ func get_creatures_data() -> Dictionary:
 	return json
 
 func _ready():
-	creatures = get_creatures_data()
+	var creatures: Dictionary = get_creatures_data()
 	# Testing
 	print (creatures.keys())
 	var ckey: String = "goblin"
@@ -294,37 +292,34 @@ func _ready():
 The above code will print:
 
 
+
 ```
-["human", "goblin"]
+["human", "adivia", "goblin", "agoiru", "orc"]
 Goblin stats are:
-strength : 2
-intelligence : 2
-dexterity : 2
-endurance : 2
-health : 2
-sprite_sheet : demon1.png
-vframes : 9
-hframes : 8
-frame : 1
+dexterity : 7
+strength : 5
+intelligence : 5
+endurance : 7
+health : 10
 
 Goblin
-Strength: 2
-Intelligence: 2
-Dexterity: 2
-Endurance: 2
-Health: 2
+Strength: 5
+Intelligence: 5
+Dexterity: 7
+Endurance: 7
+Health: 10
 
-a) Goblin strength is 2
+a) Goblin strength is 5
 b) human
-c) 2
-d) ["strength", "intelligence", "dexterity", "endurance", "health", "sprite_sheet", "vframes", "hframes", "frame"]
-e) [2, 2, 2, 2, 2, "demon1.png", 9, 8, 1]
-f) strength
-g) { "strength": 1, "intelligence": 1, "dexterity": 1, "endurance": 1, "health": 1, "sprite_sheet": <null>, "vframes": <null>, "hframes": <null>, "frame": <null> }
-h) goblin strength is 2
-i) goblin strength is 2
-j) goblin strength is 2
-k) human strength is 2
+c) 7
+d) ["dexterity", "strength", "intelligence", "endurance", "health"]
+e) [7, 5, 5, 7, 10]
+f) dexterity
+g) { "intelligence": 5, "dexterity": 5, "strength": 5, "endurance": 5, "health": 10 }
+h) goblin strength is 5
+i) goblin strength is 5
+j) goblin strength is 5
+k) human dexterity is 7
 ```
 
 As you can see from the results, using numbers as indexes is not a good idea. It may work if the json file is always rendered in the same order both for keys and values. But this is not always the case. In the example above we are trying to get *Goblin* related data. However in lines **b)**, **g)** and **k)** *Human* related data is fetched.
@@ -334,24 +329,57 @@ Assigning the name `goblin` to the variable `ckey` is the safest way to proceed 
 However, if we assign the name `strength` to the variable `cvalue`, we can safely index the value from the json file, regardless if it changes the key/value orders when rendering the file. You can see a fine example comparing lines **h)**, **i)** and **j**. They yield the same result, but the line **j)** in the code is cleaner and it's safe.
 
 
+### Instantiating a NPC at runtime via JSON
+
+[creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link)
+
+```gdscript
+
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
+
+
+func _ready() -> void:
+	var creatures: Dictionary = get_creatures_data()
+	var npc = preload("res://npc.tscn").instantiate()
+	
+	randomize()
+	var a = randi() % creatures.size()
+
+	for attribute in creatures[creatures.keys()[a]]:
+		npc.attributes[attribute] = creatures[creatures.keys()[a]][attribute]
+
+	for key in npc.attributes:
+		print(key, ": ", npc.attributes[key])
+
+	add_child(npc)
+	npc.transform = Transform2D(0, Vector2(600, 300))
+```
+
+
 ### CSV to JSON
 
 As you can see, it is possible to use a JSON file to load game data. However, creating game data directly in a JSON file is cumbersome and time consuming.
 
 It is much better to create the game data in a spreadsheet, export it as .csv file and convert it to .json.
 
-I made two scripts in Python and Perl for converting .csv files to .json files. You can download them from my Google Drive:
+In order to convert a .csv file to .json file, you can download these Python and Perl scripts I made from my Google Drive:
 
 - [csv2json.py](https://drive.google.com/file/d/1r3dX10uMR1ZL-4USXzSz7h0Pr0-xi7Uz/view)
 - [csv2json.pl](https://drive.google.com/file/d/1tDPkofgMqbHjJzLIjUwQtkvq39rQdLtj/view)
 
-Also, you can download a .csv file as an example: [godot.csv](https://drive.google.com/file/d/1hRlGHk_9t8duqkYuwaWSkTsaLLo8UpP3/view)
+Also, you can download a .csv file as an example: [godot.csv](https://drive.google.com/file/d/1zb45BjCNyuNjUCUiBO62_f3GcG-qcu3U/view?usp=drive_link)
 
-In order to convert `godot.csv` to a .json file, run any of the following commands. Remember that you must run the command in the same directory where the scripts and the `godot.csv` are.
+In order to convert `godot.csv` to a .json file, run one of the following commands. Note that you must run the command in the same directory where the scripts and the `godot.csv` are.
 
 ```
 $ python csv2json.py
 $ perl csv2json.pl
 ```
 
-After running any of the commands, there will be a new JSON file created called `output.json`. You can rename it if you want. It's ready to use in Godot.
+After running one of the commands, there will be a new JSON file created called `output.json`. You can rename it if you want. It's ready to use in Godot.
+
+Alternatively, you can convert a .csv file to .json file using this web page: [https://csvjson.com/csv2json](https://csvjson.com/csv2json). Be sure to select **Hash** instead of the default **Array** in the **Output** section.

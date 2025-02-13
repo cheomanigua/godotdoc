@@ -82,7 +82,7 @@ func _ready() -> void:
 4. If you run the game, it will print the name of the **race** of the particular `.tres` resource file you dragged.
 
 
-## Create resources in bath from JSON file
+## Create resources in batch from JSON file
 
 You can generate several to dozens or hundreds of `.tres` files from a single JSON file. In this example, we are generating five different `.tres` files from this [JSON file](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view?usp=drive_link). The order of the keys and values does not matter.
 
@@ -107,8 +107,6 @@ extends Resource
 ```gdscript
 extends Node
 
-var creatures:Dictionary = {}
-
 func get_creatures_data() -> Dictionary:
 	var file = FileAccess.open("res://Data/test.json", FileAccess.READ)
 	var json = JSON.parse_string(file.get_as_text())
@@ -117,13 +115,14 @@ func get_creatures_data() -> Dictionary:
 
 
 func _ready():
-	var resource = Races.new()
+	var creatures: Dictionary = get_creatures_data()
+	var resource: Resource = Races.new()
 	creatures = get_creatures_data()
-	for key in creatures:
-		resource.set("race", key)
-		for attr in creatures[key]:
-			resource.set(attr, creatures[key][attr])
-		var resource_path = "res://resources/" + key +".tres" # Choose your path.
+	for race in creatures:
+		resource.set("race", race)
+		for attribute in creatures[race]:
+			resource.set(attribute, creatures[race][attribute])
+		var resource_path = "res://resources/" + race +".tres" # Choose your path.
 		ResourceSaver.save(resource, resource_path)
 ```
 
@@ -131,3 +130,31 @@ Run the scene once and then stop it. All the five `.tres` files will be generate
 
 
 {{< alert context="info" text="You can create a lot of different `.tres` files in seconds from a JSON file. If you want to speed up your workflow even further, you can create all the data very fast in a spreadsheet. Then you can export it to a CSV file and convert it to JSON. You can check [this article](dictionaries/#csv-to-json)." />}}
+
+
+### Dynamically instantiating
+
+```gdscript
+extends Node
+const NPC = preload("res://npc.tscn")
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
+
+
+func _ready() -> void:
+	
+	var creatures: Dictionary = get_creatures_data()
+	var npc = NPC.instantiate()
+	
+	randomize()
+	var a = randi() % creatures.size()
+	var fname = creatures.keys()[a]
+	
+	npc.race = Races.new()
+	npc.race = load("res://resources/" + fname + ".tres")
+	npc.transform = Transform2D(0, Vector2(100 * a, 100 * a))
+	add_child(npc)
+```
