@@ -333,6 +333,53 @@ However, if we assign the name `strength` to the variable `cvalue`, we can safel
 
 [creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link)
 
+You can create instantes dynamically at runtime using a JSON file as data source.
+
+##### `npc.gd`
+
+```gdscript
+extends CharacterBody2D
+
+var attributes: Dictionary = { 
+	"strength" : 0, 
+	"intelligence" : 0, 
+	"dexterity" : 0, 
+	"endurance" : 0, 
+	"health" : 0, 
+	"race_name" : ""
+	}
+```
+<br>
+
+##### `somenode.gd`
+
+```gdscript
+
+extends Node
+
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
+
+
+func _ready() -> void:
+	var creatures: Dictionary = get_creatures_data()
+	var npc = preload("res://npc.tscn").instantiate()
+
+	for attribute in creatures["goblin"]:
+		npc.attributes[attribute] = creatures["goblin"][attribute]
+
+	for key in npc.attributes:
+		print(key, ": ", npc.attributes[key])
+
+	add_child(npc)
+	npc.transform = Transform2D(0, Vector2(600, 300))
+```
+
+If you want to instantiate random NPCs:
+
 ```gdscript
 
 func get_creatures_data() -> Dictionary:
