@@ -10,7 +10,9 @@ toc: true
 ---
 
 
-## 1. Preferred. Dictionary with @export_enum
+## 1. Dictionary with @export_enum
+
+An alternative is to use [enums](../data_models/enums/#1-export) instead of @export_enum.
 
 #### player.gd
 

@@ -8,6 +8,10 @@ lastmod: "22024-08-24T14:59:45+02:00"
 draft: false
 toc: true
 ---
+
+[Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_dictionary.html)
+
+
 Dictionaries contain a list of key-value pairs {"key" : "value"}. The key-value pairs can be of different types:
 
 ```gdscript
@@ -144,7 +148,7 @@ func _on_body_entered(body,item):
 
 ## More complex dictionaries
 
-Dictionaries can be more complex that the examples prior.
+Dictionaries can be more complex that the previous examples.
 
 ### 1. Array within dictionary
 

@@ -59,7 +59,7 @@ enum attributes { STRENGTH, INTELLIGENCE, DEXTERITY }
 
 
 func _ready() -> void:
-	self.body_entered.connect(_on_body_entered)
+	body_entered.connect(_on_body_entered)
 
 
 func _on_body_entered(body):
@@ -120,7 +120,7 @@ extends Area2D
 
 
 func _ready() -> void:
-	self.body_entered.connect(_on_body_entered)
+	body_entered.connect(_on_body_entered)
 
 
 func _on_body_entered(body):
