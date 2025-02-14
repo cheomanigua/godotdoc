@@ -109,7 +109,7 @@ $ sudo apt-get install neovim
 - Changes will apply each time you save in NeoVim.
 - If you double click on a new gscript file in Godot, the new file will open in the same instance and the same panel of NeoVim, hiding the previous code.
 - Godot will ignore any new tab you open in NeoVim, so if you open a new tab and double click in another gdscript file in Godot, it will open in the original tab, and not the new tab.
-- If you want to have several gdscript files open in the same NeoVim instance:
+- If you want to have several gdscript files opened in the same NeoVim instance:
     1. Split NeoVim screen with the commands `:sp` or `:vs`
     2. Move to the new panel with `Ctrl` + `w` + `w`
     3. In Godot, double click on the new gdscript

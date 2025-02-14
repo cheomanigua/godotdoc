@@ -14,7 +14,7 @@ toc: true
 	1. The healing process occurs in a function within **player.gd**
 	2. The healing process occurs within **potion.gd**
 
-### Version 1 
+### Example 
 
 #### player.md
 
@@ -36,7 +36,7 @@ func add_health(healing_points: float):
 ...
 ```
 
-#### potion.gd
+#### potion.gd version 1
 
 ```gdscript
 extends Area2D
@@ -51,9 +51,7 @@ func _on_body_entered(body):
 		queue_free()
 ```
 
-### Version 2
-
-#### potion.gd
+#### potion.gd version 2
 
 ```gdscript
 extends Area2D

@@ -12,26 +12,37 @@ toc: true
 ![alt](/images/components.webp)
 
 
-1. What are components
-    - Small blocks of useful functionality
-    - Work independently of another component
-    - Can be re-configured for easy prototyping
-    - Ideally known as little as possible outside of the component
+#### 1. What are components
 
-2. Accessing components. Can be done with noticeable coupling using:
-    - get_node("SomeNode") or $SomeNode
-    - %SomeNode
-    - @export var my_node: Node
-    - creating a class
-    - using the physics engine (Areas, etc.)
-    - @export NodePath
-3. Component communication. Can be done with minimal coupling using:
-    - signals
-    - groups
-    - autoloads
-    - contracts
-    - signal relays
-    - propagate_call
+- Small blocks of useful functionality
+- Work independently of another component
+- Can be re-configured for easy prototyping
+- Ideally know as little as possible outside of the component
+
+#### 2. Accessing components
+
+Can be done with noticeable coupling using:
+
+- $SomeNode or get_node("SomeNode")
+- %SomeNode
+- @export var my_node: Node
+- creating a class
+- @export NodePath
+
+#### 3. Component communication
+
+Can be done with minimal coupling using:
+
+- signals
+- groups
+- autoloads
+- using the physics engine (colliders)
+- propagate_call
+- contracts
+- signal relays
+
+
+
 
 ## Accessing a node from the same scene
 
@@ -78,7 +89,7 @@ When trying to access data from a node in a different scene avoiding the need to
 - Signals
 - Groups
 - Autoload (like the player scene)
-- Using the physics engine (Areas, etc.)
+- Using the physics engine (colliders)
 
 ### Signals
 
@@ -140,6 +151,24 @@ func calculate_angle_to_player():
 ```
 
 {{< alert context="warning" text="When using autoload, don't instantiate the Player using the GUI editor. Use the Player attached script to setup position, rotation, etc in code. Otherwise, you'll end up with two instances of Player. For this reason, Autoload is better suited for scripts rather than scenes." />}}
+
+
+### Physics engine
+
+If we want any node to access Player and its properties, we can create a **CharacterBody2D** and use the methods `move_and_collide()` or `move_and_slide()` to detect the colliding body (Player).
+
+```gdscript
+
+func _physics_process(delta):
+
+# Using move_and_collide.
+var collision = move_and_collide(velocity * delta)
+if collision:
+	compute_damage()
+	if collision.get_collider().has_method("take_damage"):
+		collision.get_collider().take_damage(damage)
+		print("Alien ship collided with and damaged Player")
+```
 
 ## Get name of scene
 

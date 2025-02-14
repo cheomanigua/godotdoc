@@ -14,7 +14,7 @@ toc: true
 - There is a player, a key and a door.
 - The player can pickup the key.
 - The key has a unique name.
-- The door can only be open if the Player has the key with the unique name.
+- The door can only be opened if the Player has the key with the unique name.
 
 #### Key
 - The **Key** is an **Area2D** node.
@@ -26,7 +26,7 @@ toc: true
 #### Door
 - The **Door** is an **Area2D** node with a child **StaticBody2D** for collision purposes. The **Area2D** is slighty bigger than the **StaticBody2D**.
 - The **Door** has an editable **String** variable called `door_key`. We mus type a name in the edit or for the `door_key`.
-- The **Door** can only be open if the **Key** `item_name` string matches the **Door** `door_key` string. 
+- The **Door** can only be opened if the **Key** `item_name` string matches the **Door** `door_key` string. 
 - When opened, the **Door** is eliminated.
 
 #### Examples
@@ -125,7 +125,7 @@ func _ready() -> void:
 func _on_body_entered(body):
 	if body.name == "Player":
 		if body.inventory.has(door_key):
-			print("The door has been open with the %s" % [door_key])
+			print("The door has been opened with the %s" % [door_key])
 			body.inventory.erase(door_key)
 			queue_free()
 		else:
@@ -201,7 +201,7 @@ func _on_body_entered(body):
 		else:
 			for i in body.inventory:
 				if i.item_name == door_key:
-					print("The door has been open with the %s" % [door_key])
+					print("The door has been opened with the %s" % [door_key])
 					queue_free()
 					body.inventory.erase(i)
 					i.queue_free()

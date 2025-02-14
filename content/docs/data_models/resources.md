@@ -1,13 +1,17 @@
 ---
 weight: 3500
 title: "Resources"
-description: "Custom resources for data storage"
+description: "Custom resources for data containers"
 icon: "article"
 date: "2025-02-12T16:56:26+02:00"
 lastmod: "2025-02-12T16:56:26+02:00"
 draft: false
 toc: true
 ---
+
+Base class for serializable objects.
+
+Resource is the base class for all Godot-specific resource types, serving primarily as data containers. Since they inherit from [RefCounted](https://docs.godotengine.org/en/stable/classes/class_refcounted.html), resources are reference-counted and freed when no longer in use. They can also be nested within other resources, and saved on disk. [PackedScene](https://docs.godotengine.org/en/stable/classes/class_packedscene.html), one of the most common [Objects](https://docs.godotengine.org/en/stable/classes/class_object.html) in a Godot project, is also a resource, uniquely capable of storing and instantiating the [Nodes](https://docs.godotengine.org/en/stable/classes/class_node.html) it contains as many times as desired.
 
 [Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_resource.html)
 
@@ -61,7 +65,7 @@ extends Resource
 
 ### Step 6. Create and attach a new script to the scene
 
-1. Attach a new script to the newly created scene and export the resource:
+1. Attach a new script to the newly created scene where it exports the resource:
 
 `npc.gd`
 
@@ -71,7 +75,7 @@ extends CharacterBody2D
 @export var npc: NPC
 
 func _ready() -> void:
-	print(npc.race)
+	print(npc.race_name)
 ```
 
 ### Step 7. Test
@@ -99,10 +103,12 @@ extends Resource
 @export var intelligence: float
 @export var dexterity: float
 @export var endurance: float
-@export var health: float = strength + endurance
+@export var health: float:
+	set(value):
+		health = endurance + strength
 ```
 
-- Create a node and attach this script:
+- Create a node (Main, World, ResourceCreator, etc) and attach this script:
 
 ```gdscript
 extends Node
@@ -130,11 +136,15 @@ Run the scene once and then stop it. All the five `.tres` files will be generate
 {{< alert context="info" text="You can create a lot of different `.tres` files in seconds from a JSON file. If you want to speed up your workflow even further, you can create all the data very fast in a spreadsheet. Then you can export it to a CSV file and convert it to JSON. You can check [this article](dictionaries/#csv-to-json)." />}}
 
 
-## Instantiate a NPC at runtime via JSON
+## Instantiate a NPC at runtime
 
 {{< alert context="warning" text="If the `.tres` files have not been created yet, use `load` instead of `preload` to load the resources. Otherwise, you will get an error when launching the scene. If the resources have been created, you can use either `load` or `preload`." />}}
 
-You can create instantes dynamically at runtime and assign a `.tres` file to the instance:
+<br>
+
+### Specified
+
+You can create instances dynamically at runtime and assign a specific `.tres` file to the instance:
 
 ```gdscript
 extends Node
@@ -143,13 +153,16 @@ const NPC = preload("res://npc.tscn")
 
 func _ready() -> void:
 	var npc = NPC.instantiate()
-	npc.race = Races.new()
 	npc.race = load("res://resources/goblin.tres")
 	npc.transform = Transform2D(0, Vector2(100, 100 ))
 	add_child(npc)
 ```
 
-If you want to instantiate random NPCs, you can use a JSON file containing all the data for npcs:
+<br>
+
+### Random
+
+You can create instances dynamically at runtime and assign a random `.tres` file to the instance by using a [JSON file](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view) as source containing all the data for every NPC type:
 
 ```gdscript
 extends Node
@@ -172,7 +185,6 @@ func _ready() -> void:
 	var a = randi() % creatures.size()
 	var filename = creatures.keys()[a]
 	
-	npc.race = Races.new()
 	npc.race = load("res://resources/" + filename + ".tres")
 	npc.transform = Transform2D(0, Vector2(100 * a, 100 * a))
 	add_child(npc)

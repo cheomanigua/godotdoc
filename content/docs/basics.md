@@ -192,13 +192,12 @@ A good game arquitecture is to structure the game in small components
 
 ##### 2. Accessing components
 
-- $SomeNode or get_node("SomeNode")
+Can be done with noticeable coupling using:
+
+- get_node("SomeNode") or $SomeNode
 - %SomeNode
 - @export var my_node: Node
 - creating a class
-- using the physics engine (Areas, etc.)
-- groups
-- autoloads
 - @export NodePath
 
 ##### 3. Component communication
@@ -206,8 +205,11 @@ A good game arquitecture is to structure the game in small components
 Can be done with minimal coupling using:
 
 - signals
+- groups
+- autoloads
+- using the physics engine (colliders)
+- propagate_call
 - contracts
 - signal relays
-- propagate_call
 
 

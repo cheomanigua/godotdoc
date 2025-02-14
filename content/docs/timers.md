@@ -18,27 +18,27 @@ Timers can be created in three different ways:
 
 1. Adding a Timer node in the Editor and referencing it in code:
 
-```gdscript
-@onready var timer: Timer = %Timer
-```
+    ```gdscript
+    @onready var timer: Timer = %Timer
+    ```
 
 2. Creating the Timer node directly in code:
 
-```gdscript
-var timer: Timer = Timer.new()
+    ```gdscript
+    var timer: Timer = Timer.new()
 
-somefunction():
-    add_child(timer)
-    timer.wait_time = 2
-```
+    somefunction():
+        add_child(timer)
+        timer.wait_time = 2
+    ```
 
 3. Creating a one-shot ephemeral timer. The code below shows a message during 5 seconds. The timer is deleted afterward automatically:
 
-```gdscript
-$Label.text = message
-await get_tree().create_timer(5.0).timeout
-$Label.text = ""
-```
+    ```gdscript
+    $Label.text = message
+    await get_tree().create_timer(5.0).timeout
+    $Label.text = ""
+    ```
 
 ### Signals
 
@@ -69,7 +69,7 @@ This is useful for running a function every x seconds. A more detailed example c
 Once the timer has been created, we can set it up in different ways.
 
 
-### Timer connected to function in `body_entered` signal
+### Timer connected to function in `body_entered()` signal
 
 This example makes the node show a message every 2 seconds when player enters the Area2D, and stop showing the message when player leaves the Area2D.
 
