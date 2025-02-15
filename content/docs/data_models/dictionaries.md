@@ -333,7 +333,7 @@ However, if we assign the name `strength` to the variable `cvalue`, we can safel
 
 [creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link)
 
-You can create instantes dynamically at runtime using a JSON file as data source.
+You can create instances dynamically at runtime using a JSON file as data source.
 
 ##### `npc.gd`
 

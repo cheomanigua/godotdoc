@@ -174,3 +174,13 @@ func _on_body_entered(body):
 		body.take_damage(damage)
 		SignalManager.event_message.emit(body.name + " has received " + str(damage) + " points of damage from " + name)
 ```
+
+### Signals
+
+##### `mouse_entered()`
+
+It needs the node to have `set_pickable(true)` present in node script.
+
+##### `mouse_exited()`
+
+It needs the node to have `set_pickable(true)` present in node script.

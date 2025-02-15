@@ -18,7 +18,7 @@ Resource is the base class for all Godot-specific resource types, serving primar
 
 ## How to create and use resources
 
-1. Create a new class with via gdscript and extends from **Resource**.
+1. Create a new class via gdscript and extends from **Resource**.
 2. Create a new **Resource** from the new class in the inspector.
 3. Edit the properties of the resource and save it.
 4. Repeat step 3 as needed.
@@ -35,7 +35,7 @@ Resource is the base class for all Godot-specific resource types, serving primar
 class_name NPC
 extends Resource
 
-@export var race: String
+@export var race_name: String
 @export var health: int
 @export var strength: int
 @export var intelligence: int
@@ -88,7 +88,14 @@ func _ready() -> void:
 
 ## Create resources in batch from JSON file
 
-You can generate several to dozens or hundreds of `.tres` files from a single JSON file. In this example, we are generating five different `.tres` files from this [JSON file](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link). The order of the keys and values does not matter.
+You can generate several to dozens or hundreds of `.tres` files from a single JSON file. In the next two examples, we are generating five different `.tres` files from this [JSON file](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link). The order of the keys and values does not matter.
+
+The first example uses a resource file with variables for the `Races` class properties. The second example uses a dictionary for the `Races` class properties. The difference lies in convenience. If you use dictionaries, you can easily iterate through all the properties. Otherwise, you have to access each property individually. It's up to you and the design of your game.
+
+{{< alert context="info" text="You can create a lot of different `.tres` files in seconds from a JSON file. If you want to speed up your workflow even further, you can create all the data very fast in a spreadsheet. Then you can export it to a CSV file and convert it to JSON. You can check [this article](dictionaries/#csv-to-json)." />}}
+
+
+### Variables
 
 Follow these steps:
 
@@ -107,6 +114,7 @@ extends Resource
 	set(value):
 		health = endurance + strength
 ```
+<br>
 
 - Create a node (Main, World, ResourceCreator, etc) and attach this script:
 
@@ -130,17 +138,54 @@ func _ready():
 		ResourceSaver.save(resource, resource_path)
 ```
 
+<br>
+
 Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
 
 
-{{< alert context="info" text="You can create a lot of different `.tres` files in seconds from a JSON file. If you want to speed up your workflow even further, you can create all the data very fast in a spreadsheet. Then you can export it to a CSV file and convert it to JSON. You can check [this article](dictionaries/#csv-to-json)." />}}
 
+### Dictionaries
+
+Follow these steps:
+
+- Create the `Races` class in a new standalone script:
+
+```gdscript
+class_name Races
+extends Resource
+
+@export var attributes: Dictionary = {}
+```
+<br>
+
+
+- Create a node (Main, World, ResourceCreator, etc) and attach this script:
+
+```gdscript
+extends Node
+
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
+
+
+func _ready():
+	var creatures: Dictionary = get_creatures_data()
+	var resource: Resource = Races.new()
+	for race in creatures:
+		resource.attributes = creatures[race]
+		var resource_path = "res://resources/" + race +".tres" # Choose your path.
+```
+<br>
+
+Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
 
 ## Instantiate a NPC at runtime
 
-{{< alert context="warning" text="If the `.tres` files have not been created yet, use `load` instead of `preload` to load the resources. Otherwise, you will get an error when launching the scene. If the resources have been created, you can use either `load` or `preload`." />}}
+{{< alert context="warning" text="If you are creating the `.tres` files in batch as explained above, and the `.tres` files have not been created yet, use `load` instead of `preload` to load the resources. Otherwise, you will get an error when launching the scene. If the resources have been created, you can use either `load` or `preload`." />}}
 
-<br>
 
 ### Specified
 
@@ -186,6 +231,6 @@ func _ready() -> void:
 	var filename = creatures.keys()[a]
 	
 	npc.race = load("res://resources/" + filename + ".tres")
-	npc.transform = Transform2D(0, Vector2(100 * a, 100 * a))
+	npc.transform = Transform2D(0, Vector2(100, 100))
 	add_child(npc)
 ```

@@ -38,10 +38,6 @@ Can be done with minimal coupling using:
 - autoloads
 - using the physics engine (colliders)
 - propagate_call
-- contracts
-- signal relays
-
-
 
 
 ## Accessing a node from the same scene
