@@ -211,10 +211,10 @@ func _ready() -> void:
 			urbes[city]["stock"][product] = randi_range(0, 1000)
 			urbes[city]["price"][product] = randf_range(0.0, 2.0)
 	# Printing the whole dictionary
-	print(urbes)
+	print(JSON.stringify(urbes, "\t"))
 ```
 
-It will print something like this (manually formatted for easy reading):
+It will print:
 
 ```
 {

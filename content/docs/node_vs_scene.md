@@ -35,13 +35,38 @@ You can get a reference to a node by calling the `get_node("NodeName")` method, 
 
 Example:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
-@onready var airplane: CharacterBody2D = %Airplane
+@onready var airplane: CharacterBody2D = $Airplane
 
 func some_function():
     airplane.update_destination()
     print(airplane.position)
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+
+```csharp
+private CharacterBody2D _airplane;
+
+public override void _Ready()
+{
+    _airplane = GetNode<CharacterBody2D>("Airplane");
+}
+
+private void SomeFunction()
+{
+    GD.Print(_airplane.Position);
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 
 The `@onready` annotation makes the member variable to initalize right before the `_ready()` callback. If you omit it, it will be initialized in the `_ready()` callback.
 
@@ -61,9 +86,20 @@ As mentioned earlier, you can access a child node using `$Node` or `get_node("No
 
 There is a better way to access a node in the same scene:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 @export var my_node: Node
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+[Export] private Node _myNode;
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
 
@@ -71,11 +107,29 @@ The above code works by dragging the node to the property panel in the Inspector
 
 To create a node from code, call its `new()` method like for any other class-based datatype. You can store the newly created node's reference in a variable and call `add_child()` to add it as a child of the node to which you attached the script.
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
+
 func _ready():
 	var timer = Timer.new() # Create a new Timer.
 	add_child(timer) # Add it as a child of this node.
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+    public override void _Ready()
+    {
+        var timer = new Timer();
+        AddChild(timer);
+    }
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 # Scenes
 
@@ -83,20 +137,42 @@ func _ready():
 
 Scenes are templates from which you can create as many reproductions as you'd like. This operation is called instancing.
 
+The first step is to load the template:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
 @onready var MyScene = preload("myscene.tscn")
 ```
-At that point, `scene` is a packed scene resource, not a node. To create the actual node, you need to call `PackedScene.instantiate()`. It returns a tree of nodes that you can use as a child of your current node.
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+
+```csharp
+public PackedScene MyScene = GD.Load<PackedScene>("res://myscene.tscn");
+public PackedScene MyScene = (PackedScene)ResourceLoader.Load("res://myscene.tscn");
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+At this point, `scene` is a packed scene resource, not a node.
+
+The second step is to create an instance, that is, to create the actual node. For that you need to call `PackedScene.instantiate()`. It returns a tree of nodes that you can use as a child of your current node.
 
 Example 1:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 const BULLET = preload("res://Bullet.tscn")
 
-some_function():
+func some_function():
     var new_bullet = BULLET.instantiate()
     get_parent().add_child(new_bullet)                  # option 1
     # get_tree().current_scene.add_child(new_bullet)    # option 2
@@ -104,11 +180,34 @@ some_function():
     # add_child(new_bullet)                             # option 4, but not for RigidBody2D instantiating projectiles
 
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+
+public partial class World : Node
+{
+    public PackedScene Bullet = GD.Load<PackedScene>("res://bullet.tscn");
+
+    private void SomeFunction()
+    {
+        var new_bullet = Bullet.Instantiate() as Area2D;
+        new_bullet.Position = new Vector2(100, 100);
+        new_bullet.Rotation = 1.0f;
+        AddChild(new_bullet);
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
+
 Example 2:
 
 ```gdscript
 
-some_function():
+func some_function():
     var new_bullet = preload("res://Bullet.tscn").instantiate()
     get_parent().add_child(new_bullet)
 ```
@@ -124,25 +223,59 @@ When instantiating **Objects**, use `new()`. When instantiating **Scenes**, use 
 
 Example 1:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 var node = Node2D.new()
 node.position = 200, 300
 node.rotation = 1.5
 add_child(node)
-var a = node.get("rotation")    # a is 1.5
-var b = node.rotation           # b is 1.5
+print(node.get("rotation"))    # 1.5
+print(node.rotation)           # 1.5
 ```
 
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+var node = new Node2D();
+node.Position = new Vector2(200, 300);
+node.Rotation = 1.5f;
+AddChild(node);
+GD.Print(node.Get("Rotation"));
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 Example 2:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 var city = City.new()
 city.name = "Tarraco"
 city.population = 3000
 add_child(city)
-var a = city.get("population")  # a is 3000
-var b = city.population         # b is 3000
+print(city.get("population"))  # 3000
+print(city.population)         # 3000
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+var city = new City();
+city.Set("city_name", "Tarraco");
+city.Set("population", 3000);
+AddChild(city);
+GD.Print(city.Get("population"));
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 Note in the code above that you can optionally set up inital values for the instance before calling `add_child()`.
 
@@ -152,18 +285,22 @@ Note in the code above that you can optionally set up inital values for the inst
 
 If you, on the other hand, have defined a class constructor in your `City.gd` class, you can instantiate the class using a constructor like this:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+
 - `City.gd`
 
 ```gdscript
 class_name City
 extend Node
 
-var name: String = ""
+var city_name: String = ""
 var population: int = 0
 
 # Constructor
 func _init(_name: String, _population: int) -> void:
-	name = _name
+	cityu_name = _name
 	population = _population
 ```
 
@@ -175,7 +312,38 @@ func _ready() -> void:
 	# Instantiaton
 	var city: City = City.new("Tarraco", 3000)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
+- `City.cs`
+
+```csharp
+using Godot;
+[GlobalClass]
+
+public partial class City : Node
+{
+    public string CityName { get; set; }
+    public int Population { get; set; }
+
+    public City(string name, int popu)
+    {
+        CityName = name;
+        Population = popu;
+    }
+}
+```
+- `Main.cs`
+
+```csharp
+    public override void _Ready()
+    {
+        var city = new City("Tarraco", 3000);
+    }
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#classes)
 

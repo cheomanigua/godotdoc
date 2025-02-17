@@ -12,7 +12,7 @@ toc: true
 
 [Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_timer.html)
 
-### Timer creation
+## Timer creation
 
 Timers can be created in three different ways:
 
@@ -40,7 +40,7 @@ Timers can be created in three different ways:
     $Label.text = ""
     ```
 
-### Signals
+## Signals
 
 - `timeout()` Emitted when the timer reaches the end.
 - We can activate methods when timer reaches an end: `timer.timeout.connect(_shoot)`
@@ -48,7 +48,7 @@ Timers can be created in three different ways:
 
 This is useful for running a function every x seconds. A more detailed example can be found [further down](#timer-connected-to-function-in-body_entered-signal).
 
-### Properties
+## Properties
 
 - `timer.wait_time = 2.0` Timer cycle. The time required for the timer to end, in seconds. `1.0` is the default value.
 - `timer.get_time_left()` The timer's remaining time in seconds. This is always 0 if the timer is stopped.
@@ -59,7 +59,7 @@ This is useful for running a function every x seconds. A more detailed example c
 - `timer.paused = false` unpauses the timer.
 - `timer.is_paused()` checks if the timer is paused.
 
-### Methods
+## Methods
 
 - `timer.start()` starts the timer.
 - `timer.stop()` stops the timer.
@@ -68,6 +68,53 @@ This is useful for running a function every x seconds. A more detailed example c
 
 Once the timer has been created, we can set it up in different ways.
 
+## Examples
+
+### Do something every 3 seconds
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+var timer: Timer = Timer.new()
+
+func _ready():
+	add_child(timer)
+	timer.wait_time = 3.0 # 3 seconds
+	timer.start()
+	timer.timeout.connect(_on_timer_timeout)
+
+func _on_timer_timeout():
+	print("This message is printed every 3 seconds")
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+
+public partial class Main : Node
+{
+    private Timer _timer = new();
+
+    public override void _Ready()
+    {
+        //var timer = new Timer()
+        AddChild(_timer);
+        _timer.Start(3f);
+        _timer.Timeout += OnTimerTimout;
+    }
+
+    private void OnTimerTimout()
+    {
+        GD.Print("This message is printed every 3 seconds");
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ### Timer connected to function in `body_entered()` signal
 

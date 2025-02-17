@@ -13,7 +13,8 @@ Base class for serializable objects.
 
 Resource is the base class for all Godot-specific resource types, serving primarily as data containers. Since they inherit from [RefCounted](https://docs.godotengine.org/en/stable/classes/class_refcounted.html), resources are reference-counted and freed when no longer in use. They can also be nested within other resources, and saved on disk. [PackedScene](https://docs.godotengine.org/en/stable/classes/class_packedscene.html), one of the most common [Objects](https://docs.godotengine.org/en/stable/classes/class_object.html) in a Godot project, is also a resource, uniquely capable of storing and instantiating the [Nodes](https://docs.godotengine.org/en/stable/classes/class_node.html) it contains as many times as desired.
 
-[Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_resource.html)
+- [Godot Documentation - Resource Class](https://docs.godotengine.org/en/stable/classes/class_resource.html)
+- [Godot Documentation - Custom Resources](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html#creating-your-own-resources)
 
 
 ## How to create and use resources
@@ -134,7 +135,7 @@ func _ready():
 	for race in creatures:
 		for attribute in creatures[race]:
 			resource.set(attribute, creatures[race][attribute])
-		var resource_path = "res://resources/" + race +".tres" # Choose your path.
+		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
 		ResourceSaver.save(resource, resource_path)
 ```
 
@@ -154,7 +155,14 @@ Follow these steps:
 class_name Races
 extends Resource
 
-@export var attributes: Dictionary = {}
+@export var attributes: Dictionary = {
+	"race_name": "",
+	"strength": 0,
+	"intelligence": 0,
+	"dexterity": 0,
+	"endurance": 0,
+	"health": 0
+}
 ```
 <br>
 
@@ -176,7 +184,7 @@ func _ready():
 	var resource: Resource = Races.new()
 	for race in creatures:
 		resource.attributes = creatures[race]
-		var resource_path = "res://resources/" + race +".tres" # Choose your path.
+		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
 ```
 <br>
 

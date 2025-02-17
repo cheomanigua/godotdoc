@@ -45,7 +45,11 @@ Comparison between **move_and_collide** and **move_and_slide** for a bullet obje
 - **move_and_collide** is better used for projectiles kind of objects because we asure that the projectile is going to hit only once at the target, causing the expected amount of damage.
 - **move_and_slide** is not good for projectiles, because a single projectile can impact several times at the target, causing more damage than expected.
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
+
 func _physics_process(delta):
 
 	# Using move_and_collide.
@@ -65,7 +69,22 @@ func _physics_process(delta):
 			collision.get_collider().take_damage(damage)
 			print("Bullet hit target")
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
+```csharp
+public override void _PhysicsProcess(double delta)
+{
+    var collision = MoveAndCollide(Velocity * (float)delta);
+    if (collision != null)
+    {
+        GD.Print("I collided with ", ((Node)collision.GetCollider()).Name);
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ### 3. RigidBody2D [](https://docs.godotengine.org/en/stable/classes/class_rigidbody2d.html)
 

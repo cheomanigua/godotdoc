@@ -11,16 +11,23 @@ toc: true
 
 # Installation
 
-1. Go to [godotengine.org](https://godotengine.org/) and click on the **Download Latest** button. After that you can choose between the **Godot Engine** version or the **Godot Engine - .NET** version. If you want to use **GDScript** for your code, choose the **Godot Engine** version. If you want to use **C#** for your code, choose **Godot Engine - .NET** version. The website will automatically detect your operating system and download the proper file.
+1. Go to [godotengine.org](https://godotengine.org/) and click on the **Download Latest** button. Then you'll have the choice to download either the **Godot Engine** version or the **Godot Engine - .NET** version:
 
-{{< alert text="All the examples on this documentation site use **GDScript**" />}}
+    - If you want to use **GDScript** for your code, you can choose either version.
+    - If you want to use **C#** for your code, you have to choose **Godot Engine - .NET** version. You will need to install **.NET SDK 8** or later. In Ubuntu you can install it like this:
+
+    ```
+    $sudo apt install dotnet-sdk-8.0
+    ```
+
+    {{< alert text="All the examples on this documentation site use **GDScript**" />}}
 
 2. Unzip the downloaded file and move the executable file to a directory of your choice. Once in that directory, run Godot by typing:
 
-```
-./Godot_v4.3-stable_linux.x86_64
-```
-You can rename the file if you want. `./Godot_v4.3-stable_linux.x86_64` is a single executable file, and doesn't install anything.
+    ```
+    ./Godot_v4.3-stable_linux.x86_64
+    ```
+    You can rename the file if you want. `./Godot_v4.3-stable_linux.x86_64` is a single executable file, and doesn't install anything.
 
 ### Adding Godot to the launch menu
 
@@ -173,7 +180,7 @@ Then:
 - Rename session: `rename-session` or `rename` + *your_session_name*
 
 
-# Aseprite 
+# Aseprite
 
 You can build **Aseprite** from source code. When building from source code, you can use it for [free](https://www.aseprite.org/faq/#if-aseprite-source-code-is-available-how-is-that-you-are-selling-it) for your personal purposes. You can make commercial art/assets with it too. The only restriction is that you cannot redistribute Aseprite to third parties.
 
@@ -192,7 +199,7 @@ git clone --recursive https://github.com/aseprite/aseprite.git
 sudo apt-get install -y g++ clang libc++-dev libc++abi-dev cmake ninja-build libx11-dev libxcursor-dev libxi-dev libgl1-mesa-dev libfontconfig1-dev python-is-python3
 ```
 
-### 3. Skia for Aseprite and laf 
+### 3. Skia for Aseprite and laf
 
 ```
 mkdir $HOME/deps

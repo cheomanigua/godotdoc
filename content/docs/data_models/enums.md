@@ -1,7 +1,7 @@
 ---
 weight: 3100
 title: "Enums"
-description: "Enums are mistake-free attributes"
+description: "Enums are mistake-free constants"
 icon: "article"
 date: "2024-09-16T12:01:20+02:00"
 lastmod: "2024-09-16T12:01:20+02:00"
@@ -9,9 +9,64 @@ draft: false
 toc: true
 ---
 
+Enums are basically a shorthand for constants, and are pretty useful if you want to assign consecutive integers to some constant.
+
+However, the power of enums is passing a name to the enum to group all the constant together under a common characteristic. It will put all the keys inside a constant Dictionary of that name. This means all constant methods of a dictionary can also be used with a named enum.
+
+[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html#enums)
+
 - In Godot, enums are useful for states, status, roles, game modes.
 - By using enums, the compiler will instantly catch an error when checking againts an enum constant.
 
+By default, enums start with a value of `0` for the first key and auto-increments by `1` for the next keys.
+
+```gdscript
+enum state { IDLE, WALK, RUN }
+```
+
+is the same as:
+
+```gdscript
+enum state { IDLE = 0, WALK = 1, RUN = 2 }
+```
+
+However, we can change the value of any key and it will auto-increment from this value unless it finds a key witn another custom value:
+
+
+1. ##### Example 1
+
+    ```gdscript
+    enum state { IDLE = 1, WALK, RUN }
+    ```
+
+    is the same as:
+
+    ```gdscript
+    enum state { IDLE = 1, WALK = 2, RUN = 3 }
+    ```
+
+
+2. ##### Example 2
+
+    ```gdscript
+    enum state { IDLE, WALK = 2, RUN }
+    ```
+    is the same as:
+
+    ```gdscript
+    enum state { IDLE = 0, WALK = 2, RUN = 3 }
+    ```
+
+3. ##### Example 3
+
+    ```gdscript
+    enum state { IDLE = 1, WALK = 6, RUN }
+    ```
+    is the same as:
+
+    ```gdscript
+    enum state { IDLE = 1, WALK = 6, RUN = 7 }
+    ```
 
 ## @export vs @export_enum
 
@@ -185,35 +240,3 @@ func _ready() -> void:
 ```
 <br>
 
-By default, enums start with a value of `0` for the first key and auto-increments by `1` for the next keys. However, as we saw in the code above, we can change the value of any key and will auto-increment from this value unless it finds a key witn another custom value:
-
-```gdscript
-enum munition_type { LOW_DAMAGE = 1 =, MEDIUM_DAMAGE, HIGH_DAMAGE }
-```
-
-The code above has the following key-values:
-- LOW_DAMAGE: 1
-- MEDIUM_DAMAGE: 2
-- HIGH_DAMAGE: 3
-
-<br>
-
-```gdscript
-enum munition_type { LOW_DAMAGE, MEDIUM_DAMAGE = 2, HIGH_DAMAGE }
-```
-
-The code above has the following key-values:
-- LOW_DAMAGE: 0
-- MEDIUM_DAMAGE: 2
-- HIGH_DAMAGE: 3
-
-<br>
-
-```gdscript
-enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE = 6, HIGH_DAMAGE }
-```
-
-The code above has the following key-values:
-- LOW_DAMAGE: 1
-- MEDIUM_DAMAGE: 6
-- HIGH_DAMAGE: 7
