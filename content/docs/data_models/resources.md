@@ -30,23 +30,46 @@ Resource is the base class for all Godot-specific resource types, serving primar
 
 ### Step 1. Create new class
 
-`npc_attributes.gd`
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+`race.gd`
 
 ```gdscript
-class_name NPC
+class_name Race
 extends Resource
 
 @export var race_name: String
-@export var health: int
 @export var strength: int
 @export var intelligence: int
 @export var dexterity: int
+@export var health: int
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+`Race.cs`
+
+```csharp
+using Godot;
+[GlobalClass]
+
+public partial class Race : Resource
+{
+    [Export] public string RaceName {get; set;}
+    [Export] public int Strength {get; set;}
+    [Export] public int Intelligence {get; set;}
+    [Export] public int Dexterity {get; set;}
+    [Export] public int Health {get; set;}
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 ### Step 2. Create new resource
 
 1. In the inspector, click on *Create a new resource* icon.
-2. In the new dialog that opens, search for `npc`. You'll get *NPC(npc_attributes.gd)*
+2. In the new dialog that opens, search for `race`. You'll get *Race(race.gd)*
 3. Click on **Create** button.
 
 ### Step 3. Edit the resource properties
@@ -68,30 +91,52 @@ extends Resource
 
 1. Attach a new script to the newly created scene where it exports the resource:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 `npc.gd`
 
 ```gdscript
 extends CharacterBody2D
 
-@export var npc: NPC
+@export var race: Race
 
 func _ready() -> void:
-	print(npc.race_name)
+	print(race.race_name)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+`NPC.cs`
+
+```csharp
+using Godot;
+
+public partial class NPC : CharacterBody2D
+{
+    [Export] public Race race {get; set;}
+
+    public override void _Ready()
+    {
+        GD.Print(race.RaceName);
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 ### Step 7. Test
 
 1. Instantiate the **NPC** scene from the main node.
 2. Select the instantiated **NPC** node from the scene tree.
-3. Drag one of the `.tres` resources created and drop it in the **npc** slot in the inspector.
-4. If you run the game, it will print the name of the **race** of the particular `.tres` resource file you dragged.
+3. Drag one of the `.tres` resources created and drop it in the **race** slot in the inspector.
+4. If you run the game, it will print the name of the race of the particular `.tres` resource file you dragged.
 
 
 ## Create resources in batch from JSON file
 
 You can generate several to dozens or hundreds of `.tres` files from a single JSON file. In the next two examples, we are generating five different `.tres` files from this [JSON file](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link). The order of the keys and values does not matter.
 
-The first example uses a resource file with variables for the `Races` class properties. The second example uses a dictionary for the `Races` class properties. The difference lies in convenience. If you use dictionaries, you can easily iterate through all the properties. Otherwise, you have to access each property individually. It's up to you and the design of your game.
+The first example uses a resource file with variables for the `Race` class properties. The second example uses a dictionary for the `Race` class properties. The difference lies in convenience. If you use dictionaries, you can easily iterate through all the properties. Otherwise, you have to access each property individually. It's up to you and the design of your game.
 
 {{< alert context="info" text="You can create a lot of different `.tres` files in seconds from a JSON file. If you want to speed up your workflow even further, you can create all the data very fast in a spreadsheet. Then you can export it to a CSV file and convert it to JSON. You can check [this article](dictionaries/#csv-to-json)." />}}
 
@@ -100,59 +145,122 @@ The first example uses a resource file with variables for the `Races` class prop
 
 Follow these steps:
 
-- Create the `Races` class in a new standalone script:
 
-```gdscript
-class_name Races
-extends Resource
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
-@export var race_name: String
-@export var strength: float
-@export var intelligence: float
-@export var dexterity: float
-@export var endurance: float
-@export var health: float:
-	set(value):
-		health = endurance + strength
-```
-<br>
+1. Create the `race.gd` class in a new standalone script:
 
-- Create a node (Main, World, ResourceCreator, etc) and attach this script:
+    ```gdscript
+    class_name Race
+    extends Resource
 
-```gdscript
-extends Node
+    @export var race_name: String
+    @export var strength: int
+    @export var intelligence: int
+    @export var dexterity: int
+    @export var endurance: int
+    @export var health: int:
+        set(value):
+            health = endurance + strength
+    ```
+2. Create a node (Main, World, ResourceCreator, etc) and attach this script:
 
-func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
-	var json = JSON.parse_string(file.get_as_text())
-	file.close()
-	return json
+    ```gdscript
+    extends Node
+
+    func _ready():
+        var creatures: Dictionary = get_creatures_data()
+        var resource: Resource = Race.new()
+        for race in creatures:
+            for attribute in creatures[race]:
+                resource.set(attribute, creatures[race][attribute])
+            var resource_path = "res://resources/" + race + ".tres" # Choose your path.
+            ResourceSaver.save(resource, resource_path)
 
 
-func _ready():
-	var creatures: Dictionary = get_creatures_data()
-	var resource: Resource = Races.new()
-	for race in creatures:
-		for attribute in creatures[race]:
-			resource.set(attribute, creatures[race][attribute])
-		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
-		ResourceSaver.save(resource, resource_path)
-```
+    func get_creatures_data() -> Dictionary:
+        var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+        var json = JSON.parse_string(file.get_as_text())
+        file.close()
+        return json
+    ```
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
 
-<br>
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
-Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
+1. Create the `Race.cs` class in a new standalone script:
 
+    ```csharp
+    using Godot;
+    [GlobalClass]
+
+    public partial class Race : Resource
+    {
+        [Export] public string RaceName {get; set;}
+        [Export] public int Strength {get; set;}
+        [Export] public int Intelligence {get; set;}
+        [Export] public int Dexterity {get; set;}
+        [Export] public int Endurance {get; set;}
+        [Export] public int Health {get; set;}
+
+        public Race()
+        {
+            Health = Strength + Endurance;
+        }
+    }
+    ```
+
+2. Create a node (Main, World, ResourceCreator, etc) and attach this script:
+
+    ```csharp
+    using Godot;
+    using Godot.Collections;
+
+    public partial class Spawner : Node
+    {
+        public override void _Ready()
+        {
+            Dictionary creatures = GetCreaturesData();
+            Resource resource = new Race();
+            foreach (var race in creatures)
+            {
+                Dictionary<string, Variant> raceDict = (Dictionary<string, Variant>)race.Value;
+                foreach (var attribute in raceDict)
+                {
+                    resource.Set(attribute.Key.ToPascalCase(), attribute.Value);
+                var resource_path = "res://resources/" + race.Key + ".tres";
+                ResourceSaver.Save(resource, resource_path);
+                }
+            }
+        }
+
+        public static Dictionary GetCreaturesData()
+        {
+            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
+            var json = (Dictionary)Json.ParseString(file.GetAsText());
+            file.Close();
+            return json;
+        }
+    }
+    ```
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
+
+{{% /tab %}}
+{{< /tabs >}}
+
+{{< alert context="warning" text="Be sure the the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `Capitalize()` and `ToPascalCase()` to convert different formattings." />}}
 
 
 ### Dictionaries
 
 Follow these steps:
 
-- Create the `Races` class in a new standalone script:
+- Create the `Race` class in a new standalone script:
 
 ```gdscript
-class_name Races
+class_name Race
 extends Resource
 
 @export var attributes: Dictionary = {
@@ -181,7 +289,7 @@ func get_creatures_data() -> Dictionary:
 
 func _ready():
 	var creatures: Dictionary = get_creatures_data()
-	var resource: Resource = Races.new()
+	var resource: Resource = Race.new()
 	for race in creatures:
 		resource.attributes = creatures[race]
 		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
@@ -199,6 +307,9 @@ Run the scene once and then stop it. All the five `.tres` files will be generate
 
 You can create instances dynamically at runtime and assign a specific `.tres` file to the instance:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 extends Node
 
@@ -209,7 +320,28 @@ func _ready() -> void:
 	npc.race = load("res://resources/goblin.tres")
 	npc.transform = Transform2D(0, Vector2(100, 100 ))
 	add_child(npc)
+	print(npc.race.race_name)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+public partial class Spawner : Node
+{
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");
+    public override void _Ready()
+    {
+        CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
+        NPC npc = npcInstance as NPC; // NPC.cs class
+        npc.race = GD.Load<Race>("res://resources/goblin.tres");
+        npc.Transform = new Transform2D(0.0f, new Vector2(100, 100));
+        AddChild(npcInstance);
+        GD.Print(npc.race.RaceName)
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 <br>
 

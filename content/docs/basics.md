@@ -19,12 +19,29 @@ The most common input types are:
   - [is_action_released](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-action-released) *
   - [is_pressed](https://docs.godotengine.org/en/stable/classes/class_inputevent.html#class-inputevent-method-is-pressed)
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_select"):
 		show_inventory()
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+    public override void _UnhandledKeyInput(InputEvent @event)
+    {
+        base._UnhandledKeyInput(@event);
+        if (@event.IsActionPressed("ui_select"))
+            ShowInventory();
+    }
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 - [Input](https://docs.godotengine.org/en/stable/classes/class_input.html) Use them inside `func _physics_process(delta)`. The best use of Input is when a continous event is needed, like moving a character with keyboard keys.
   - [get_vector](https://docs.godotengine.org/en/stable/classes/class_input.html#class-input-method-get-vector)
@@ -36,6 +53,9 @@ func _input(event: InputEvent) -> void:
   - [is_mouse_button_pressed](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-is-mouse-button-pressed)
   - [get_mouse_button_mask](https://docs.godotengine.org/es/stable/classes/class_input.html#class-input-method-get-mouse-button-mask)
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 
 func _physics_process(_delta):
@@ -43,6 +63,19 @@ func _physics_process(_delta):
 	velocity = input_direction * speed
 	move_and_slide()
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+    public override void _PhysicsProcess(double delta)
+    {
+        Vector2 inputDirection = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+        Velocity = inputDirection * Speed;
+        MoveAndSlide();
+    }
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 \* **is_action** is specified by a name (such as **"ui_right"**) defined in the **Project->Project Settings->Input Map** panel of the Editor. As well as the default actions, we may redefine them and add more of our own.
 

@@ -160,7 +160,6 @@ func _physics_process(delta):
 # Using move_and_collide.
 var collision = move_and_collide(velocity * delta)
 if collision:
-	compute_damage()
 	if collision.get_collider().has_method("take_damage"):
 		collision.get_collider().take_damage(damage)
 		print("Alien ship collided with and damaged Player")

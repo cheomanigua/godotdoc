@@ -193,7 +193,9 @@ public partial class World : Node
 
     private void SomeFunction()
     {
-        var new_bullet = Bullet.Instantiate() as Area2D;
+        var new_bullet = (Area2D)Bullet.Instantiate();      # Option 1
+        var new_bullet = Bullet.Instantiate() as Area2D;    # Option 2
+        var new_bullet = Bullet.Instantiate<Area2D>();      # Option 3
         new_bullet.Position = new Vector2(100, 100);
         new_bullet.Rotation = 1.0f;
         AddChild(new_bullet);
@@ -244,6 +246,7 @@ node.Position = new Vector2(200, 300);
 node.Rotation = 1.5f;
 AddChild(node);
 GD.Print(node.Get("Rotation"));
+GD.Print(node.Rotation);
 ```
 
 {{% /tab %}}
@@ -272,6 +275,7 @@ city.Set("city_name", "Tarraco");
 city.Set("population", 3000);
 AddChild(city);
 GD.Print(city.Get("population"));
+GD.Print(city.Population);
 ```
 
 {{% /tab %}}
@@ -326,10 +330,11 @@ public partial class City : Node
     public string CityName { get; set; }
     public int Population { get; set; }
 
-    public City(string name, int popu)
+    // Constructor
+    public City(string name, int population)
     {
         CityName = name;
-        Population = popu;
+        Population = population;
     }
 }
 ```
