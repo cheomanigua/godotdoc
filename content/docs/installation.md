@@ -20,7 +20,7 @@ toc: true
     $sudo apt install dotnet-sdk-8.0
     ```
 
-    {{< alert text="All the examples on this documentation site use **GDScript**" />}}
+    {{< alert text="If you want to have autocompletion, code diagnostics, code parser and syntax highlighting for your **C#** code, you will need to use either [VSCode](installation/#1-installation) or [VSCodium](installation/#1-installation) as editor." />}}
 
 2. Unzip the downloaded file and move the executable file to a directory of your choice. Once in that directory, run Godot by typing:
 
@@ -52,6 +52,83 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 - **Alt** + **Up/Down**: Move current line/selected text up/down a line
 - **Alt** + **Return**: Create new empty line below with indented cursor position
 
+
+# VSCode/VSCodium as editor
+
+## 1. Installation
+
+- Download VSCode from [here](https://code.visualstudio.com/).
+- Download VSCodium from [here](https://vscodium.com/#install).
+
+## 2. Godot configuration
+
+For Godot to launch **C#** files when clicking on them, configure Godot this way:
+1. **Editor** -> **Editor Settings...** -> **Dotnet** -> **Editor** (Advanced settings must be enabled).
+2. In the new dialog that opens, select the following options:
+    - **External Editor**: `Visual Studio Code and VSCodium`
+    - **Custom Exec Path**: `/usr/bin/code` or whatever is the path to VSCode or VSCodium
+
+## 3. VSCode/VSCodium configuration
+
+### Plugins
+
+Install the following extension:
+- For VSCode: [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+- For VSCodium: [C#](https://open-vsx.org/extension/muhammad-sammy/csharp)
+
+### Debugging
+
+In order to be able to debug in VSCode/VSCodium, you need to create and configure the following files in the `.vscode` subfolder of your project:
+
+- `launch.json`
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Play",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "/the/path/to/godot/executable",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+    ]
+}
+```
+
+- `tasks.json`
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
+```
 
 # NeoVim as editor
 

@@ -187,6 +187,8 @@ Follow these steps:
     ```
 3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
 
+{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `to_camel_case()`, `to_snake_case()`, `to_pascal_case()` and `capitalize()` to convert between different formattings if necessary." />}}
+
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
@@ -247,10 +249,11 @@ Follow these steps:
     ```
 3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
 
+{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `ToCamelCase()`, `ToSnakeCase()`, `ToPascalCase()` and `Capitalize()` to convert between different formattings if necessary." />}}
+
 {{% /tab %}}
 {{< /tabs >}}
 
-{{< alert context="warning" text="Be sure the the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `Capitalize()` and `ToPascalCase()` to convert different formattings." />}}
 
 
 ### Dictionaries

@@ -9,6 +9,47 @@ draft: false
 toc: true
 ---
 
+## C#
+
+#### _init()
+
+There is no `_init()` function in **C#**. The equivalent in **C#** is the class constructor:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+
+func _init() -> void:
+	set_pickable(true)
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+    public MyClass()
+    {
+        SetPickable(true);
+    }
+```
+{{% /tab %}}
+{{< /tabs >}}
+
+#### Instantiating GDScript classes from C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#instantiating-gdscript-nodes-from-c)
+
+```csharp
+var myGDScript = GD.Load<GDScript>("res://path/to/my_gd_script.gd");
+var myGDScriptNode = (GodotObject)myGDScript.New(); // This is a GodotObject, but could be a Resource, or whatever
+```
+#### Accessing GDScript fields from C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#accessing-gdscript-fields-from-c)
+
+```csharp
+// Set
+myGDScriptNode.Set("my_property", "MY GDSCRIPT VALUE");
+// Get
+GD.Print(myGDScriptNode.Get("my_property"));
+```
+
 
 ## Input
 The most common input types are:

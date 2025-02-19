@@ -9,6 +9,51 @@ draft: false
 toc: true
 ---
 
+### Mouse entered
+
+When entering a CollisionObject with the mouse cursor, print the message "Object has been entered"
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+func _init() -> void:
+	set_pickable(true)
+
+func _ready() -> void:
+	mouse_entered.connect(_on_mouse_entered)
+
+func _on_mouse_entered():
+	print("Object has been entered.")
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+
+public partial class Item : Area2D
+{
+    public Item()
+    {
+        SetPickable(true);
+    }
+
+    public override void _Ready()
+    {
+        this.MouseEntered += _OnMouseEntered;
+    }
+
+    private void _OnMouseEntered()
+    {
+        GD.Print("Object has been entered.";
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 ### Clickeable Area2D
 
 When left clicking in an Area2D, the message "Object has been clicked" will appear in the debug window. Create the following script to an Area2D node:
