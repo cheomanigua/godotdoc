@@ -66,6 +66,8 @@ public partial class Race : Resource
 {{% /tab %}}
 {{< /tabs >}}
 
+{{< alert context="info" text="Throughout this article the Race script we created here in **Step 1** will be used, referenced or mentioned. Go back up here if in doubt." />}}
+
 ### Step 2. Create new resource
 
 1. In the inspector, click on *Create a new resource* icon.
@@ -85,7 +87,9 @@ public partial class Race : Resource
 
 ### Step 5. Create a new scene
 
-1. Create a `CharacterBody2D` scene and call it **NPC**.
+1. Create a `CharacterBody2D` scene and call it **NPC**. It will create the file `npc.tscn`.
+
+{{< alert context="info" text="Throughout this article the NPC scene we created here in **Step 5** will be used, referenced or mentioned. Go back up here if in doubt." />}}
 
 ### Step 6. Create and attach a new script to the scene
 
@@ -100,7 +104,7 @@ extends CharacterBody2D
 
 @export var race: Race
 
-func _ready() -> void:
+func print_name() -> void:
 	print(race.race_name)
 ```
 {{% /tab %}}
@@ -115,7 +119,7 @@ public partial class NPC : CharacterBody2D
 {
     [Export] public Race race {get; set;}
 
-    public override void _Ready()
+    public void PrintName()
     {
         GD.Print(race.RaceName);
     }
@@ -123,6 +127,8 @@ public partial class NPC : CharacterBody2D
 ```
 {{% /tab %}}
 {{< /tabs >}}
+
+{{< alert context="info" text="Throughout this article the NPC script we created here in **Step 6** will be used, referenced or mentioned. Go back up here if in doubt." />}}
 
 ### Step 7. Test
 
@@ -146,7 +152,7 @@ The first example uses a resource file with variables for the `Race` class prope
 Follow these steps:
 
 
-{{< tabs tabTotal="2">}}
+{{< tabs tabTotal="3">}}
 {{% tab tabName="GDScript" %}}
 
 1. Create the `race.gd` class in a new standalone script:
@@ -164,18 +170,18 @@ Follow these steps:
         set(value):
             health = endurance + strength
     ```
-2. Create a node (Main, World, ResourceCreator, etc) and attach this script:
+2. Create the node **ResourceCreator** attach this **GDScript** `resource_creator.gd` script:
 
     ```gdscript
     extends Node
 
     func _ready():
+        var resource: Resource = Race.new()     # GDSCRIPT RESOURCE FILE
         var creatures: Dictionary = get_creatures_data()
-        var resource: Resource = Race.new()
         for race in creatures:
             for attribute in creatures[race]:
                 resource.set(attribute, creatures[race][attribute])
-            var resource_path = "res://resources/" + race + ".tres" # Choose your path.
+            var resource_path = "res://resources/gdscript/" + race + ".tres"
             ResourceSaver.save(resource, resource_path)
 
 
@@ -185,9 +191,9 @@ Follow these steps:
         file.close()
         return json
     ```
-3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/gdscript/`
 
-{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `to_camel_case()`, `to_snake_case()`, `to_pascal_case()` and `capitalize()` to convert between different formattings if necessary." />}}
+{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary keys and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with zero values. You can use helper methods like `to_camel_case()`, `to_snake_case()`, `to_pascal_case()` and `capitalize()` to convert between different formattings if necessary." />}}
 
 {{% /tab %}}
 {{% tab tabName="C#" %}}
@@ -214,25 +220,27 @@ Follow these steps:
     }
     ```
 
-2. Create a node (Main, World, ResourceCreator, etc) and attach this script:
+2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
     ```csharp
     using Godot;
     using Godot.Collections;
 
-    public partial class Spawner : Node
+    public partial class ResourceCreator : Node
     {
         public override void _Ready()
         {
+            Resource resource = new Race();     // CSHARP RESOURCE FILE
+
             Dictionary creatures = GetCreaturesData();
-            Resource resource = new Race();
+            
             foreach (var race in creatures)
             {
                 Dictionary<string, Variant> raceDict = (Dictionary<string, Variant>)race.Value;
                 foreach (var attribute in raceDict)
                 {
                     resource.Set(attribute.Key.ToPascalCase(), attribute.Value);
-                var resource_path = "res://resources/" + race.Key + ".tres";
+                var resource_path = "res://resources/csharp/" + race.Key + ".tres";
                 ResourceSaver.Save(resource, resource_path);
                 }
             }
@@ -247,9 +255,68 @@ Follow these steps:
         }
     }
     ```
-3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/csharp/`
 
-{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary properties and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with empty values. You can use helper methods like `ToCamelCase()`, `ToSnakeCase()`, `ToPascalCase()` and `Capitalize()` to convert between different formattings if necessary." />}}
+{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary keys and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with zero values. You can use helper methods like `ToCamelCase()`, `ToSnakeCase()`, `ToPascalCase()` and `Capitalize()` to convert between different formattings if necessary." />}}
+
+{{% /tab %}}
+{{% tab tabName="GDScript from C#" %}}
+
+1. Create the `race.gd` class in a new standalone script:
+
+    ```gdscript
+    class_name Race
+    extends Resource
+
+    @export var race_name: String
+    @export var strength: int
+    @export var intelligence: int
+    @export var dexterity: int
+    @export var endurance: int
+    @export var health: int:
+        set(value):
+            health = endurance + strength
+    ```
+2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
+
+    ```csharp
+    using Godot;
+    using Godot.Collections;
+
+    public partial class ResourceCreator : Node
+    {
+        public override void _Ready()
+        {
+            var myGDScript = GD.Load<GDScript>("res://race.gd");    // GDSCRIPT RESOURCE FILE
+            var resource = (Resource)myGDScript.New();
+
+            Dictionary creatures = GetCreaturesData();
+
+            foreach (var race in creatures)
+            {
+                Dictionary<string, Variant> raceDict = (Dictionary<string, Variant>)race.Value;
+                foreach (var attribute in raceDict)
+                {
+                    resource.Set(attribute.Key.ToSnakeCase(), attribute.Value);
+                var resource_path = "res://resources/gdscript/" + race.Key + ".tres";
+                ResourceSaver.Save(resource, resource_path);
+                }
+            }
+        }
+
+        public static Dictionary GetCreaturesData()
+        {
+            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
+            var json = (Dictionary)Json.ParseString(file.GetAsText());
+            file.Close();
+            return json;
+        }
+    }
+    ```
+
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/gdscript/`
+
+{{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary keys and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with zero values. You can use helper methods like `ToCamelCase()`, `ToSnakeCase()`, `ToPascalCase()` and `Capitalize()` to convert between different formattings if necessary." />}}
 
 {{% /tab %}}
 {{< /tabs >}}
@@ -308,22 +375,23 @@ Run the scene once and then stop it. All the five `.tres` files will be generate
 
 ### Specified
 
-You can create instances dynamically at runtime and assign a specific `.tres` file to the instance:
+You can create instances dynamically at runtime and assign a specific `.tres` file to the instance. For these examples below, we create a Node called `Spawner` and create the correspoding script. In the scene tree, don't forget to attach the `npc.gd` or `NPC.cs` to the `npc.tscn` scene.
 
-{{< tabs tabTotal="2">}}
+{{< tabs tabTotal="3">}}
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
 extends Node
 
-const NPC = preload("res://npc.tscn")
+const NPC = preload("res://npc.tscn")       # Remember to attach npc.gd to npc.tscn
 
 func _ready() -> void:
 	var npc = NPC.instantiate()
-	npc.race = load("res://resources/goblin.tres")
+	npc.race = load("res://resources/gdscript/goblin.tres")
 	npc.transform = Transform2D(0, Vector2(100, 100 ))
 	add_child(npc)
-	print(npc.race.race_name)
+	print(npc.race.race_name)   # Not so good option
+    npc.print_name()            # Better option
 ```
 {{% /tab %}}
 {{% tab tabName="C#" %}}
@@ -331,18 +399,42 @@ func _ready() -> void:
 ```csharp
 public partial class Spawner : Node
 {
-    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");   // Remember to attach NPC.cs to npc.tscn
     public override void _Ready()
     {
         CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
         NPC npc = npcInstance as NPC; // NPC.cs class
-        npc.race = GD.Load<Race>("res://resources/goblin.tres");
+        npc.race = GD.Load<Race>("res://resources/csharp/goblin.tres");
         npc.Transform = new Transform2D(0.0f, new Vector2(100, 100));
         AddChild(npcInstance);
-        GD.Print(npc.race.RaceName)
+        GD.Print(npc.race.RaceName)     // Not so good option
+        npc.PrintName()                 // Better option
     }
 }
 ```
+
+{{% /tab %}}
+{{% tab tabName="GDSCript from C#" %}}
+
+```csharp
+public partial class Spawner : Node
+{
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");   // Remember to attach npc.gd to npc.tscn
+    public override void _Ready()
+    {
+        CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
+        Resource Race = GD.Load<Resource>("res://resources/gdscript/goblin.tres"));
+        npcInstance.Set("race", Race);
+        npc.Transform = new Transform2D(0.0f, new Vector2(100, 100));
+        AddChild(npcInstance);
+        GD.Print(Race.Get("race_name"));    // Not so good option
+        npcInstance.Call("print_name");     // Better option
+    }
+}
+```
+{{< alert context="success" text="Why would you instantiate a `gdscript` scene in a `csharp` script class? Well, If you are going to spawn hundreds of NPCs, using `csharp` to spawn those NPCs is faster than using `gdscript`. So you can create your classes and resources in `gdscript`, and use `csharp` to handle those classes when performance is critical." />}}
+
+
 {{% /tab %}}
 {{< /tabs >}}
 

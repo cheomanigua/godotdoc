@@ -50,6 +50,19 @@ myGDScriptNode.Set("my_property", "MY GDSCRIPT VALUE");
 GD.Print(myGDScriptNode.Get("my_property"));
 ```
 
+#### Calling GDScript methods from C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#calling-gdscript-methods-from-c)
+
+```csharp
+myGDScriptNode.Call("print_node_name", this);
+```
+
+#### Connecting to GDScript signal fro C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#connecting-to-gdscript-signals-from-c)
+
+```csharp
+myGDScriptNode.Connect("my_signal", Callable.From(MySignalHandler));
+```
+
+
 
 ## Input
 The most common input types are:
