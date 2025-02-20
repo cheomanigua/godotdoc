@@ -44,6 +44,8 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 7. Tick the box **'Use dedicated GPU if available'**
 8. Clic on the **'OK'** button
 
+Alternatively, you can use another way to add Godot to the launch menu: [External Link](https://devdocse.web.app/docs/linux/#adding-apps-to-launch-menu)
+
 ### Key binding
 
 - **Ctrl** + **K**: Comment/uncomment selected text
@@ -55,18 +57,28 @@ If you prefer to launch **Godot** from your desktop menu, you can add it to the 
 
 # VSCode/VSCodium as editor
 
+You can use Visual Studio Code or VSCodium as your editor for **C#** programming in Godot.
+
 ## 1. Installation
 
 - Download VSCode from [here](https://code.visualstudio.com/).
 - Download VSCodium from [here](https://vscodium.com/#install).
+- Install **.NET SKD 8** or later:
+
+    ```
+    $sudo apt install dotnet-sdk-8.0
+    ```
 
 ## 2. Godot configuration
 
 For Godot to launch **C#** files when clicking on them, configure Godot this way:
 1. **Editor** -> **Editor Settings...** -> **Dotnet** -> **Editor** (Advanced settings must be enabled).
 2. In the new dialog that opens, select the following options:
-    - **External Editor**: `Visual Studio Code and VSCodium`
-    - **Custom Exec Path**: `/usr/bin/code` or whatever is the path to VSCode or VSCodium
+    - For Visual Studio Code:
+        - **External Editor**: `Visual Studio Code and VSCodium`
+    - For VSCodium:
+        - **External Editor**: `Custom`
+        - **Custom Exec Path**: `/usr/bin/codium` or whatever is the path to VSCodium
 
 ## 3. VSCode/VSCodium configuration
 
@@ -78,7 +90,70 @@ Install the following extension:
 
 ### Debugging
 
-In order to be able to debug in VSCode/VSCodium, you need to create and configure the following files in the `.vscode` subfolder of your project:
+{{< alert context="primary" text="For Linux Mint 21, it's necessary to build Godot from source. Otherwise debugging yields an error when stepping into some lines. Instructions below on how to install from source are for Debian/Ubuntu derivatives. Debugging only works on Visual Studio Code." />}}
+
+- [Getting the source](https://docs.godotengine.org/en/latest/contributing/development/compiling/getting_source.html)
+- [Compiling for Linux](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_linuxbsd.html)
+- [Compiling with .NET](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_with_dotnet.html)
+
+#### Build Godot from source code.
+
+1. Install dependencies:
+
+    ```
+    sudo apt-get update
+    sudo apt-get install -y \
+      build-essential \
+      scons \
+      pkg-config \
+      libx11-dev \
+      libxcursor-dev \
+      libxinerama-dev \
+      libgl1-mesa-dev \
+      libglu1-mesa-dev \
+      libasound2-dev \
+      libpulse-dev \
+      libudev-dev \
+      libxi-dev \
+      libxrandr-dev \
+      libwayland-dev
+    ```
+
+2. Download the source code:
+
+    ```
+    $ git clone --depth 1 https://github.com/godotengine/godot.git
+    ```
+3. Change to the new downloaded `godot` directory:
+
+    ```G
+    $ cd godot
+    ```
+4. Compile Godot with Mono support:
+
+    ```
+    $ scons platform=linuxbsd target=editor module_mono_enabled=yes
+    ```
+    It takes like 40 minutes and will generate the file `godot.linuxbsd.editor.x86_64.mono` in the `bin` directory in `godot`.
+
+5. Generate the glue:
+
+    ```
+    $ bin/godot.linuxbsd.editor.x86_64.mono --headless --generate-mono-glue modules/mono/glue
+    ```
+6. Building the managed libraries:
+
+    ```
+    $ dotnet nuget add source ~/MyLocalNugetSource --name MyLocalNugetSource
+    $ ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir ./bin --push-nupkgs-local ~/MyLocalNugetSource
+    ```
+<br>
+
+If everything went well, the `GodotSharp` directory, containing the managed libraries, should have been created in the `bin` directory where the Godot executable `godot.linuxbsd.editor.x86_64.mono` is. In order to be able to run Godot you need the `bin` directory: the Godot executable and the `GodotSharp` directory.
+
+#### launch.json and tasks.json
+
+In order to be able to debug in VSCode, you need to create and configure the following files in the `.vscode` subfolder of your project:
 
 - `launch.json`
 
