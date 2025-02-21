@@ -62,6 +62,12 @@ myGDScriptNode.Call("print_node_name", this);
 myGDScriptNode.Connect("my_signal", Callable.From(MySignalHandler));
 ```
 
+#### Printing
+
+```csharp
+GD.Print($"Health: {Race.Health}");    // Print Health
+GD.Print("Health: ", Race.Health);     // Print Health
+```
 
 
 ## Input

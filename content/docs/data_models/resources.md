@@ -116,7 +116,7 @@ using Godot;
 
 public partial class NPC : CharacterBody2D
 {
-    [Export] public Race race {get; set;}
+    [Export] public Race Race_ {get; set;}
 
     public void PrintName()
     {
@@ -359,19 +359,18 @@ extends Resource
 ```gdscript
 extends Node
 
-func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
-	var json = JSON.parse_string(file.get_as_text())
-	file.close()
-	return json
-
-
 func _ready():
 	var creatures: Dictionary = get_creatures_data()
 	var resource: Resource = Race.new()
 	for race in creatures:
 		resource.attributes = creatures[race]
 		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
+
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
 ```
 <br>
 
@@ -398,9 +397,9 @@ func _ready() -> void:
 	var npc = NPC.instantiate()
 	npc.race = load("res://resources/gdscript/goblin.tres")
 	npc.transform = Transform2D(0, Vector2(100, 100 ))
-	add_child(npc)
 	print(npc.race.race_name)   # Not so good option
-    npc.print_name()            # Better option
+	npc.print_name()            # Better option
+	add_child(npc)
 ```
 {{% /tab %}}
 {{% tab tabName="C#" %}}
@@ -413,11 +412,11 @@ public partial class Spawner : Node
     {
         CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
         NPC npc = npcInstance as NPC; // NPC.cs class
-        npc.race = GD.Load<Race>("res://resources/csharp/goblin.tres");
+        npc.Race_ = GD.Load<Race>("res://resources/csharp/goblin.tres");
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
-        AddChild(npcInstance);
         GD.Print(npc.race.RaceName)     // Not so good option
         npc.PrintName()                 // Better option
+        AddChild(npcInstance);
     }
 }
 ```
@@ -435,9 +434,9 @@ public partial class Spawner : Node
         Resource Race = GD.Load<Resource>("res://resources/gdscript/goblin.tres"));
         npcInstance.Set("race", Race);
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
-        AddChild(npcInstance);
         GD.Print(Race.Get("race_name"));    // Not so good option
         npcInstance.Call("print_name");     // Better option
+        AddChild(npcInstance);
     }
 }
 ```
@@ -453,17 +452,13 @@ public partial class Spawner : Node
 
 You can create instances dynamically at runtime and assign a random `.tres` file to the instance by using a [JSON file](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view) as source containing all the data for every NPC type:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 extends Node
 
 const NPC = preload("res://npc.tscn")
-
-func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
-	var json = JSON.parse_string(file.get_as_text())
-	file.close()
-	return json
-
 
 func _ready() -> void:
 	
@@ -477,4 +472,65 @@ func _ready() -> void:
 	npc.race = load("res://resources/" + filename + ".tres")
 	npc.transform = Transform2D(0, Vector2(100, 100))
 	add_child(npc)
+
+func get_creatures_data() -> Dictionary:
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+	var json = JSON.parse_string(file.get_as_text())
+	file.close()
+	return json
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+using Godot.Collections;
+using System.Collections.Generic;
+
+public partial class Spawner : Node
+{
+	public PackedScene npcScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");
+
+	public override void _Ready()
+	{
+		Dictionary creatures = GetCreaturesData();
+
+		List<string> races = new List<string> {};
+		foreach (var key in creatures.Keys)
+		{
+			races.Add((string)key);
+		}
+		
+		// Generate 50 random NPCs
+		for (int i = 0; i < 50; i++)
+		{
+			string filename = GetRandomElement(races);
+			var xaxis = GD.RandRange(100, 1100);
+			var yaxis = GD.RandRange(100, 600);
+
+			CharacterBody2D npcInstance = (CharacterBody2D)npcScene.Instantiate();
+			NPC npc = npcInstance as NPC;
+			npc.Race_ = GD.Load<Race>("res://resources/csharp/" + filename + ".tres");
+			npc.Transform = new Transform2D(0.0f, new Vector2(xaxis, yaxis));
+			AddChild(npcInstance);
+		}
+	}
+
+	public static Dictionary GetCreaturesData()
+	{
+		var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
+		var json = (Dictionary)Json.ParseString(file.GetAsText());
+		file.Close();
+		return json;
+	}
+
+	private T GetRandomElement<T>(List<T> list)
+    {
+        System.Random random = new System.Random();
+        int randomIndex = random.Next(list.Count); // Get a random index from 0 to list.Count - 1
+        return list[randomIndex]; // Return the element at the random index
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}

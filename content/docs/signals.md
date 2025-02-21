@@ -13,7 +13,7 @@ Signals are Godot's implementation of the observer pattern. They allow a node to
 
 [Godot Documentation](https://docs.godotengine.org/en/stable/classes/class_signal.html)
 
-There are to types of signals in Godot:
+There are two types of signals in Godot:
 
 #### 1. Built-in
 
@@ -23,10 +23,35 @@ These signals comes with Godot and you don't need to create them. They emit the 
 
 - From code: `<source_node>.<signal_name>.connect(target_function_name>)`
 
-Example of connecting to the `body_entered` signal from a **CharacterBody2D** scene node called **Zone**:
+Example:
 
-`$Zone.body_entered.connect(_on_zone_body_entered)`
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
+```gdscript
+
+func _ready():
+	body_entered.connect(_on_body_entered)
+
+func _on_body_entered(body):
+	print(body.name, " has been detected.")
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+public override void _Ready()
+{
+	BodyEntered += OnBodyEntered;
+}
+
+private void OnBodyEntered(Node2D body)
+{
+	GD.Print(body.name, " has been detected.")
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 **Note 1**: If the node that connect to the signal is in the same scene, we can reference it by $ or %.
 
 **Note 2**: If the node that connect to the signal is in a different scene, check some sections below.
@@ -40,25 +65,46 @@ You can create your own signals. They need the following:
 
 Example:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 signal my_signal
 
 func _ready():
 	my_signal.emit()
 ```
-
-You can connect to your custom signal as you will do with a built in signal:
-```gdscript
-node_name.my_signal.connect(_on_my_signal_function)
-```
-
-#### C#
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
 ```csharp
 [Signal] public delegate void MySignalEventHandler();
-EmitSignal(SignalName.MySignal);
-MySignal += () => GD.Print("Hello from signal");
+
+public override void _Ready()
+{
+	EmitSignal(SignalName.MySignal);
+}
 ```
+{{% /tab %}}
+{{< /tabs >}}
+
+You can connect to your custom signal as you will do with a built in signal:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+node_name.my_signal.connect(_on_my_signal_function)
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+MySignal += () => GD.Print("Hello from my signal");
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 
 ### Passing arguments
