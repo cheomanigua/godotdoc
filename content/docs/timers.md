@@ -18,27 +18,86 @@ Timers can be created in three different ways:
 
 1. Adding a Timer node in the Editor and referencing it in code:
 
-    ```gdscript
-    @onready var timer: Timer = %Timer
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="GDScript" %}}
+
+```gdscript
+@onready var timer: Timer = %Timer
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+public override void _Ready()
+{
+    var timer = GetNode<Timer>("Timer");
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 2. Creating the Timer node directly in code:
 
-    ```gdscript
-    var timer: Timer = Timer.new()
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="GDScript" %}}
 
-    somefunction():
-        add_child(timer)
-        timer.wait_time = 2
-    ```
+```gdscript
+var timer: Timer = Timer.new()
+
+somefunction():
+    add_child(timer)
+    timer.wait_time = 2
+```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+    private Timer timer = new();
+
+public override void _Ready()
+{
+    AddChild(timer);
+    timer.Start(2f);
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 3. Creating a one-shot ephemeral timer. The code below shows a message during 5 seconds. The timer is deleted afterward automatically:
 
-    ```gdscript
-    $Label.text = message
-    await get_tree().create_timer(5.0).timeout
-    $Label.text = ""
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="GDScript" %}}
+
+```gdscript
+$Label.text = message
+await get_tree().create_timer(5.0).timeout
+$Label.text = ""
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+using System.Threading.Tasks;
+
+public partial class MyNode : Node
+{
+	public async Task WaitForTimeout()
+	{
+		await ToSignal(GetTree().CreateTimer(5.0f), "timeout");
+		GD.Print("Timeout reached");
+	}
+		
+	public override void _Ready()
+	{
+        _ = WaitForTimeout();
+	}
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ## Signals
 
@@ -96,14 +155,14 @@ using Godot;
 
 public partial class Main : Node
 {
-    private Timer _timer = new();
+    private Timer timer = new();
 
     public override void _Ready()
     {
         //var timer = new Timer()
-        AddChild(_timer);
-        _timer.Start(3f);
-        _timer.Timeout += OnTimerTimout;
+        AddChild(timer);
+        timer.Start(3f);
+        timer.Timeout += OnTimerTimout;
     }
 
     private void OnTimerTimout()

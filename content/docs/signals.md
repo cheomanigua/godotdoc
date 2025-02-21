@@ -52,6 +52,15 @@ You can connect to your custom signal as you will do with a built in signal:
 node_name.my_signal.connect(_on_my_signal_function)
 ```
 
+#### C#
+
+```csharp
+[Signal] public delegate void MySignalEventHandler();
+EmitSignal(SignalName.MySignal);
+MySignal += () => GD.Print("Hello from signal");
+```
+
+
 ### Passing arguments
 ```gdscript
 signal my_signal
@@ -80,14 +89,14 @@ func _ready():
 	new_projectile.my_signal.connect(_on_my_signal_function)
 ```
 
-Less preferred:
+Less preferred, avoid if possible:
 
 ```gdscript
-get_parent().get_node("Zone").body_entered.connect(_on_Zone_body_entered)
+get_parent().get_node("Player").body_entered.connect(_on_my_signal_function)
 ```
-or
+Less preferred, avoid if possible:
 ```gdscript
-get_tree().get_root().get_find("Zone", true, false).body_entered.connect(_on_Zone_body_entered)
+get_tree().get_root().get_find("Player", true, false).body_entered.connect(_on_my_signal_function)
 ```
 You can use either `get_node()` or `find_node()`. Note that `get_node()` doesn't need the three arguments that get_find needs.
 
@@ -95,7 +104,7 @@ You can use either `get_node()` or `find_node()`. Note that `get_node()` doesn't
 
 ```gdscript
 
-func _on_Zone_body_entered(body):
+func _on_body_entered(body):
 	if body.name == "Player":
 		print("%s detected" % body.name)
 ```
@@ -177,10 +186,10 @@ func _on_body_entered(body):
 
 ### Signals
 
-##### `mouse_entered()`
+`mouse_entered()`
 
 It needs the node to have `set_pickable(true)` present in node script.
 
-##### `mouse_exited()`
+`mouse_exited()`
 
 It needs the node to have `set_pickable(true)` present in node script.

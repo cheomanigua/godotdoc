@@ -66,7 +66,6 @@ public partial class Race : Resource
 {{% /tab %}}
 {{< /tabs >}}
 
-{{< alert context="info" text="Throughout this article the Race script we created here in **Step 1** will be used, referenced or mentioned. Go back up here if in doubt." />}}
 
 ### Step 2. Create new resource
 
@@ -149,6 +148,8 @@ The first example uses a resource file with variables for the `Race` class prope
 
 ### Variables
 
+{{< alert context="info" text="Throughout this article the `race.gd` and `Race.cs` scripts created below will be referenced or mentioned. Go back up here if in doubt." />}}
+
 Follow these steps:
 
 
@@ -211,14 +212,22 @@ Follow these steps:
         [Export] public int Intelligence {get; set;}
         [Export] public int Dexterity {get; set;}
         [Export] public int Endurance {get; set;}
-        [Export] public int Health {get; set;}
-
-        public Race()
+        private int health = 0;
+        [Export] public int Health 
         {
-            Health = Strength + Endurance;
+            get
+            {
+                return health;
+            } 
+            set
+            {
+                health = Strength + Endurance;
+            }
         }
     }
     ```
+
+
 
 2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
@@ -405,7 +414,7 @@ public partial class Spawner : Node
         CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
         NPC npc = npcInstance as NPC; // NPC.cs class
         npc.race = GD.Load<Race>("res://resources/csharp/goblin.tres");
-        npc.Transform = new Transform2D(0.0f, new Vector2(100, 100));
+        npc.Transform = new Transform2D(0f, new Vector2(100, 100));
         AddChild(npcInstance);
         GD.Print(npc.race.RaceName)     // Not so good option
         npc.PrintName()                 // Better option
@@ -425,14 +434,14 @@ public partial class Spawner : Node
         CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
         Resource Race = GD.Load<Resource>("res://resources/gdscript/goblin.tres"));
         npcInstance.Set("race", Race);
-        npc.Transform = new Transform2D(0.0f, new Vector2(100, 100));
+        npc.Transform = new Transform2D(0f, new Vector2(100, 100));
         AddChild(npcInstance);
         GD.Print(Race.Get("race_name"));    // Not so good option
         npcInstance.Call("print_name");     // Better option
     }
 }
 ```
-{{< alert context="success" text="Why would you instantiate a `gdscript` scene in a `csharp` script class? Well, If you are going to spawn hundreds of NPCs, using `csharp` to spawn those NPCs is faster than using `gdscript`. So you can create your classes and resources in `gdscript`, and use `csharp` to handle those classes when performance is critical." />}}
+{{< alert context="success" text="Why would you instantiate a `gdscript` scene in a `csharp` script class? Well, If you are going to spawn hundreds of NPCs, using `csharp` to spawn those NPCs is faster than using `gdscript`. So a good rule of thumb is to create your classes and resources in `gdscript` if you prefer this language, and use `csharp` to handle those classes only when performance is critical." />}}
 
 
 {{% /tab %}}
