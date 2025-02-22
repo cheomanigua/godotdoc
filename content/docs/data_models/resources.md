@@ -162,6 +162,7 @@ Follow these steps:
     class_name Race
     extends Resource
 
+    var is_health_initated: bool = false
     @export var race_name: String
     @export var strength: int
     @export var intelligence: int
@@ -169,8 +170,12 @@ Follow these steps:
     @export var endurance: int
     @export var health: int:
         set(value):
-            health = endurance + strength
+            if value == 0 && !is_health_initated:
+                value = strength + endurance
+                is_health_initated = true
+            health = clampi(value, 0, strength + endurance)
     ```
+
 2. Create the node **ResourceCreator** attach this **GDScript** `resource_creator.gd` script:
 
     ```gdscript
@@ -207,27 +212,30 @@ Follow these steps:
 
     public partial class Race : Resource
     {
+        bool is_health_initiated = false;
+        private int health;
+
         [Export] public string RaceName {get; set;}
         [Export] public int Strength {get; set;}
         [Export] public int Intelligence {get; set;}
         [Export] public int Dexterity {get; set;}
         [Export] public int Endurance {get; set;}
-        private int health = 0;
         [Export] public int Health 
         {
-            get
-            {
-                return health;
-            } 
+            get => health;
             set
             {
-                health = Strength + Endurance;
+                if (value == 0 && !is_health_initiated)
+                {
+                    value = Strength + Endurance;
+                    is_health_initiated = true;
+                }
+                health = Mathf.Clamp(value, 0, Strength + Endurance);
             }
         }
+
     }
     ```
-
-
 
 2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
@@ -277,6 +285,7 @@ Follow these steps:
     class_name Race
     extends Resource
 
+    var is_health_initated: bool = false
     @export var race_name: String
     @export var strength: int
     @export var intelligence: int
@@ -284,7 +293,10 @@ Follow these steps:
     @export var endurance: int
     @export var health: int:
         set(value):
-            health = endurance + strength
+            if value == 0 && !is_health_initated:
+                value = strength + endurance
+                is_health_initated = true
+            health = clampi(value, 0, strength + endurance)
     ```
 2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
@@ -336,45 +348,113 @@ Follow these steps:
 
 Follow these steps:
 
-- Create the `Race` class in a new standalone script:
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
-```gdscript
-class_name Race
-extends Resource
+1. Create the `race.gd` class in a new standalone script:
 
-@export var attributes: Dictionary = {
-	"race_name": "",
-	"strength": 0,
-	"intelligence": 0,
-	"dexterity": 0,
-	"endurance": 0,
-	"health": 0
-}
-```
-<br>
+    ```gdscript
+    class_name Race
+    extends Resource
+
+    @export var attributes: Dictionary = {
+        "race_name": "",
+        "strength": 0,
+        "intelligence": 0,
+        "dexterity": 0,
+        "endurance": 0,
+        "health": 0
+    }
+    ```
+    <br>
 
 
-- Create a node (Main, World, ResourceCreator, etc) and attach this script:
+2. Create the node **ResourceCreator** attach this **GDScript** `resource_creator.gd` script:
 
-```gdscript
-extends Node
+    ```gdscript
+    extends Node
 
-func _ready():
-	var creatures: Dictionary = get_creatures_data()
-	var resource: Resource = Race.new()
-	for race in creatures:
-		resource.attributes = creatures[race]
-		var resource_path = "res://resources/" + race + ".tres" # Choose your path.
+    func _ready():
+        var creatures: Dictionary = get_creatures_data()
+        var resource: Resource = Race.new()
+        for race in creatures:
+            resource.attributes = creatures[race]
+            var resource_path = "res://resources/gdscript/" + race + ".tres" # Choose your path.
 
-func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
-	var json = JSON.parse_string(file.get_as_text())
-	file.close()
-	return json
-```
-<br>
+    func get_creatures_data() -> Dictionary:
+        var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
+        var json = JSON.parse_string(file.get_as_text())
+        file.close()
+        return json
+    ```
+    <br>
 
-Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/`
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/gdscript/`
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+1. Create the `Race.cs` class in a new standalone script:
+
+    ```csharp
+    using Godot;
+    using Godot.Collections;
+    [GlobalClass]
+
+    public partial class Race : Resource
+    {
+        [Export] public Dictionary<string, Variant> Attributes = new Dictionary<string, Variant>();
+
+        public Race()
+        {
+            Attributes["RaceName"] = "";
+            Attributes["Strength"] = 0;
+            Attributes["Intelligence"] = 0;
+            Attributes["Dexterity"] = 0;
+            Attributes["Endurance"] = 0;
+            Attributes["Health"] = 0;
+        }
+    }
+    ```
+    <br>
+
+2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
+
+    ```csharp
+    using Godot;
+    using Godot.Collections;
+    using System.Collections.Generic;
+
+    public partial class Spawner : Node
+    {
+        public override void _Ready()
+        {
+            Resource resource = new Race();
+            Dictionary creatures = GetCreaturesData();
+
+            foreach (var race in creatures)
+            {
+                resource.Set("Attributes", race.Value);
+                string resource_path = "res://resources/csharp/" + race.Key + ".tres";
+                ResourceSaver.Save(resource, resource_path);
+            }
+        }
+
+        public static Dictionary GetCreaturesData()
+        {
+            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
+            var json = (Dictionary)Json.ParseString(file.GetAsText());
+            file.Close();
+            return json;
+        }
+    }
+    ```
+    <br>
+
+3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/csharp/`
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ## Instantiate a NPC at runtime
 
@@ -463,15 +543,19 @@ const NPC = preload("res://npc.tscn")
 func _ready() -> void:
 	
 	var creatures: Dictionary = get_creatures_data()
-	var npc = NPC.instantiate()
-	
-	randomize()
-	var a = randi() % creatures.size()
-	var filename = creatures.keys()[a]
-	
-	npc.race = load("res://resources/" + filename + ".tres")
-	npc.transform = Transform2D(0, Vector2(100, 100))
-	add_child(npc)
+
+	# Generate 50 random NPCs
+	for i in 50:
+		randomize()
+		var a = randi() % creatures.size()
+		var filename = creatures.keys()[a]
+		var xaxis = randi_range(100, 1100)  # random x axis
+		var yaxis = randi_range(100, 600)   # random y axis
+		
+		var npc = NPC.instantiate()
+		npc.race = load("res://resources/gdscript/" + filename + ".tres")
+		npc.transform = Transform2D(0, Vector2(xaxis, yaxis))
+		add_child(npc)
 
 func get_creatures_data() -> Dictionary:
 	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
@@ -529,6 +613,229 @@ public partial class Spawner : Node
         System.Random random = new System.Random();
         int randomIndex = random.Next(list.Count); // Get a random index from 0 to list.Count - 1
         return list[randomIndex]; // Return the element at the random index
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
+
+
+## NPC class usage examples
+
+As we saw previously, we created resources using a [variable data model](resources/#variables) and a [dictionary data model](resources/#dictionaries). Depending on the data model selected to create the resources (`.tres` files), the NPC class interface implementation may differ. Below there are several examples.
+
+### Variable created resources
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+class_name Npc
+extends CharacterBody2D
+
+const NPC: PackedScene = preload("res://npc.tscn")
+@export var race: Race
+
+func _unhandled_input(_event: InputEvent) -> void:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
+		increase_health(1)
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
+		decrease_health(1)
+
+func _ready() -> void:
+	set_pickable(true)
+	mouse_entered.connect(_on_mouse_entered)
+
+func _on_mouse_entered():
+	print_stats()
+
+######## BLOCK SPECIFIC FOR VARIABLE CREATED RESOURCES ########
+
+func print_stats():
+	print("Hello from C#. I'm a ", race.race_name,
+	", my Health is ", race.health,
+	", my Max Health is ", race.strength + race.endurance)
+
+func increase_health(health: int):
+	race.health += health
+	print("+1 Health is now: ", race.health);
+
+func decrease_health(health: int):
+	race.health -= health
+	print("-1 Health is now: ", race.health);
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+public partial class NPC : CharacterBody2D
+{
+    [Export] public Race Race_ {get; set;}
+
+    public override void _Ready()
+    {
+        SetPickable(true);
+        MouseEntered += OnMouseEntered;
+    }
+
+    public override void _UnhandledKeyInput(InputEvent @event)
+    {
+        base._UnhandledKeyInput(@event);
+        if (@event.IsActionPressed("ui_select"))
+            PrintStats()
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        base._UnhandledInput(@event);
+        if (Input.IsMouseButtonPressed(MouseButton.WheelUp))
+		{
+			IncreaseHealth(1);
+
+		}
+        if (Input.IsMouseButtonPressed(MouseButton.WheelDown))
+		{
+			DecreaseHealth(1);
+		}
+    }
+
+    private void OnMouseEntered()
+    {
+        PrintStats()
+    }
+
+
+    /////////// BLOCK SPECIFIC FOR VARIABLE CREATED RESOURCES //////////
+
+    public void PrintStats()
+    {
+        GD.Print("Hello from C#. I'm a ", Race_.RaceName,
+        ", my Health is ", Race_.Health,
+        ", my Max Health is ", Race_.Strength + Race_.Endurance);
+    }
+
+    public void IncreaseHealth(int health)
+    {
+        Race_.Health += health;
+        GD.Print("+1 Health is now: ", Race_.Health);
+    }
+
+    public void DecreaseHealth(int health)
+    {
+        Race_.Health -= health;
+        GD.Print("-1 Health is now: ", Race_.Health);
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+
+### Dictionary created resources
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+class_name Npc
+extends CharacterBody2D
+
+const NPC: PackedScene = preload("res://npc.tscn")
+@export var race: Race
+
+func _unhandled_input(_event: InputEvent) -> void:
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_UP):
+		increase_health(1)
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_WHEEL_DOWN):
+		decrease_health(1)
+
+func _ready() -> void:
+	set_pickable(true)
+	mouse_entered.connect(_on_mouse_entered)
+
+func _on_mouse_entered():
+	print_stats()
+
+######## BLOCK SPECIFIC FOR DICTIONARY CREATED RESOURCES ########
+
+func print_stats():
+	print("Hello from C#. I'm a ", race.attributes.race_name,
+	", my Health is ", race.attributes.health,
+	", my Max Health is ", race.attributes.strength + race.attributes.endurance)
+
+func increase_health(health: int):
+	race.attributes.health += health
+	print("+1 Health is now: ", race.attributes.health)
+
+func decrease_health(health: int):
+	race.attributes.health -= health
+	print("-1 Health is now: ", race.attributes.health)
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+public partial class NPC : CharacterBody2D
+{
+    [Export] public Race Race_ {get; set;}
+
+    public override void _Ready()
+    {
+        SetPickable(true);
+        MouseEntered += OnMouseEntered;
+    }
+
+    public override void _UnhandledKeyInput(InputEvent @event)
+    {
+        base._UnhandledKeyInput(@event);
+        if (@event.IsActionPressed("ui_select"))
+            PrintStats()
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        base._UnhandledInput(@event);
+        if (Input.IsMouseButtonPressed(MouseButton.WheelUp))
+		{
+			IncreaseHealth(1);
+
+		}
+        if (Input.IsMouseButtonPressed(MouseButton.WheelDown))
+		{
+			DecreaseHealth(1);
+		}
+    }
+
+    private void OnMouseEntered()
+    {
+        PrintStats()
+    }
+
+
+    /////////// BLOCK SPECIFIC FOR DICTIONARY CREATED RESOURCES //////////
+
+    public void PrintStats()
+    {
+        GD.Print("Hello from C#. I'm a ", Race_.Attributes["RaceName"],
+        ", my Health is ", Race_.Attributes["Health"],
+        ", my Max Health is ", (int)Race_.Attributes["Strength"] + (int)Race_.Attributes["Endurance"]);
+    }
+
+    public void IncreaseHealth(int health)
+    {
+        Race_.Attributes["Health"] = (int)Race_.Attributes["Health"] + health;
+        GD.Print("+1 Health is now: ", Race_.Attributes["Health"]);
+    }
+
+    public void DecreaseHealth(int health)
+    {
+        Race_.Attributes["Health"] = (int)Race_.Attributes["Health"] - health;
+        GD.Print("-1 Health is now: ", Race_.Attributes["Health"]);
     }
 }
 ```

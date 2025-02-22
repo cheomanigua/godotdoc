@@ -107,7 +107,7 @@ func _physics_process(delta: float) -> void:
 	queue_redraw()
 	if detected:
 		var target: Vector2 = position.direction_to(player.position)
-		var facing = Vector2(cos(rotation), sin(rotation))
+		var facing = transform.x
 		var fov = target.dot(facing) # field of view
 		if fov > 0:
 			rotation = lerp_angle(rotation, target.angle(), elapsed * delta)
