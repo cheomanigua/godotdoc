@@ -16,7 +16,7 @@ In this example we show how a **turret** will rotate towards the **player** when
 
 ```
 
-[StaticBody2D] "Turret"					    S
+[StaticBody2D] "Turret"					  % S
 	|-[CollisionShape2D]
 	|-[Area2D] "Radar"                    % S
 	|	|-[CollisionBody2D]

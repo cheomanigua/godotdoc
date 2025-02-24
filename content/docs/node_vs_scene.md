@@ -11,9 +11,14 @@ toc: true
 
 # Node vs Scene
 
-A node is a built in or custom component with certain functionality. A group of nodes form a tree. When you organize nodes in a tree, it is called a scene, and nodes can communicate between them.
+#### Node
+A node is a built in or custom component with certain functionality. Nodes are added to a tree.
 
-When you organize nodes in a tree, we call this construct a scene. Once saved, scenes work like new node types in the editor, where you can add them as a child of an existing node. In that case, the instance of the scene appears as a single node with its internals hidden.
+#### Scene
+
+A scene is a group of nodes organized in a tree. Nodes within the scene can comunicate between them.
+
+Once saved, scenes work like new node types in the editor, where you can instantiate them as a child of an existing node. In that case, the instance of the scene appears as a single node with its internals hidden.
 
 On top of acting like nodes, scenes have the following characteristics:
 
@@ -21,29 +26,58 @@ On top of acting like nodes, scenes have the following characteristics:
 2. You can save them to your local drive and load them later.
 3. You can create as many instances of a scene as you'd like. You could have five or ten characters in your game, created from your Character scene.
 
-[Godot documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html)
-
+- [Nodes and scenes - Godot documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html)
+- [Nodes and scenes instances - Godot documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
 
 # Nodes
 
-## Referencing a node
+## Adding/creating a node
 
-You can get a reference to a node by calling the `get_node("NodeName")` method, or the short notation `$NodeName`. For this to work, the child node must be present in the scene tree. Getting it in the parent node's _ready() function guarantees that.
+There are two ways to add a node to the tree: via code or via editor
 
+### Creating a node via code
 
-[Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
+- To create a node via code, call its `new()` method like for any other class-based datatype and store the class in a variable.. The node will be a child of the node where the script is attached.
 
-Example:
-
-{{< tabs tabTotal="2">}}
-{{% tab tabName="GDScript" %}}
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="GDScript" %}}
 
 ```gdscript
-@onready var airplane: CharacterBody2D = $Airplane
+@onready var timer: Timer = Timer.new()
 
 func some_function():
-    airplane.update_destination()
-    print(airplane.position)
+	add_child(timer)        # Add it as a child of the node where the script is attached.
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+public partial class MyClass : Node
+{
+	private Timer timer = new Timer();
+
+    private void SomeFunction()
+    {
+	    AddChild(timer);
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+### Creating a node via editor
+
+1. To add a node via editor, click on the **Add Child Node... (Ctrl+A)** icon with a "**+**" symbol. The node will be a child of the highlighted node in the tree when you clicked **Add Child Node...**
+2. Then, we can store the newly created node reference in a variable:
+    1. Ordinary Variable
+
+        {{< tabs tabTotal="2">}}
+        {{% tab tabName="GDScript" %}}
+
+```gdscript
+@onready var timer: Timer = $Timer
 ```
 
 {{% /tab %}}
@@ -51,43 +85,21 @@ func some_function():
 
 
 ```csharp
-private CharacterBody2D _airplane;
-
-public override void _Ready()
+public partial class MyClass : Node
 {
-    _airplane = GetNode<CharacterBody2D>("Airplane");
-}
-
-private void SomeFunction()
-{
-    GD.Print(_airplane.Position);
+	private void SomeFunction()
+    {
+		var timer = GetNode<Timer>("Timer");
 }
 ```
 
 {{% /tab %}}
 {{< /tabs >}}
 
+    2. Exported variable:
 
-The `@onready` annotation makes the member variable to initalize right before the `_ready()` callback. If you omit it, it will be initialized in the `_ready()` callback.
-
-###  Node Paths
-
-As mentioned earlier, you can access a child node using `$Node` or `get_node("Node")`. Nodes in the scene tree can access other nodes in the scene tree:
-
-| | |
-|-|-|
-|`$NodeA/NodeB`             | access children|
-|`$".."` or `get_parent()`  | access parent|
-|`$".."/NodeA`              | access sibling|
-|`$"."` or `self`           | access current node|
-|`%Node`                    | Unique node, access node everywhere in current scene|
-
-<br>
-
-There is a better way to access a node in the same scene:
-
-{{< tabs tabTotal="2">}}
-{{% tab tabName="GDScript" %}}
+        {{< tabs tabTotal="2">}}
+        {{% tab tabName="GDScript" %}}
 
 ```gdscript
 @export var my_node: Node
@@ -101,31 +113,112 @@ There is a better way to access a node in the same scene:
 {{% /tab %}}
 {{< /tabs >}}
 
-The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
+        The above exported variable code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we rename the node later, the reference won't be affected and still works.
 
-## Creating a node
 
-To create a node from code, call its `new()` method like for any other class-based datatype. You can store the newly created node's reference in a variable and call `add_child()` to add it as a child of the node to which you attached the script.
+
+<br>
+
+#####  Node Paths
+
+As seen in the snipped above, you can access a child node reference using `$Node` or `get_node("Node")`. Nodes in the scene tree can access other nodes in the scene tree:
+
+| | |
+|-|-|
+|`$NodeA/NodeB`             | access children|
+|`$".."` or `get_parent()`  | access parent|
+|`$".."/NodeA`              | access sibling|
+|`$"."` or `self`           | access current node|
+|`%Node`                    | Unique node, access node everywhere in current scene|
+
+
+## Implementation
+
+Once the node has been added, we can work with it. Here, it doesn't matter how it was created, it's the same implementation:
 
 {{< tabs tabTotal="2">}}
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
-
-func _ready():
-	var timer = Timer.new() # Create a new Timer.
-	add_child(timer) # Add it as a child of this node.
+    timer.wait_time = 3.0
+    timer.start()
+    timer.timeout.connect(_on_timer_timeout)
 ```
 
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
+
 ```csharp
-    public override void _Ready()
+		timer.Start(3f);
+		timer.Timeout += OnTimerTimeout;
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+## Full code
+
+{{< tabs tabTotal="4">}}
+{{% tab tabName="GDScript via code" %}}
+
+```gdscript
+@onready var timer: Timer = Timer.new()
+
+func some_function():
+    add_child(timer)
+    timer.wait_time = 3.0
+    timer.start()
+    timer.timeout.connect(_on_timer_timeout)
+```
+
+{{% /tab %}}
+{{% tab tabName="C# via code" %}}
+
+```csharp
+
+public partial class MyClass : Node
+{
+	private Timer timer = new Timer();
+
+	private void SomeFunction()
     {
-        var timer = new Timer();
-        AddChild(timer);
+		AddChild(timer);
+		timer.Start(3f);
+		timer.Timeout += OnTimerTimeout;
     }
+}
+```
+{{% /tab %}}
+{{% tab tabName="GDScript via editor" %}}
+
+```gdscript
+
+# Node has been already created in the editor
+
+@onready var timer: Timer = $Timer
+
+func some_function():
+    timer.wait_time = 3.0
+    timer.start()
+    timer.timeout.connect(_on_timer_timeout)
+```
+{{% /tab %}}
+{{% tab tabName="C# via editor" %}}
+
+```csharp
+
+public partial class MyClass : Node
+{
+	// Node has been already created in the editor
+
+	private void SomeFunction()
+    {
+		timer = GetNode<Timer>("Timer");
+		timer.Start(3f);
+		timer.Timeout += OnTimerTimeout;
+    }
+}
 ```
 
 {{% /tab %}}
@@ -137,7 +230,12 @@ func _ready():
 
 Scenes are templates from which you can create as many reproductions as you'd like. This operation is called instancing.
 
-The first step is to load the template:
+There are two ways to instantiate a scene: via code or via editor.
+
+
+### Instantiating a scene via code
+
+The first step is to load the scene template:
 
 {{< tabs tabTotal="2">}}
 {{% tab tabName="GDScript" %}}
@@ -214,8 +312,14 @@ func some_function():
     get_parent().add_child(new_bullet)
 ```
 
+### Instantiating a scene via editor
 
-## .new() vs .instantiate()
+To instantiate a scene via editor, click on the **Instantiate Child Scene... (Ctrl+Shift+A)** with a chain symbol. The scene will become a child node of the highlighted node in the tree when you clicked **Instantiate Child Scene…**
+
+And that's pretty much it. Congratulations.
+
+
+# .new() vs .instantiate()
 
 When instantiating **Objects**, use `new()`. When instantiating **Scenes**, use `instantiate()`.
 
@@ -403,7 +507,7 @@ func _shoot():
 
 <br>
 
-#### Instantiate a scene with parameters using custom inititalization method
+#### Instantiate a scene with parameters using a custom inititalization method
 
 The following code will instantiate 1 Gem in the player position after the players drop the gem:
 
@@ -413,7 +517,7 @@ The following code will instantiate 1 Gem in the player position after the playe
 export (String) var item_name
 export (int) var item_quantity = 1
 
-func initialize(name: String, quantity: int):
+func my_custom_init(name: String, quantity: int):
 	item_name = name
 	item_quantity = quantity
 ```
@@ -428,7 +532,7 @@ var inventory: Array = [ "Gem", "Coin", "Scroll"]
 func drop(name: String):
 	var quantity = 1
 	var item = ITEM.instantiate()
-	item.initialize(name, quantity)
+	item.my_custom_init(name, quantity)
 	add_child(item)
 	item.position = position
 	inventory.erase(name)
@@ -441,7 +545,7 @@ Note that you cannot instantiate an object from its own script (You cannot insta
 
 <br>
 
-#### Instantiate a scene with parameters using variables directly
+#### Instantiate a scene using properties directly
 
 We can also set up the instance properties before adding the instance to the scene via `add_child`:
 
@@ -454,8 +558,8 @@ func drop():
 	var item = ITEM.instantiate()
 	item.name = inventory[0]
 	item.quantity = 1
-	add_child(item)
 	item.position = position
+	add_child(item)
 	inventory.erase(name)
 
 func ready():

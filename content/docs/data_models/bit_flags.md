@@ -44,11 +44,24 @@ __E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__		__E___W___F__
 
 There are two ways to set the bits of the flags: using the `elements` variable value of type `int`, or using the left shift bit operator (LSO):
 
+#### Variable Value
+
 We can set 1, 2 or 3 bits at the same time by using the variable value. For the first three bits, values range from 1 to 7. The **value** is the sum of the *indexes*. I said *indexes* to help visualize the graphic above, but there are no actual indexes in the variable. So, if we want to set the first two bits, we sum 1 + 2. To set all three bits, we sum 1 + 2 + 4.
 
-The LSO can set 1, 2 or 3 bits at the same time, but it's better used for setting individual bits. Check the table below to see how they are set.
+Example:
 
-In the five examples above, we have set the variable `elements` value and the left shift operator (LSO) to the following:
+{{% alert context="light" %}}
+To set **elements** variable flags to Fire and Water, which correspond to the first two bits:
+
+- In decimal numbers: `elements = 3`
+- In binary numbers: `elements = 0b011` or `elements = 0b11`
+{{% /alert %}}
+
+#### Left Shift Operator (LSO)
+
+The LSO are better suited for setting individual bits. In order to set a bit with a LSO (among other operations), we need to use bitwise operators. In the next section we explain bitwise operators.
+
+In the five examples above, we have set the variable `elements` to values from 1 to 5. In a bitwise operation, the equivalent LSOs to those elements variable values are the following:
 
 
 | Flags affected | variable | LSO v1 | LSO v2 |
@@ -69,6 +82,14 @@ If we complete the table:
 | WATER and EARTH | `6` | `(1<<1) + (1<<2)` | `(1<<1) + (1<<2)` |
 | FIRE, WATER and EARTH | `7` | `1 + (1<<1) + (1<<2)` | `(1<<0) + (1<<1) + (1<<2)` |
 
+
+<br>
+{{% alert context="light" %}}
+In a bitwise operation, to affect the **elements** variable flag Fire, which correspond to the first bit, we use:
+
+- In decimal numbers: `1`
+- In LSO: `1<<0`
+{{% /alert %}}
 <br>
 At the example script at the end of the page you can see how to use integer variable values and left shift operators in combination with constants, custom functions and the built-in match function.
 
@@ -108,7 +129,7 @@ lshift = 0		    lshift = 1		    lshift = 2
 
 ## Bitmasks (like queries)
 
-Bitmasks can be used to query small or large bit sets. Continuing with our example set:
+Knowing how bit operations work, we can use bitmasks to query small or large bit sets. Continuing with our example set:
 
 ```gdscript
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int

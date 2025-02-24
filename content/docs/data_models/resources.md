@@ -175,6 +175,7 @@ Follow these steps:
                 is_health_initated = true
             health = clampi(value, 0, strength + endurance)
     ```
+    <br>
 
 2. Create the node **ResourceCreator** attach this **GDScript** `resource_creator.gd` script:
 
@@ -197,6 +198,9 @@ Follow these steps:
         file.close()
         return json
     ```
+
+    <br>
+
 3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/gdscript/`
 
 {{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary keys and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with zero values. You can use helper methods like `to_camel_case()`, `to_snake_case()`, `to_pascal_case()` and `capitalize()` to convert between different formattings if necessary." />}}
@@ -236,6 +240,7 @@ Follow these steps:
 
     }
     ```
+    <br>
 
 2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
@@ -272,6 +277,8 @@ Follow these steps:
         }
     }
     ```
+    <br>
+
 3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/csharp/`
 
 {{< alert context="warning" text="Be sure the formatting (snake case, Pascal case, etc) of the dictionary keys and the resource class properties matches when assigning the values to the resource. If they don't match, the resource will be generated with zero values. You can use helper methods like `ToCamelCase()`, `ToSnakeCase()`, `ToPascalCase()` and `Capitalize()` to convert between different formattings if necessary." />}}
@@ -298,6 +305,8 @@ Follow these steps:
                 is_health_initated = true
             health = clampi(value, 0, strength + endurance)
     ```
+    <br>
+
 2. Create the node **ResourceCreator** attach this **C#** `ResourceCreator.cs` script:
 
     ```csharp
@@ -334,6 +343,7 @@ Follow these steps:
         }
     }
     ```
+    <br>
 
 3. Run the scene once and then stop it. All the five `.tres` files will be generated in the folder `res://resources/gdscript/`
 

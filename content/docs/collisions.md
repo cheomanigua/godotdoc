@@ -18,7 +18,7 @@ Godot offers four kinds of collision objects which all extend [CollisionObject2D
 3. **RigidBody2D** uses the built in `body_entered` or `area_entered` signals.
 4. **StaticBody2D**
 
-{{< alert context="warning" text="**Area2D** do **NOT** detect moving **StaticBody2D**." />}}
+{{< alert context="warning" text="**Area2D** does **NOT** detect moving **StaticBody2D**." />}}
 
 [Godot Documentation](https://docs.godotengine.org/en/stable/tutorials/physics/physics_introduction.html)
 

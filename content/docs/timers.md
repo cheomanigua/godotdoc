@@ -83,15 +83,17 @@ using System.Threading.Tasks;
 
 public partial class MyNode : Node
 {
-	public async Task WaitForTimeout()
-	{
-		await ToSignal(GetTree().CreateTimer(5.0f), "timeout");
-		GD.Print("Timeout reached");
-	}
 		
 	public override void _Ready()
 	{
         _ = WaitForTimeout();
+	}
+
+	public async Task WaitForTimeout()
+	{
+		label.Text = message;
+		await ToSignal(GetTree().CreateTimer(5.0f), "timeout");
+		label.Text = "";
 	}
 }
 ```
