@@ -1,7 +1,7 @@
 ---
 weight: 250
 title: "Node vs Scene"
-description: "How to create and call nodes and scenes"
+description: "How to add nodes and instantiate scenes"
 icon: "article"
 date: "2025-02-06T16:24:17+02:00"
 lastmod: "2025-02-06T16:24:17+02:00"
@@ -11,12 +11,16 @@ toc: true
 
 # Node vs Scene
 
+- [Nodes and scenes - Godot documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html)
+- [Nodes and scenes instances - Godot documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
+
 #### Node
-A node is a built in or custom component with certain functionality. Nodes are added to a tree.
+
+A node is a built in component or custom component (saved scene) with certain functionality. Nodes are added to a tree containing other nodes.
 
 #### Scene
 
-A scene is a group of nodes organized in a tree. Nodes within the scene can comunicate between them.
+A scene is a collection of nodes organized in a tree. Nodes within the scene can comunicate between them.
 
 Once saved, scenes work like new node types in the editor, where you can instantiate them as a child of an existing node. In that case, the instance of the scene appears as a single node with its internals hidden.
 
@@ -26,18 +30,24 @@ On top of acting like nodes, scenes have the following characteristics:
 2. You can save them to your local drive and load them later.
 3. You can create as many instances of a scene as you'd like. You could have five or ten characters in your game, created from your Character scene.
 
-- [Nodes and scenes - Godot documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/nodes_and_scenes.html)
-- [Nodes and scenes instances - Godot documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/nodes_and_scene_instances.html)
+#### Node and Scene creation
+
+
+- A scene is created by clicking on **Scene** -> **New Scene** and adding nodes to its tree.
+- A custom node is created by saving a scene we created.
+- A built in node (Label, Timer, RigidBody2D, etc) is already created.
+
+{{< alert context="info" text="The official documentation may lead to confusion because it uses the word *create* instead of *add* in some parts. The rest of this article explains how to **add nodes** and **instantiate scenes** (implicty counting on the node or scene already being created), instead of how to **create nodes** and **create scenes**." />}}
 
 # Nodes
 
-## Adding/creating a node
+## Adding a node
 
 There are two ways to add a node to the tree: via code or via editor
 
-### Creating a node via code
+### Adding a node via code
 
-- To create a node via code, call its `new()` method like for any other class-based datatype and store the class in a variable.. The node will be a child of the node where the script is attached.
+- To add a node via code, call its `new()` method like for any other class-based datatype and store the class in a variable.. The node will be a child of the node where the script is attached.
 
     {{< tabs tabTotal="2">}}
     {{% tab tabName="GDScript" %}}
@@ -67,7 +77,7 @@ public partial class MyClass : Node
 {{% /tab %}}
 {{< /tabs >}}
 
-### Creating a node via editor
+### Adding a node via editor
 
 1. To add a node via editor, click on the **Add Child Node... (Ctrl+A)** icon with a "**+**" symbol. The node will be a child of the highlighted node in the tree when you clicked **Add Child Node...**
 2. Then, we can store the newly created node reference in a variable:
@@ -125,11 +135,11 @@ As seen in the snipped above, you can access a child node reference using `$Node
 
 | | |
 |-|-|
+|`%Node`                    | Unique node, access node everywhere in current scene|
 |`$NodeA/NodeB`             | access children|
 |`$".."` or `get_parent()`  | access parent|
 |`$".."/NodeA`              | access sibling|
 |`$"."` or `self`           | access current node|
-|`%Node`                    | Unique node, access node everywhere in current scene|
 
 
 ## Implementation
@@ -166,10 +176,10 @@ Once the node has been added, we can work with it. Here, it doesn't matter how i
 @onready var timer: Timer = Timer.new()
 
 func some_function():
-    add_child(timer)
     timer.wait_time = 3.0
     timer.start()
     timer.timeout.connect(_on_timer_timeout)
+    add_child(timer)
 ```
 
 {{% /tab %}}
@@ -183,9 +193,9 @@ public partial class MyClass : Node
 
 	private void SomeFunction()
     {
-		AddChild(timer);
 		timer.Start(3f);
 		timer.Timeout += OnTimerTimeout;
+		AddChild(timer);
     }
 }
 ```
@@ -224,6 +234,26 @@ public partial class MyClass : Node
 {{% /tab %}}
 {{< /tabs >}}
 
+## Deleting a node
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+    timer.queue_free()
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+
+```csharp
+		timer.QueueFree();
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 # Scenes
 
 ## Instantiating a scene
@@ -235,7 +265,7 @@ There are two ways to instantiate a scene: via code or via editor.
 
 ### Instantiating a scene via code
 
-The first step is to load the scene template:
+The first step is to load the scene from the local drive:
 
 {{< tabs tabTotal="2">}}
 {{% tab tabName="GDScript" %}}
@@ -318,6 +348,25 @@ To instantiate a scene via editor, click on the **Instantiate Child Scene... (Ct
 
 And that's pretty much it. Congratulations.
 
+## Deleting a scene
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+```gdscript
+    new_bullet.queue_free()
+```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+
+```csharp
+		new_bullet.QueueFree();
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 # .new() vs .instantiate()
 
