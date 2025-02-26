@@ -1,5 +1,5 @@
 ---
-weight: 250
+weight: 200
 title: "Node vs Scene"
 description: "How to add nodes and instantiate scenes"
 icon: "article"
