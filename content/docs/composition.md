@@ -53,15 +53,22 @@ Can be done with minimal coupling using:
 | `$"."` or `self`          | access current node |
 |`%Node`                    | Unique node, access node everywhere in current scene|
 
+Example:
+
+
+```gdscript
+@onready var radar: Area2D = %Radar
+```
+
 <br>
 
 There is another way to access a node in the same scene:
 
 ```gdscript
-@export var my_node: Node
+@export var radar: Area2D
 ```
 
-The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node `%Node`, but with the added benefit that if we **move** or **rename** the node later, the reference won't be affected and still works. However, changing the name of the variable `my_node` will break the path in all instances. You will need to rename all the variables and re-drag the node to the property panel in the Inspector for the new variable name to work.
+The above code works by dragging the node to the property panel in the Inspector. It is like using the unique node symbol `%`, but with the added benefit that if we **move** or **rename** the node later, the reference won't be affected and still works. However, changing the name of the variable `radar` will break the path in all instances. You will need to rename all the variables and re-drag the node to the property panel in the Inspector for the new variable name to work.
 
 
 #### Call down, Signal up
@@ -103,7 +110,7 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	print(player.position)      # <null> compilation error: Invalid access to property or key 'position' on a base object of type 'Nil'.
 	if detected:
-		print(player.position)  # (683, 566) correct
+		print(player.position)  # (683, 566 correct
 		calculate_angle_to_player()
 
 _on_body_entered(body):
@@ -117,7 +124,7 @@ func calculate_angle_to_player():
 
 ### Groups
 
-If we want any node to access Player and its properties, we can create a *Project Settings -> Globals -> Group* called **Foo** and add the node `Player` to it. Then, we can run this code in a completely different node to access Player:
+If we want any node to access Player and its fd properties, we can create a *Project Settings -> Globals -> Group* called **Foo** and add the node `Player` to it. Then, we can run this code in a completely different node to access Player:
 
 ```gdscript
 var detected: bool = false
@@ -129,7 +136,7 @@ func _ready():
 			player = node
 
 func _physics_process(delta: float) -> void:
-	print(player.position)      # (683, 5660) correct
+	print(player.position)      # (683, 566) correct
 	calculate_angle_to_player()
 
 func calculate_angle_to_player():

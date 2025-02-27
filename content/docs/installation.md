@@ -31,20 +31,8 @@ toc: true
 
 ### Adding Godot to the launch menu
 
-If you prefer to launch **Godot** from your desktop menu, you can add it to the launch menu.
+[External Link](https://devdocse.web.app/docs/linux/#adding-apps-to-launch-menu)
 
-{{< alert text="Instructions for **Cinnamon** desktop environment" />}}
-
-1. Move your **Godot** executable file to `/usr/local/bin` directory
-2. Right click on the **'Menu'** icon and select **'Edit menu'**
-3. Select the menu you want to add **Godot** on the left.
-4. Click on **'New Item'**
-5. Type `godot` in the **'Name'** field
-6. Type `/usr/local/bin/your_godot_executable_file_name` in the **'Command Name'**
-7. Tick the box **'Use dedicated GPU if available'**
-8. Clic on the **'OK'** button
-
-Alternatively, you can use another way to add Godot to the launch menu: [External Link](https://devdocse.web.app/docs/linux/#adding-apps-to-launch-menu)
 
 ### Key binding
 
@@ -65,9 +53,19 @@ You can use Visual Studio Code or VSCodium as your editor for **C#** programming
 - Download VSCodium from [here](https://vscodium.com/#install).
 - Install **.NET SKD 8** or later:
 
-    ```
-    $sudo apt install dotnet-sdk-8.0
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="Debian" %}}
+
+```
+$sudo apt install dotnet-sdk-8.0
+```
+{{% /tab %}}
+{{% tab tabName="MacOS" %}}
+
+Download .NET from [https://dotnet.microsoft.com/en-us/download](https://dotnet.microsoft.com/en-us/download)
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ## 2. Godot configuration
 
@@ -94,32 +92,52 @@ Install the following extension:
 
 - [Getting the source](https://docs.godotengine.org/en/latest/contributing/development/compiling/getting_source.html)
 - [Compiling for Linux](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_linuxbsd.html)
+- [Compiling for MacOS](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_macos.html)
 - [Compiling with .NET](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_with_dotnet.html)
 
 #### Build Godot from source code.
 
 1. Install dependencies:
 
-    ```
-    sudo apt-get update
-    sudo apt-get install -y \
-      build-essential \
-      scons \
-      pkg-config \
-      libx11-dev \
-      libxcursor-dev \
-      libxinerama-dev \
-      libgl1-mesa-dev \
-      libglu1-mesa-dev \
-      libasound2-dev \
-      libpulse-dev \
-      libudev-dev \
-      libxi-dev \
-      libxrandr-dev \
-      libwayland-dev
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="Debian" %}}
 
-2. Download the source code:
+```
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential \
+  scons \
+  pkg-config \
+  libx11-dev \
+  libxcursor-dev \
+  libxinerama-dev \
+  libgl1-mesa-dev \
+  libglu1-mesa-dev \
+  libasound2-dev \
+  libpulse-dev \
+  libudev-dev \
+  libxi-dev \
+  libxrandr-dev \
+  libwayland-dev
+```
+{{% /tab %}}
+{{% tab tabName="MacOS" %}}
+
+- Install `brew`. Follow the instructions at [https://brew.sh/](https://brew.sh/):
+```
+$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+- When installing `brew` you will be prompted to install the Command Line Tools for Xcode. Install it.
+- Install `scons` by running:
+
+```
+$ brew install scons
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+2. Download Godot source code:
 
     ```
     $ git clone --depth 1 https://github.com/godotengine/godot.git
@@ -131,22 +149,65 @@ Install the following extension:
     ```
 4. Compile Godot with Mono support:
 
-    ```
-    $ scons platform=linuxbsd target=editor module_mono_enabled=yes
-    ```
-    It takes like 40 minutes and will generate the file `godot.linuxbsd.editor.x86_64.mono` in the `bin` directory in `godot`.
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="Debian" %}}
+
+```
+$ scons platform=linuxbsd target=editor module_mono_enabled=yes
+```
+In an *Intel Core i5-4690 CPU 3.50GHz* takes 40 minutes to compile and it will generate the file `godot.linuxbsd.editor.x86_64.mono` in the `bin` directory in `godot`.
+
+{{% /tab %}}
+{{% tab tabName="MacOS" %}}
+
+```
+$ misc/scripts/install_vulkan_sdk_macos.sh
+$ scons platform=macos arch=arm64 target=editor module_mono_enabled=yes generate_bundle=yes
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 5. Generate the glue:
 
-    ```
-    $ bin/godot.linuxbsd.editor.x86_64.mono --headless --generate-mono-glue modules/mono/glue
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="Debian" %}}
+
+```
+$ bin/godot.linuxbsd.editor.x86_64.mono --headless --generate-mono-glue modules/mono/glue
+```
+
+{{% /tab %}}
+{{% tab tabName="MacOS" %}}
+
+```
+$ bin/godot.macos.editor.arm64.mono --headless --generate-mono-glue modules/mono/glue
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+
 6. Building the managed libraries:
 
-    ```
-    $ dotnet nuget add source ~/MyLocalNugetSource --name MyLocalNugetSource
-    $ ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir ./bin --push-nupkgs-local ~/MyLocalNugetSource
-    ```
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="Debian" %}}
+
+```
+$ dotnet nuget add source ~/MyLocalNugetSource --name MyLocalNugetSource
+$ ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir ./bin --push-nupkgs-local ~/MyLocalNugetSource
+```
+
+{{% /tab %}}
+{{% tab tabName="MacOS" %}}
+
+```
+$ mkdir  ~/.nuget/NuGet/MyLocalNugetSource
+$ ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir ./bin --push-nupkgs-local ~/.nuget/NuGet/MyLocalNugetSource/
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 <br>
 
 If everything went well, the `GodotSharp` directory, containing the managed libraries, should have been created in the `bin` directory where the Godot executable `godot.linuxbsd.editor.x86_64.mono` is. In order to be able to run Godot you need the `bin` directory: the Godot executable and the `GodotSharp` directory.

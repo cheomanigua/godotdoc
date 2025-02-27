@@ -64,7 +64,7 @@ var population: int
 extends Node
 
 func _ready():
-	var osgiliath:City = City.new()
+	var osgiliath: City = City.new()
 	osgiliath.name = "Osgiliath"
 	osgiliath.population = 5000
 	print("The city of %s has a population of %d" % [osgiliath.name, osgiliath.population])
@@ -82,9 +82,9 @@ Class constructors facilitates the creation of instances:
 class City:
 	var name: String
 	var population: int
-	func _init(name: String, population: int)
-		self.name = name
-		self.population = name
+	func _init(_name: String, _population: int)
+		name = _name
+		population = _name
 
 func _ready():
 	var osgiliath:City = City.new("Osgiliath", 5000)
@@ -127,9 +127,9 @@ However, classes can also implement functionality via methods, that is, create m
 class City:
 	var name: String
 	var population: int
-	func _init(name: String, population: int)
-		self.name = name
-		self.population = name
+	func _init(_name: String, _population: int)
+		name = _name
+		population = _population
 	func increase_population(quantity: int)
 		population += quantity
 

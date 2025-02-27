@@ -16,7 +16,7 @@ toc: true
 
 #### Node
 
-A node is a built in component or custom component (saved scene) with certain functionality. Nodes are added to a tree containing other nodes.
+A node is a built in component or custom component (saved scene) with certain properties and functionality. Nodes are added to a tree containing other nodes.
 
 #### Scene
 
@@ -37,7 +37,7 @@ On top of acting like nodes, scenes have the following characteristics:
 - A custom node is created by saving a scene we created.
 - A built in node (Label, Timer, RigidBody2D, etc) is already created.
 
-{{< alert context="info" text="The official documentation may lead to confusion because it uses the word *create* instead of *add* in some parts. The rest of this article explains how to **add nodes** and **instantiate scenes** (implicty counting on the node or scene already being created), instead of how to **create nodes** and **create scenes**." />}}
+{{< alert context="info" text="The official documentation may lead to confusion because it uses the word *create* instead of *add* in some parts. The rest of this article explains how to **add nodes** and **instantiate scenes** (implicity counting on the node or scene already being created), instead of how to **create nodes** and **create scenes**." />}}
 
 # Nodes
 
@@ -47,7 +47,7 @@ There are two ways to add a node to the tree: via code or via editor
 
 ### Adding a node via code
 
-- To add a node via code, call its `new()` method like for any other class-based datatype and store the class in a variable.. The node will be a child of the node where the script is attached.
+- To add a node via code, call its `new()` method like for any other class-based datatype and store the class in a variable. The node will be a child of the node where the script is attached.
 
     {{< tabs tabTotal="2">}}
     {{% tab tabName="GDScript" %}}
@@ -374,7 +374,7 @@ When instantiating **Objects**, use `new()`. When instantiating **Scenes**, use 
 
 ## .new()
 
-**.new()** is used to instantiate **Objects**, that is, custom classes (Player, Enemy) and built-in nodes (Timer, Sprite2D, RayCast2D).
+**.new()** is used to instantiate **Objects**, that is, custom classes (City, Economy) and built-in nodes (Timer, Sprite2D, RayCast2D).
 
 Example 1:
 

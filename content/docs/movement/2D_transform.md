@@ -458,7 +458,7 @@ func _physics_process(delta):
 
 ### Rotate and move (push forward)
 
-For this type of movement, where pressing the **UP** arrow keys move forward, it is recommended to use `transform.x` or `Vector2.RIGHT.rotated(rotation`. The reason for this is that Godot uses the positive `x` axis as default `0` rotation value (check the section [Rotation](#rotation) for further info). This means that moving along `transform.x` is moving towards the default direction, and no further convertions/tweekings are needed.
+For this type of movement, where pressing the **UP** arrow keys move forward, it is recommended to use `transform.x` or `Vector2.RIGHT.rotated(rotation)`. The reason for this is that Godot uses the positive `x` axis as default `0` rotation value (check the section [Rotation](#rotation) for further info). This means that moving along `transform.x` is moving towards the default direction, and no further convertions/tweekings are needed.
 
 In addition, the `Input.get_axis(-1, 1)` built in method can be used either for rotating or moving. The first parameter is `-1` and the second parameter is `+1`:
 
