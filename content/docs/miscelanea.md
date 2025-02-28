@@ -58,8 +58,24 @@ myGDScriptNode.Call("print_node_name", this);
 
 #### Connecting to GDScript signal from C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#connecting-to-gdscript-signals-from-c)
 
+No arguments
+
 ```csharp
-myGDScriptNode.Connect("my_signal", Callable.From(MySignalHandler));
+myGDScriptNode.Connect("my_signal", Callable.From(OnMySignal));
+```
+With argument (Node2D):
+
+```csharp
+public override void _Ready()
+{
+    Area2D radar = GetNode<Area2D>("Radar");
+    radar.Connect("player_detected", Callable.From<Node2D>(OnPlayerDetected));
+}
+
+private void OnPlayerDetected(Node2D body)
+{
+    Node2D player = body;
+}
 ```
 
 #### Printing

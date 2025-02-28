@@ -100,7 +100,12 @@ node_name.my_signal.connect(_on_my_signal_function)
 {{% tab tabName="C#" %}}
 
 ```csharp
-MySignal += () => GD.Print("Hello from my signal");
+nodeName.MySignal += OnMySignalFunction;
+```
+or
+
+```csharp
+nodeName.MySignal += () => GD.Print("Hello from my signal");
 ```
 
 {{% /tab %}}
@@ -145,6 +150,28 @@ Less preferred, avoid if possible:
 get_tree().get_root().get_find("Player", true, false).body_entered.connect(_on_my_signal_function)
 ```
 You can use either `get_node()` or `find_node()`. Note that `get_node()` doesn't need the three arguments that get_find needs.
+
+### Connecting to GDScript signal from C# [](https://docs.godotengine.org/en/stable/tutorials/scripting/cross_language_scripting.html#connecting-to-gdscript-signals-from-c)
+
+No arguments
+
+```csharp
+myGDScriptNode.Connect("my_signal", Callable.From(OnMySignal));
+```
+With argument (Node2D):
+
+```csharp
+public override void _Ready()
+{
+    Area2D radar = GetNode<Area2D>("Radar");
+    radar.Connect("player_detected", Callable.From<Node2D>(OnPlayerDetected));
+}
+
+private void OnPlayerDetected(Node2D body)
+{
+    Node2D player = body;
+}
+```
 
 ### Example of a connected function:
 

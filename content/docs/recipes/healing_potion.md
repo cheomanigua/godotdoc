@@ -16,7 +16,7 @@ toc: true
 
 ### Example 
 
-#### player.md
+#### player.gd
 
 ```gdscript
 ...
