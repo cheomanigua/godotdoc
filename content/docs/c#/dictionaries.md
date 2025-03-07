@@ -1,0 +1,65 @@
+---
+weight: 2300
+title: "Dictionaries"
+description: "How to create and use native C# dictionaries"
+icon: "article"
+date: "2025-03-07T23:35:38+01:00"
+lastmod: "2025-03-07T23:35:38+01:00"
+draft: false
+toc: true
+---
+
+## Example
+
+```csharp
+using System.Collections.Generic;
+
+public partial class Player : RigidBody2D
+{
+    // Declare a new dictionary
+    Dictionary<string, int> attributes;
+
+    public override void _Ready()
+    {
+        // Define a declared dictionary
+        attributes = new Dictionary<string, int>
+        {
+            {"strength", 7},
+            {"intelligence", 8},
+            {"dexterity", 5}
+        };
+
+        // Add new entry
+        attributes.Add("endurance", 6);
+
+        // Update an entry
+        attributes["strength"] = 8;
+
+        // Update an entry
+        int strength = (int)attributes["strength"];
+        strength += 2;
+        attributes["strength"] = strength;
+
+        foreach (var index in attributes)
+        {
+            GD.Print($"{index.Key}: {index.Value}");
+        }
+
+        foreach (var key in attributes.Keys)
+        {
+            GD.Print(key);
+        }
+
+        foreach (var val in attributes.Values)
+        {
+            GD.Print(val);
+        }
+
+        foreach (KeyValuePair<string, int> entry in top)
+        {
+            attributes[entry.Key] = entry.Value;
+        }
+    }
+}
+```
+

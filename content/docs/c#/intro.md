@@ -1,10 +1,10 @@
 ---
-weight: 970
-title: "C#"
+weight: 2100
+title: "GDScript from C#"
 description: "How to use C# in Godot"
 icon: "article"
-date: "2025-03-07T11:24:17+02:00"
-lastmod: "2025-03-07T11:24:17+02:00"
+date: "2025-03-06T11:24:17+02:00"
+lastmod: "2025-03-06T11:24:17+02:00"
 draft: false
 toc: true
 ---
@@ -87,32 +87,3 @@ GD.Print($"Health: {Race.Health}");    // Print Health
 GD.Print("Health: ", Race.Health);     // Print Health
 ```
 
-### 4. Events
-
-#### 4.1. Action
-
-Action events don't return a value.
-
-```csharp
-public Action<string> MyEvent;
-```
-is the same as
-
-```csharp
-    public delegate void MyEventHandler(string);
-    public event MyEventHandler OnMyEvent;
-```
-
-#### 4.1. Func
-
-Func events return a value.
-
-```csharp
-public Func<int, bool> MyEvent;
-```
-is the same as
-
-```csharp
-    public delegate int MyEventHandler(bool toggle);
-    public event MyEventHandler OnMyEvent;
-```
