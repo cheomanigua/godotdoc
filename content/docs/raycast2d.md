@@ -64,7 +64,7 @@ func _physics_process(delta: float) -> void:
 
 func _draw() -> void:
 	draw_line(raycast.position, raycast.target_position, Color.GREEN, 1.0)
-	draw_circle(Vector2(raycast.target_position), 8.0, Color.SKY_BLUE, false, -1.0, false)
+	draw_circle(raycast.target_position, 8.0, Color.SKY_BLUE, false, -1.0, false)
 ```
 
 <br>
