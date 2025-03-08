@@ -40,24 +40,33 @@ public partial class Player : RigidBody2D
         strength += 2;
         attributes["strength"] = strength;
 
-        foreach (var index in attributes)
+
+
+        // Dictionary iteration
+
+        foreach (var kvp in attributes)
         {
-            GD.Print($"{index.Key}: {index.Value}");
+            Godot.GD.Print(kvp.Key, ": ", kvp.Value);
+        }
+
+        foreach (KeyValuePair<string, int> kvp in attributes)
+        {
+            Godot.GD.Print(kvp.Key, ": ", kvp.Value);
+        }
+
+        foreach (var kvp in attributes)
+        {
+            Godot.GD.Print($"{kvp.Key}: {kvp.Value}");
         }
 
         foreach (var key in attributes.Keys)
         {
-            GD.Print(key);
+            Godot.GD.Print(key);
         }
 
         foreach (var val in attributes.Values)
         {
-            GD.Print(val);
-        }
-
-        foreach (KeyValuePair<string, int> entry in top)
-        {
-            attributes[entry.Key] = entry.Value;
+            Godot.GD.Print(val);
         }
     }
 }

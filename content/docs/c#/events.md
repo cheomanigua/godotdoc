@@ -1,5 +1,5 @@
 ---
-weight: 2600
+weight: 2400
 title: "Events"
 description: "How to use events and delegates"
 icon: "article"
