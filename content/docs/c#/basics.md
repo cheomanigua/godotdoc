@@ -35,6 +35,22 @@ func _init() -> void:
 {{< /tabs >}}
 
 
+### @onready
+
+There is no `@onready` annotation in **C#**. The equivalent in **C#** is to declare the variable as class member and define it in the `onready()` function:
+
+```csharp
+public partial class Player : RigidBody2D
+{
+    Label Stats;
+
+    public override void _Ready()
+    {
+        Stats = GetNode<Label>("Stats")
+    }
+}
+```
+
 
 ### Printing
 

@@ -49,14 +49,14 @@ public partial class Player : RigidBody2D
             Godot.GD.Print(kvp.Key, ": ", kvp.Value);
         }
 
-        foreach (KeyValuePair<string, int> kvp in attributes)
-        {
-            Godot.GD.Print(kvp.Key, ": ", kvp.Value);
-        }
-
         foreach (var kvp in attributes)
         {
             Godot.GD.Print($"{kvp.Key}: {kvp.Value}");
+        }
+
+        foreach (KeyValuePair<string, int> kvp in attributes)
+        {
+            Godot.GD.Print(kvp.Key, ": ", kvp.Value);
         }
 
         foreach (var key in attributes.Keys)
