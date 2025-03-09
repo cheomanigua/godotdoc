@@ -57,12 +57,12 @@ using Godot;
 
 public static class EventManager
 {
-    public static Action<Variant> AttributeChangeEvent;
+    public static Action AttributeChangeEvent;
     public static Action<string> MessageEvent;
     
-    public static void BroadcastAttributeChange(Variant attribute)
+    public static void BroadcastAttributeChange()
     {
-        AttributeChangeEvent?.Invoke(attribute);
+        AttributeChangeEvent?.Invoke();
     }
 
     public static void BroadcastMessage(string message)
@@ -85,7 +85,7 @@ public partial class Stats : Label
         EventManager.AttributeChangeEvent += OnAttributeChange;
     }
 
-    private void OnAttributeChange(Variant attribute)
+    private void OnAttributeChange()
     {
         Text = "";
         foreach (var kvp in Player.attributes)
@@ -130,7 +130,7 @@ public partial class EventsLabel : Label
             var new_bullet = Bullet.Instantiate();
             GetParent().AddChild(new_bullet);
             Ammo -= 1;
-            EventManager.BroadcastAttributeChange(Ammo);
+            EventManager.BroadcastAttributeChange();
         }
         else
         {
