@@ -55,6 +55,7 @@ public partial class Player : RigidBody2D
 ### Printing
 
 ```csharp
-GD.Print($"Health: {Race.Health}");    // Print Health
-GD.Print("Health: ", Race.Health);     // Print Health
+GD.Print("The " + Race.Name + " has a health of " + Race.Health);
+GD.Print("The {0} has a health of {1}", Race.Name, Race.Health);
+GD.Print($"The {Race.Name} has a health of {Race.Health}");
 ```

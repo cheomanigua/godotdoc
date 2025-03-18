@@ -313,7 +313,7 @@ In a typical 2D game scenario, you would have a velocity in pixels per second, a
 
  **Note**: When using `Vector2` instead of `transform.x`, if we don't add the method `rotated(rotation)` or `from_angle(rotation)`, the node will be moving to the same direction regardless of the rotation.
 
-- `velocity` has to be declared and defined. In **CharacterBody2D** nodes, `velocity` is already declared, but not defined.
+- `velocity` has to be declared and initialized. In **CharacterBody2D** nodes, `velocity` is already declared, but not initialized.
 - **CharacterBody2D** is recommended to use the function `move_and_slide()` or `move_and_collide()` instead of `position += velocity * delta`.
 
 ```gdscript
@@ -492,8 +492,8 @@ func _physics_process(delta):
 *METHOD 1*
 
 ```gdscript
-	velocity = Vector2.ZERO			# For CharacterBody2D only, velocity has to be defined here
-	var velocity = Vector2.ZERO		# For non CharacterBody2D, velocity has to be declared and defined here
+	velocity = Vector2.ZERO			# For CharacterBody2D only, velocity has to be initialized here
+	var velocity = Vector2.ZERO		# For non CharacterBody2D, velocity has to be declared and initialized here
 	if Input.is_action_pressed("ui_up"):
 		velocity = transform.x * speed                      # Option 1
 		velocity = Vector2.RIGHT.rotated(rotation) * speed  # Option 2
