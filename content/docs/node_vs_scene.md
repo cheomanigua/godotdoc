@@ -449,6 +449,7 @@ If you, on the other hand, have defined a class constructor in your `City.gd` cl
 - `City.gd`
 
 ```gdscript
+
 class_name City
 extend Node
 

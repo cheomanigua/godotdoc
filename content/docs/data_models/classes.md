@@ -48,9 +48,13 @@ func _ready():
 
 ### Non-inner class
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 `City.gd`
 
 ```gdscript
+
 class_name City
 extends Node
 
@@ -61,6 +65,7 @@ var population: int
 `myscript.gd`
 
 ```gdscript
+
 extends Node
 
 func _ready():
@@ -70,6 +75,43 @@ func _ready():
 	print("The city of %s has a population of %d" % [osgiliath.name, osgiliath.population])
 ```
 
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+`City.cs`
+
+```csharp
+
+using Godot;
+[GlobalClass]
+
+public partial class City : Node
+{
+    public string CityName { get; set; }
+    public int Population { get; set; }
+}
+```
+
+`MyScript.cs`
+
+```csharp
+
+using Godot;
+
+public partial class MyScript : Node
+{
+    public override void _Ready()
+    {
+		var osgiliath = new City();
+		osgiliath.CityName = "Osgiliath";
+		osgiliath.Population = 500;
+		GD.Print($"The city of {osgiliath.CityName} has a population of {osgiliath.Population}");
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
+
 As you can see, creating an instance of a class is exactly the same regardless if the class is defined using the inner class or the non-inner class approach.
 
 In this article we'll only show the class definition, it doesn't matter the approach. For real full implementation of classes, you can check the [Economy](/docs/recipes/economy) article.
@@ -78,7 +120,11 @@ In this article we'll only show the class definition, it doesn't matter the appr
 
 Class constructors facilitates the creation of instances:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
+
 class City:
 	var name: String
 	var population: int
@@ -91,11 +137,48 @@ func _ready():
 	print("The city of %s has a population of %d" % [osgiliath.name, osgiliath.population])
 ```
 
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+- `City.cs`
+
+```csharp
+
+using Godot;
+[GlobalClass]
+
+public partial class City : Node
+{
+    public string CityName { get; set; }
+    public int Population { get; set; }
+
+    // Constructor
+    public City(string name, int population)
+    {
+        CityName = name;
+        Population = population;
+    }
+}
+```
+- `Main.cs`
+
+```csharp
+
+    public override void _Ready()
+    {
+        var city = new City("Tarraco", 3000);
+    }
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 # Batch instantiation
 
 We could create several instances of a class at once by feeding the class properties with external data and storing the new created instances in an array:
 
 ```gdscript
+
 var externaldata: Dictionary = { "Osgiliath": 5000, "Edoras": 4000, "Bree": 2000 }
 var cities: Array = []
 
@@ -124,6 +207,7 @@ As you could see at [Batch instantiation](#batch-instantiation), classes and dic
 However, classes can also implement functionality via methods, that is, create methods to operate with the data (properties) of the class. You can keep the data and functionality compacted inside a class:
 
 ```gdscript
+
 class City:
 	var name: String
 	var population: int

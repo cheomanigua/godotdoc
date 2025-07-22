@@ -53,7 +53,6 @@ The attribute to handle is ammunition. When we shoot, we substract one to the to
 
 ```csharp
 using System;
-using Godot;
 
 public static class EventManager
 {
