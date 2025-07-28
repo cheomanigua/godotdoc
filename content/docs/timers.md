@@ -18,8 +18,8 @@ Timers can be created in three different ways:
 
 1. Adding a Timer node in the Editor and referencing it in code:
 
-    {{< tabs tabTotal="2">}}
-    {{% tab tabName="GDScript" %}}
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 @onready var timer: Timer = %Timer

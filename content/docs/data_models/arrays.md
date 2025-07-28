@@ -45,6 +45,9 @@ Some callable methods:
 
 ### Basic inventory
 
+{{< tabs tabTotal="3">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 ...
 
@@ -67,3 +70,56 @@ Coin x3
 Gem x2
 Potion x4
 ```
+
+{{% /tab %}}
+{{% tab tabName="C# Array" %}}
+
+```csharp
+using Godot;
+using System;
+
+public partial class Foo : Node
+{
+	readonly string[] inventory = new string[5] {"Coin", "Potion", "Potion", "Coin", "Potion"};
+	
+	public void ShowInventory(){
+		Array.Sort(inventory);
+
+		foreach (string item in inventory)
+		{
+			GD.Print(item);
+		}
+	}
+}
+
+```
+
+{{% /tab %}}
+{{% tab tabName="C# List" %}}
+
+```csharp
+
+using Godot;
+using System.Collections.Generic;
+
+public partial class Foo : Node
+{
+	readonly List<string> inventory = new List<string>
+	{
+		"Coin",	"Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem"
+	};
+
+	public void ShowInventory(){
+		inventory.Sort();
+
+		foreach (string item in inventory)
+		{
+			GD.Print(item);
+		}
+	}
+}
+
+```
+
+{{% /tab %}}
+{{< /tabs >}}
