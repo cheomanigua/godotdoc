@@ -11,7 +11,9 @@ toc: true
 
 While Godot uses a more modular approach to game design, it can also use Object Oriented Programming approach by the use of Classes.
 
-{{< alert context="info" text="In this article we explain how to use clases in the context of data models. Classes has more features than just being a data model solution." />}}
+{{< alert context="info" text="In this article we explain how to use clases in the context of data models. However, Classes has more features than just being a data model solution and are better suited for behavior and logic. See below." />}}
+
+{{< alert context="info" text="Use **Classes** for defining behavior and logic, typically tied to nodes or game objects. Use **Resources** for reusable, serializable data that can be shared across multiple objects." />}}
 
 For reference on this article:
 
@@ -57,7 +59,6 @@ func _ready():
 ```gdscript
 
 class_name City
-extends Node
 
 var name: String
 var population: int

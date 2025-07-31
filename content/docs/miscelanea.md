@@ -10,6 +10,24 @@ toc: true
 ---
 
 
+## Avoid warnings for unused parameters
+
+```gdscript
+
+@warning_ignore("unused_parameter")
+func _process(delta: float) -> void:
+```
+The example above will avoid the warning for delta not being used.
+
+## Avoid warnings for unused signals
+
+```gdscript
+
+@warning_ignore("unused_signal")
+signal event_message
+```
+The example above will avoid the warning for the signal not being used.
+
 ## Changing Node instances textures
 
 ### In the editor

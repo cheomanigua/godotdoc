@@ -10,6 +10,8 @@ toc: true
 ---
 Base class for serializable objects.
 
+{{< alert context="info" text="Use **Resources** for reusable, serializable data that can be shared across multiple objects. Use **Classes** for defining behavior and logic, typically tied to nodes or game objects."  />}}
+
 Resource is the base class for all Godot-specific resource types, serving primarily as data containers. Since they inherit from [RefCounted](https://docs.godotengine.org/en/stable/classes/class_refcounted.html), resources are reference-counted and freed when no longer in use. They can also be nested within other resources, and saved on disk. [PackedScene](https://docs.godotengine.org/en/stable/classes/class_packedscene.html), one of the most common [Objects](https://docs.godotengine.org/en/stable/classes/class_object.html) in a Godot project, is also a resource, uniquely capable of storing and instantiating the [Nodes](https://docs.godotengine.org/en/stable/classes/class_node.html) it contains as many times as desired.
 
 - [Godot Documentation - Resource Class](https://docs.godotengine.org/en/stable/classes/class_resource.html)
