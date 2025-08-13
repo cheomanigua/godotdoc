@@ -58,10 +58,10 @@ var inventory: Array[String] = ["Coin", "Potion", "Potion", "Coin", "Potion", "G
 func show_inventory():
 	var a: String
 	inventory.sort()
-	for i in inventory:
-		if a != i: 
-			print(i + " x" + str(inventory.count(i)))
-		a = i 
+	for item in inventory:
+		if a != item:
+			print(item + " x" + str(inventory.count(item)))
+		a = item
 ```
 
 It will print:

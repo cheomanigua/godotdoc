@@ -1,7 +1,7 @@
 ---
 weight: 2400
-title: "Events"
-description: "How to use events and delegates"
+title: "Events/Delegates"
+description: "How to use events/delegates in the form of Actions and Funcs"
 icon: "article"
 date: "2025-03-07T23:00:46+01:00"
 lastmod: "2025-03-07T23:00:46+01:00"

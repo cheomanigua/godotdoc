@@ -37,7 +37,7 @@ func _init() -> void:
 
 ### @onready
 
-There is no `@onready` annotation in **C#**. The equivalent in **C#** is to declare the variable as class member and define it in the `onready()` function:
+There is no `@onready` annotation in **C#**. The equivalent in **C#** is to declare the variable as class member and define it in the `_Ready()` function:
 
 ```csharp
 public partial class Player : RigidBody2D
