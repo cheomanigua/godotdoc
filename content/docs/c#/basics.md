@@ -46,7 +46,7 @@ public partial class Player : RigidBody2D
 
     public override void _Ready()
     {
-        Stats = GetNode<Label>("Stats")
+        Stats = GetNode<Label>("Stats");
     }
 }
 ```
