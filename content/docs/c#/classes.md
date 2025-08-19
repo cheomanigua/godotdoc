@@ -1,6 +1,6 @@
 ---
 weight: 2250
-title: "Classes & OOP"
+title: "Classes"
 description: "Classes and Object Oriented Programming in C#"
 icon: "article"
 date: "2025-08-14T10:03:49+01:00"
@@ -323,28 +323,6 @@ public class Dog : Animal
 }
 ```
 
-#### When to Use an Abstract Class:
-Use an abstract class when:
-1. **Shared Base Functionality**: You want to provide common functionality (fields, methods, or properties) for a group of related classes while enforcing certain behaviors to be implemented by derived classes.
-   - Example: A base `Shape` class with a common `Color` property and an abstract `CalculateArea()` method that each derived shape (e.g., `Circle`, `Rectangle`) must implement.
-2. **Hierarchy Design**: You need to define a template for a class hierarchy where some methods are mandatory but their implementation varies.
-   - Example: A `Vehicle` class with an abstract `StartEngine()` method, implemented differently for `Car` and `Motorcycle`.
-3. **Prevent Instantiation**: You want to ensure the base class cannot be instantiated directly, as it represents a general concept rather than a concrete object.
-   - Example: `Animal` as an abstract class, with specific animals like `Dog` or `Cat` as concrete implementations.
-4. **Mix of Abstract and Concrete Members**: Unlike interfaces, abstract classes can include implemented methods, making them suitable when you want to combine enforced contracts with reusable code.
-
-### Abstract Class vs. Interface
-- **Abstract Class**:
-  - Can have both abstract and non-abstract members.
-  - Supports fields, constructors, and access modifiers.
-  - A class can inherit only one abstract class (single inheritance).
-  - Use when you need shared implementation and a clear hierarchical relationship.
-- **Interface**:
-  - Contains only method signatures, properties, or events (no implementation until default implementations in C# 8.0+).
-  - No fields or constructors.
-  - A class can implement multiple interfaces.
-  - Use for defining contracts without shared implementation.
-
 #### Example Use Case:
 Suppose you're building a game with different types of characters (e.g., `Warrior`, `Mage`). You can use an abstract class `Character` to define common properties like `Health` and `Name`, and an abstract method `Attack()` that each character type implements differently.
 
@@ -373,6 +351,17 @@ public class Mage : Character
     }
 }
 ```
+
+#### When to Use an Abstract Class:
+Use an abstract class when:
+1. **Shared Base Functionality**: You want to provide common functionality (fields, methods, or properties) for a group of related classes while enforcing certain behaviors to be implemented by derived classes.
+   - Example: A base `Shape` class with a common `Color` property and an abstract `CalculateArea()` method that each derived shape (e.g., `Circle`, `Rectangle`) must implement.
+2. **Hierarchy Design**: You need to define a template for a class hierarchy where some methods are mandatory but their implementation varies.
+   - Example: A `Vehicle` class with an abstract `StartEngine()` method, implemented differently for `Car` and `Motorcycle`.
+3. **Prevent Instantiation**: You want to ensure the base class cannot be instantiated directly, as it represents a general concept rather than a concrete object.
+   - Example: `Animal` as an abstract class, with specific animals like `Dog` or `Cat` as concrete implementations.
+4. **Mix of Abstract and Concrete Members**: Unlike interfaces, abstract classes can include implemented methods, making them suitable when you want to combine enforced contracts with reusable code.
+
 
 #### When Not to Use:
 - If you only need a contract without shared implementation, use an **interface** instead.
@@ -523,3 +512,16 @@ Here, `App` depends on the `ILogger` interface, making it easy to swap `ConsoleL
 - **Explicit Implementation**: A class can implement an interface explicitly to avoid polluting its public API (e.g., `void IVehicle.Start()`).
 
 In summary, use interfaces to define contracts for behavior, promote flexibility, and enable polymorphism, especially in scenarios requiring loose coupling or multiple implementations of the same functionality.
+
+## 7. Abstract Class vs. Interface
+- **Abstract Class**:
+  - Can have both abstract and non-abstract members.
+  - Supports fields, constructors, and access modifiers.
+  - A class can inherit only one abstract class (single inheritance).
+  - Use when you need shared implementation and a clear hierarchical relationship.
+- **Interface**:
+  - Contains only method signatures, properties, or events (no implementation until default implementations in C# 8.0+).
+  - No fields or constructors.
+  - A class can implement multiple interfaces.
+  - Use for defining contracts without shared implementation.
+
