@@ -57,7 +57,7 @@ public class Driver
     public void LogIn(Car car) { }
 }
 
-var john = New Driver();
+var john = new Driver();
 john.LogIn(new Car(2025));
 john.LogIn(new Toyota());
 ```
@@ -390,7 +390,7 @@ There are no scopes inside an interface, everything is public by convention.
 public interface IVehicle
 {
     void Start();                                   // without implementation details
-    void Stop() { Console.WriteLine("Stopped") };   // with implementation details
+    void Stop() { Console.WriteLine("Stopped"); }   // with implementation details
     int Speed { get; }
 }
 
