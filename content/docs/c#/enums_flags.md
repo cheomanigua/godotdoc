@@ -173,6 +173,15 @@ class Program
 
 # Flags
 
+
+In C#, the `[Flags]` attribute is used with enums to indicate that the enum values can be combined using bitwise operations, typically to represent a set of flags. Comparing bitmasks involves checking whether specific flags are set, unset, or match certain combinations using bitwise operators.
+
+### Key Concepts
+- The `[Flags]` attribute allows enum values to be treated as bit fields.
+- Each enum value typically represents a single bit (or a combination of bits) using powers of 2 (1, 2, 4, 8, etc.).
+- Bitwise operators (`|`, `&`, `^`, `~`) are used to manipulate and compare flags.
+- Common comparison tasks include checking if a specific flag is set, if all flags in a mask are set, or if any flags match.
+
 ```csharp
 using System;
 
@@ -184,12 +193,13 @@ class Program
 {
     static void Main(string[] args)
 	{
-		Elements elements = Elements.Fire | Elements.Water;
-		Console.WriteLine(elements);		// Fire, Water
-		elements = (Elements)3;				// Fire, Water
-		elements = (Elements)(1<<0 | 1<<1);	// Fire, Water
-		elements = (Elements)(0b011);		// Fire, Water
+        // Four different ways to set the same bits
+		Elements elements = Elements.Fire | Elements.Water; // Fire, Water
+		elements = (Elements)3;								// Fire, Water
+		elements = (Elements)(1<<0 | 1<<1);					// Fire, Water
+		elements = (Elements)(0b011);						// Fire, Water
 
+        // How to query using bitmasks
 		int elementos = 0b11011;
 		int query = 0b01110;
 		if ((query & elementos) == query) {
@@ -197,33 +207,15 @@ class Program
 		}
 		else {
 			Console.WriteLine("False");
-			Console.WriteLine(elementos);
-			Console.WriteLine(query);
-			Console.WriteLine(query & elementos);
-			Console.WriteLine((query & elementos) ^ query);
+			Console.WriteLine(elementos);                   // 11011	<- all the bits currently set
+			Console.WriteLine(query);                       // 01110	<- bits asked/queried to fulfill condition
+			Console.WriteLine(query & elementos);           // 01010	<- bits currently set (achieved) to fulfill condition
+			Console.WriteLine((query & elementos) ^ query); // 00100	<- bits currently unset (missing) to fulfill condition
 		}
-
-        // COMPARING BITMASKS //
-
-        // Using HasFlag
-		bool isFire = elements.HasFlag(Elements.Fire);                          // True
-		bool isFireWater = elements.HasFlag(Elements.Fire | Elements.Water);    // True
-		bool isEarth = elements.HasFlag(Elements.Earth);                        // False
-
-        // Using bitwise AND
-		bool isWater = (elements & Elements.Water) == Elements.Water;           // True
-		bool isEarth = (elements & Elements.Earth) == Elements.Earth;           // False
     }
 }
 ```
 
-In C#, the `[Flags]` attribute is used with enums to indicate that the enum values can be combined using bitwise operations, typically to represent a set of flags. Comparing bitmasks involves checking whether specific flags are set, unset, or match certain combinations using bitwise operators.
-
-### Key Concepts
-- The `[Flags]` attribute allows enum values to be treated as bit fields.
-- Each enum value typically represents a single bit (or a combination of bits) using powers of 2 (1, 2, 4, 8, etc.).
-- Bitwise operators (`|`, `&`, `^`, `~`) are used to manipulate and compare flags.
-- Common comparison tasks include checking if a specific flag is set, if all flags in a mask are set, or if any flags match.
 
 ### Comparing Bitmasks
 Here’s how to perform common comparisons with bitmasks in C#:

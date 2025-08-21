@@ -71,4 +71,21 @@ public partial class Player : RigidBody2D
     }
 }
 ```
+There are to ways to create a dictionary:
+
+```csharp
+Dictionary<string, int> attributes = new Dictionary<string, int>
+{
+	{"strength", 7},
+	{"intelligence", 8},
+	{"dexterity", 5}
+};
+```
+or
+
+```csharp
+Dictionary<string, int> attributes = new Dictionary<string, int>()
+attributes["strength"] = 7;
+attributes.Add("intelligence", 8);
+```
 
