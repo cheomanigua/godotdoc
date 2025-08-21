@@ -15,7 +15,8 @@ Bit flags are boolean values stored in each bit of an integer variable, in binar
 
 Since one bit can only be set to 1 or 0, bit flags are used for dual state parameters: on/off, enable/disable, true/false. Bit flags are good for creating multiple choice selections or sets of common parameters, with one single integer variable, each selection being one bit of the variable.
 
-
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 
@@ -23,6 +24,18 @@ Since one bit can only be set to 1 or 0, bit flags are used for dual state param
 ```
 
 [Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+[Flags]
+enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 } // Fire = 1, Water = 2, Earth = 4
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 
 In the above code, we have created the integer variable `elements` which contains the flags: `FIRE`, `WATER` and `EARTH`. Each flag can be either `true` or `false`, or better said, set or unset.
 
@@ -131,9 +144,26 @@ lshift = 0		    lshift = 1		    lshift = 2
 
 Knowing how bit operations work, we can use bitmasks to query small or large bit sets. Continuing with our example set:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
+
 @export_flags ("FIRE", "WATER", "EARTH") var elements: int
 ```
+
+[Ref](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_exports.html#exporting-bit-flags)
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+[Flags]
+enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 } // Fire = 1, Water = 2, Earth = 4
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 As per `elements`, **Fire** and **Water** are represented by the value `011` in binary and `3` in decimal (remember that we read from right to left in binary).
 
@@ -163,53 +193,124 @@ From now on, "query" and "querying" are used instead of **bitmask** and **bitmas
 - In scenario 5.2 we want to find out which bits are making the query `false` in scenario 5.1, so we query again **B**, **C** and **D** with `XOR` againts the result of scenario 5.1. The final result is **C**, which is the bit that triggered `false` in scenario 5.1
 
 #### Scenario 1 & 2
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 var query: int = 0b011 # or `var query: int = 3`
-if elements & query == query:
+if query & elements == query:
 	print("True")
 else:
     print("False")
 ```
-
 You may have noticed that we could query large sets very easily. For instance, we could query for nine particular bits in a 17 bits group:
 
 ```gdscript
 var query: int = 0b10110010100110011 # or `var query: int = 91443`
-if elements & query == query:
+if query & elements == query:
 	print("True")
 else:
     print("False")
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+int query = 0b011; // or `int query = 3`
+if ((query & (int)elements) == query) {
+	GD.Print("True");
+}
+else {
+	GD.Print("False");
+}
+```
+You may have noticed that we could query large sets very easily. For instance, we could query for nine particular bits in a 17 bits group:
+
+```csharp
+int query = 0b10110010100110011; // or `int query = 91443`
+if ((query & (int)elements) == query) {
+	GD.Print("True");
+}
+else {
+	GD.Print("False");
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
+
 
 #### Scenario 3
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
-if (elements == query):
+if (query == elements):
 	print("True")
 else:
     print("False")
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+if (query == (int)elements) {
+	GD.Print("True");
+}
+else {
+	GD.Print("False");
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 #### Scenario 5
 
 This is useful if we want to list which elements we've got and which elements are missing to fulfill whatever condition presented by query.
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 var elements: int = 0b11011
 var query: int = 0b01110
-if elements & query == query:
+if query & elements == query:
 	print("True")
 else:
     print("False")
 	print(elements)						# 11011		<- all the bits currently set
 	print(query)						# 01110		<- bits asked/queried to fulfill condition
-	print(elements & query)				# 01010		<- bits currently set (achieved) to fulfill condition
-	print((elements & query) ^ query)	# 00100		<- bits currently unset (missing) to fulfill condition
+	print(query & elements)				# 01010		<- bits currently set (achieved) to fulfill condition
+	print((query & elements) ^ query)	# 00100		<- bits currently unset (missing) to fulfill condition
 ```
 
-- With `elements & query` we find out which elements of the query are `true`.
-- With `(elements & query) ^ query` we find out which elements of the query are `false`.
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+int elements = 0b11011;
+int query = 0b01110;
+if ((query & elements) == query) {
+	GD.Print("True");
+}
+else {
+	GD.Print("False");
+	GD.Print(elements);                    // 11011		<- all the bits currently set
+	GD.Print(query);                       // 01110		<- bits asked/queried to fulfill condition
+	GD.Print(query & elements);            // 01010		<- bits currently set (achieved) to fulfill condition
+	GD.Print((query & elements) ^ query);  // 00100		<- bits currently unset (missing) to fulfill condition
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+- With `query & elements` we find out which elements of the query are `true`.
+- With `(query & elements) ^ query` we find out which elements of the query are `false`.
 
 
 
