@@ -159,7 +159,7 @@ Knowing how bit operations work, we can use bitmasks to query small or large bit
 
 ```csharp
 [Flags]
-enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 } // Fire = 1, Water = 2, Earth = 4
+enum Elements { Fire = 1, Water = 2, Earth = 4 } // Fire = 1<<0, Water = 1<<1, Earth = 1<<2
 ```
 
 {{% /tab %}}
@@ -322,6 +322,9 @@ If the user has enabled all elements (set all flags): Fire, Water and Earth in t
 You could use just left shift operators for the whole script, but in this case we use a combination of variable values, left shift operators, custom functions and constants just to show how they can be used. In real life you should stick to only one style.
 
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 
 extends Node
@@ -362,7 +365,7 @@ func _ready() -> void:
 	clear_flag(2)
 	print(("e) Clearing bit %d (WATER) using custom function with decimal variable value: %d / %s") % [2,elements, String.num_int64(elements,2,false)])
 
-	# SettingV bit 2 (WATER) using custom function with lso
+	# Setting bit 2 (WATER) using custom function with lso
 	set_flag(1<<1)
 	print(("f) Setting bit %d (WATER) using custom function with lso: %d / %s") % [1<<1,elements, String.num_int64(elements,2,false)])
 
@@ -464,3 +467,88 @@ Water is not set
 i) Checking if bit index 2 (WATER) is not set using custom fuction:
 Water is not set
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+
+using Godot;
+using System;
+
+[Flags]
+enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 }
+
+public partial class World : Node
+{
+	Elements elements = (Elements)7;
+	const int lsoWATER = 1<<1;
+	
+    public override void _Ready()
+    {
+		GD.Print($"User selected {(int)elements} / {Convert.ToString((int)elements,2).PadLeft(3, '0')}");
+		GD.Print($"{(int)elements} is the 'elements' variable value and {Convert.ToString((int)elements,2).PadLeft(3, '0')} represents the 'elements' variable binary base conversion");
+		GD.Print(elements);
+		GD.Print("");
+
+		// Clear bit 2 (Water) using variable value in decimal
+		elements &= ~(Elements)2;
+		GD.Print($"a) Clearing bit 2 (Water) using decimal variable value. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Set bit 2 (Water) using enum flag
+		elements |= Elements.Water;
+		GD.Print($"b) Setting bit 2 (Water) using enum flag. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Toggle bit 2 (Water) using lso constant
+		elements ^= (Elements)lsoWATER;
+		GD.Print($"c) Toggling bit 2 (Water) using lso constant. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Set bit 2 (Water) using binary variable value
+		elements |= (Elements)0b010;
+		GD.Print($"d) Setting bit 2 (Water) using binary variable value. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Clear bit 2 (WATER) using custom function with decimal variable value
+		ClearFlag(2);
+		GD.Print($"e) Clearing bit 2 (Water) using custom function with decimal variable value. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Set bit 2 (Water) using custom function with lso
+		SetFlag(1<<1);
+		GD.Print($"f) Setting bit 2 (Water) using custom function with lso. {(int)elements} / {Convert.ToString((int)elements,2)}");
+
+		// Toggle bit 2 (Water) using custom function with variable value constant
+		ToggleFlag(vWater);
+		GD.Print($"g) Toggling bit 2 (Water) using custom function with variable value constant. {(int)elements} / {Convert.ToString((int)elements,2)}");
+    }
+
+   	void SetFlag(int flag) { elements |= (Elements)flag; }
+	void ClearFlag(int flag) { elements &= ~(Elements)flag; }
+	void ToggleFlag(int flag) { elements ^= (Elements)flag; }
+	bool IsFlagSet(int flag) { return (elements & (Elements)flag) != 0; }
+	bool IsFlagUnset(int flag) { return (elements & (Elements)flag) == 0; }
+}
+
+```
+
+<br>
+
+Running the script will print:
+
+```
+User selected 7 / 111
+7 is the 'elements' variable value and 111 represents the 'elements' variable binary base conversion
+Fire, Water, Earth
+
+a) Clearing bit 2 (Water) using decimal variable value. 5 / 101
+b) Setting bit 2 (Water) using enum flag. 7 / 111
+c) Toggling bit 2 (Water) using lso constant. 5 / 101
+d) Setting bit 2 (Water) using binary variable value. 7 / 111
+e) Clearing bit 2 (Water) using custom function with decimal variable value. 5 / 101
+f) Setting bit 2 (Water) using custom function with lso. 7 / 111
+g) Toggling bit 2 (Water) using custom function with variable value constant. 5 / 101
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
+
+

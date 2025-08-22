@@ -434,6 +434,20 @@ Has Execute or Delete: False
 Exact match for Read|Write: True
 ```
 
+### From `int` to binary
+
+```csharp
+int element = 4;
+Console.WriteLine($"{element}: {Convert.ToString(element, 2)}"); // it will print 100
+
+int element = 1;
+Console.WriteLine($"{element}: {Convert.ToString(element, 2)}"); // it will print 1
+
+int element = 1;
+Console.WriteLine($"{element}: {Convert.ToString(element, 2).PadLeft(3, '0')}"); // it will print 001
+```
+
+
 ### Notes
 - The `HasFlag` method is convenient but performs a boxing operation for enums, which may impact performance in tight loops. Use bitwise operations for performance-critical code.
 - Ensure the enum is marked with `[Flags]` to enable proper string representation (e.g., `Read, Write` instead of a numeric value).
