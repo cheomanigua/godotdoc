@@ -180,7 +180,7 @@ In C#, the `[Flags]` attribute is used with enums to indicate that the enum valu
 
 ```csharp
 [Flags]
-enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 }	// Fire = 1, Water = 2, Earth = 404
+enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 }	// Fire = 1, Water = 2, Earth = 4
 ```
 
 ### Set

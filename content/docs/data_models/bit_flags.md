@@ -275,44 +275,86 @@ This is useful if we want to list which elements we've got and which elements ar
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
-var elements: int = 0b11011
-var query: int = 0b01110
-if query & elements == query:
-	print("True")
-else:
-    print("False")
-	print(elements)						# 11011		<- all the bits currently set
-	print(query)						# 01110		<- bits asked/queried to fulfill condition
-	print(query & elements)				# 01010		<- bits currently set (achieved) to fulfill condition
-	print((query & elements) ^ query)	# 00100		<- bits currently unset (missing) to fulfill condition
-```
+var current: int = 0b11011
+var target: int = 0b01110
 
+print(current)						# 11011		<- current bits
+print(target)						# 01110		<- target bits to achieve
+print(target & current)				# 01010		<- target bits fulfilled so far
+print((target & current) ^ target)	# 00100		<- target bits remaining to achieve
+
+if current & target == current:
+	print("Exact match! Target achieved!")
+elif current | target == current:
+	print("Target achieved!")
+else:
+	print("Target not achieved")
+```
+Values of `current` and `target` has been inverted:
+
+```gdscript
+var target: int = 0b11011
+var current: int = 0b01110
+
+print(target)						# 11011		<- target bits to achieve
+print(current)						# 01110		<- current bits
+print(current & target)				# 01010		<- target bits fulfilled so far
+print(current & ~target)			# 10001		<- target bits remaining to achieve
+
+if current & target == current:
+	print("Exact match! Target achieved!")
+elif current | target == current:
+	print("Target achieved!")
+else:
+	print("Target not achieved")
+```
 
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
 ```csharp
-int elements = 0b11011;
-int query = 0b01110;
-if ((query & elements) == query) {
-	GD.Print("True");
+int current = 0b11011;
+int target = 0b01110;
+
+GD.Print(current);                      // 11011		<- current bits
+GD.Print(target);                       // 01110		<- target bits to achieve
+GD.Print(target & current);             // 01010		<- target bits fulfilled so far
+GD.Print((target & current) ^ target);  // 00100		<- target bits remaining to achieve
+
+if ((target & current) == target) {
+	GD.Print("Exact match! Target achieved");
+}
+else if ((target | current) == target) {
+	GD.Print("Target achieved!");
 }
 else {
-	GD.Print("False");
-	GD.Print(elements);                    // 11011		<- all the bits currently set
-	GD.Print(query);                       // 01110		<- bits asked/queried to fulfill condition
-	GD.Print(query & elements);            // 01010		<- bits currently set (achieved) to fulfill condition
-	GD.Print((query & elements) ^ query);  // 00100		<- bits currently unset (missing) to fulfill condition
+	GD.Print("Target not achieved");
 }
 ```
 
+Values of `current` and `target` has been inverted:
+
+```csharp
+int target = 0b11011;
+int current = 0b01110;
+
+GD.Print(target);               // 11011		<- target bits to achieve
+GD.Print(current);              // 01110		<- current bits
+GD.Print(current & target);     // 01010		<- target bits fulfilled so far
+GD.Print(current & ~target);    // 10001		<- target bits remaining to achieve
+
+if ((target & current) == target) {
+	GD.Print("Exact match! Target achieved");
+}
+else if ((target | current) == target) {
+	GD.Print("Target achieved!");
+}
+else {
+	GD.Print("Target not achieved");
+}
+```
 {{% /tab %}}
 {{< /tabs >}}
-
-- With `query & elements` we find out which elements of the query are `true`.
-- With `(query & elements) ^ query` we find out which elements of the query are `false`.
-
-
 
 
 ## Example
@@ -521,11 +563,25 @@ public partial class World : Node
 		GD.Print($"g) Toggling bit 2 (Water) using custom function with variable value constant. {(int)elements} / {Convert.ToString((int)elements,2)}");
     }
 
-   	void SetFlag(int flag) { elements |= (Elements)flag; }
-	void ClearFlag(int flag) { elements &= ~(Elements)flag; }
-	void ToggleFlag(int flag) { elements ^= (Elements)flag; }
-	bool IsFlagSet(int flag) { return (elements & (Elements)flag) != 0; }
-	bool IsFlagUnset(int flag) { return (elements & (Elements)flag) == 0; }
+   	void SetFlag(int flag) {
+        elements |= (Elements)flag;
+    }
+
+	void ClearFlag(int flag) {
+        elements &= ~(Elements)flag;
+    }
+
+	void ToggleFlag(int flag) {
+        elements ^= (Elements)flag;
+    }
+
+	bool IsFlagSet(int flag) {
+        return (elements & (Elements)flag) != 0;
+    }
+
+	bool IsFlagUnset(int flag) {
+        return (elements & (Elements)flag) == 0;
+    }
 }
 
 ```
