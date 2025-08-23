@@ -176,42 +176,78 @@ class Program
 
 In C#, the `[Flags]` attribute is used with enums to indicate that the enum values can be combined using bitwise operations, typically to represent a set of flags. Comparing bitmasks involves checking whether specific flags are set, unset, or match certain combinations using bitwise operators.
 
+### Declaration
+
+```csharp
+[Flags]
+enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 }	// Fire = 1, Water = 2, Earth = 404
+```
+
+### Set
+
+There are four ways to set the same bits of a variable:
+
+```csharp
+		Elements elements = Elements.Fire | Elements.Water; // Fire, Water
+		elements = (Elements)3;								// Fire, Water
+		elements = (Elements)(1<<0 | 1<<1);					// Fire, Water
+		elements = (Elements)(0b011);						// Fire, Water
+```
+### Get
+
+There are three ways to get the bits set in a variable
+
+```csharp
+		Console.WriteLine(elements);											// Fire, Water
+		Console.WriteLine((int)elements);										// 3
+		Console.WriteLine(Convert.ToString((int)elements,2).PadLeft(3, '0'));	// 001
+```
+{{< alert context="info" text="When doing queries and comparing with other integers, `(int)elements` must be used." />}}
+
 ### Key Concepts
 - The `[Flags]` attribute allows enum values to be treated as bit fields.
 - Each enum value typically represents a single bit (or a combination of bits) using powers of 2 (1, 2, 4, 8, etc.).
 - Bitwise operators (`|`, `&`, `^`, `~`) are used to manipulate and compare flags.
 - Common comparison tasks include checking if a specific flag is set, if all flags in a mask are set, or if any flags match.
+- Once created, to get the value of an enum: `
 
 ```csharp
 using System;
 
 [Flags]
-enum Elements { Fire = 1<<0, Water = 1<<1, Earth = 1<<2 }	// Fire = 1, Water = 2, Earth = 4
-
+enum Sumer { Ur = 1<<0, Uruk = 1<<1, Kish = 1<<2, Adab = 1<<3, Lagash = 1<<4 }
 
 class Program
 {
     static void Main(string[] args)
 	{
         // Four different ways to set the same bits
-		Elements elements = Elements.Fire | Elements.Water; // Fire, Water
-		elements = (Elements)3;								// Fire, Water
-		elements = (Elements)(1<<0 | 1<<1);					// Fire, Water
-		elements = (Elements)(0b011);						// Fire, Water
+		Sumer capitals = Sumer.Uruk | Sumer.Kish;           // Uruk, Kish
+		capitals = (Sumer)6;								// Uruk, Kish
+		capitals = (Sumer)(1<<1 | 1<<2);					// Uruk, Kish
+		capitals = (Sumer)(0b00110);						// Uruk, Kish
 
-        // How to query using bitmasks
-		int elementos = 0b11011;
-		int query = 0b01110;
-		if ((query & elementos) == query) {
-			Console.WriteLine("True");
+		// How to query using bitmasks
+		Sumer target = (Sumer)0b11011;		// Ur, Uruk, Adab, Lagash
+		Sumer current = (Sumer)0b01110;		// Uruk, Kish, Adab
+
+		Console.WriteLine(target);							// 11011 <- target bits to achieve
+		Console.WriteLine(current);							// 01110 <- current bits
+		Console.WriteLine(current & target);				// 01010 <- target bits achieved
+		Console.WriteLine(target & ~current);				// 10001 <- remaining target bits to achieve
+		Console.WriteLine((current & target) ^ current);	// 00100 <- other
+
+		if ((current & target) == current) {
+			Console.WriteLine("Exact match. Target achieved! ");
+		}
+		else if ((current | target) == current) {
+			Console.WriteLine("Target achieved!");
 		}
 		else {
-			Console.WriteLine("False");
-			Console.WriteLine(elementos);                   // 11011	<- all the bits currently set
-			Console.WriteLine(query);                       // 01110	<- bits asked/queried to fulfill condition
-			Console.WriteLine(query & elementos);           // 01010	<- bits currently set (achieved) to fulfill condition
-			Console.WriteLine((query & elementos) ^ query); // 00100	<- bits currently unset (missing) to fulfill condition
+			Console.WriteLine("Target not achieved!");
+			Console.WriteLine($"{target & ~current} missing");
 		}
+
     }
 }
 ```

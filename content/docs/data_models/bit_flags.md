@@ -483,6 +483,7 @@ public partial class World : Node
 {
 	Elements elements = (Elements)7;
 	const int lsoWATER = 1<<1;
+	const int vWATER = 2;
 	
     public override void _Ready()
     {
