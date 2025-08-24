@@ -40,6 +40,9 @@ To sweep over a region of 2D space, you can approximate the region with multiple
 
 ### Execution
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 var raycast: RayCast2D = RayCast2D.new()
 
@@ -48,6 +51,24 @@ func _ready():
 	raycast.enabled = true
 	raycast.target_position = Vector2(350, 0)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+RayCast2D raycast = new();
+
+public override void _Ready()
+{
+    AddChild(raycast);
+    raycast.Enabled = true
+    raycast.TargetPosition = new Vector2(350, 0);
+}
+
+```
+
+
+{{% /tab %}}
+{{< /tabs >}}
 
 The above code creates a new raycast extending 350 pixeles in front of the node. The raycast origin is relative to the node position, so there is no need to specify the **from** position.
 
@@ -58,6 +79,9 @@ You can see the raycast in the screen for development by activating the **Debug*
 
 If you want to make the raycast visible during game, you can draw lines, circles, etc relative to the raycast:
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
 ```gdscript
 func _physics_process(delta: float) -> void:
 	queue_redraw()
@@ -66,6 +90,23 @@ func _draw() -> void:
 	draw_line(raycast.position, raycast.target_position, Color.GREEN, 1.0)
 	draw_circle(raycast.target_position, 8.0, Color.SKY_BLUE, false, -1.0, false)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+public override void _PhysicsProcess(double delta)
+{
+    QueueRedraw();
+}
+
+public override void _Draw()
+{
+    DrawLine(raycast.Position, raycast.TargetPosition, Colors.Green);
+    DrawCircle(raycast.TargetPosition, 8f, Colors.SkyBlue, false, -1f, false);
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 <br>
 
@@ -75,7 +116,8 @@ The example below features a node that will shoot the player if the player stays
 
 We could had stopped and started the timer in the `_on_player_detected()` and `_on_player_lost()` methods, but decided to do it inside `_physics_process()` for more fine tunning.
 
-
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 extends Area2D
@@ -161,6 +203,131 @@ func _shoot():
 	#new_bullet.position = position
 	get_parent().add_child(new_bullet)
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+
+using Godot;
+
+public partial class Turret : Area2D
+{
+    [Export]float reloadTime = 1f;
+
+    public PackedScene bulletScene = (PackedScene)ResourceLoader.Load("res://Projectile/Bullet/bullet.tscn");
+    // public GDScript bulletGDScript = GD.Load<GDScript>("res://Projectile/Bullet/bullet.gd");
+
+    RayCast2D raycast = new();
+    bool detected = false;
+    bool canShoot = true;
+    float elapsed = 10f;
+    Node2D player;
+    Timer timer = new();
+  
+
+    public override void _Ready()
+    {
+        AddChild(timer);
+        timer.Timeout += OnTimerTimout;
+        timer.Start(reloadTime);
+
+        Area2D radar = GetNode<Area2D>("Radar");
+        radar.Connect("player_detected", Callable.From<Node2D>(OnPlayerDetected));
+        radar.Connect("player_lost", Callable.From<Node2D>(OnPlayerLost));
+
+        AddChild(raycast);
+        raycast.TargetPosition = new Vector2(350, 0);
+    }
+
+    public override void _PhysicsProcess(double delta)
+    {
+        QueueRedraw();
+        if (detected)
+        {
+            Vector2 target = Position.DirectionTo(player.Position);
+            var facing = Transform.X;
+            var fov = target.Dot(facing);
+
+            if (fov > 0)
+            {
+                Rotation = (float)Mathf.LerpAngle(Rotation, target.Angle(), elapsed * delta);
+                if (canShoot)
+                {
+                    if (raycast.IsColliding())
+                    {
+                        var collider = raycast.GetCollider();
+                        if (collider != player)
+                        {
+                            timer.Stop();
+                            canShoot = true;
+                        }
+                        else
+                        {
+                            if (canShoot)
+                            {
+                                Shoot();
+                                canShoot = false;
+                                timer.Start();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                timer.Stop();
+                canShoot = true;
+            }
+        }
+        else
+        {
+            timer.Stop();
+            canShoot = true;
+        }
+    }
+
+    public override void _Draw()
+    {
+        DrawLine(raycast.Position, raycast.TargetPosition, Colors.Green);
+        DrawCircle(raycast.TargetPosition, 8f, Colors.SkyBlue, false, -1f, false);
+    }
+
+    private void OnPlayerDetected(Node2D body)
+    {
+        if (body is Player)
+        {
+            player = body;
+            detected = !detected;
+            raycast.Enabled = true;
+        }
+    }
+
+    public void OnPlayerLost(Node2D body)
+    {
+        if (body is Player)
+        {
+            detected = !detected;
+            raycast.Enabled = false;
+        }
+    }
+
+    public void OnTimerTimout()
+    {
+        canShoot = true;
+    }
+
+    public void Shoot()
+    {
+        // bullet.tscn is using gdscript instead of C#, that's why below we use Set() method
+        Area2D new_bullet = (Area2D)bulletScene.Instantiate();
+        new_bullet.Set("transform", new Transform2D(Rotation, Position));
+        new_bullet.Set("munition_index", (int)munitionType);
+        GetParent().AddChild(new_bullet);
+    }
+}
+```
+{{% /tab %}}
+{{< /tabs >}}
 
 ### Hints
 
