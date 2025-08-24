@@ -80,8 +80,7 @@ func _physics_process(delta: float) -> void:
 			giro.rotation = lerp_angle(giro.rotation, target.angle(), elapsed * delta)
 			if can_shoot:
 				if giro.raycast.is_colliding():
-					var collider = giro.raycast.get_collider()
-					if collider != player:
+					if giro.raycast.get_collider() != player:
 						timer.stop()
 						can_shoot = true
 					else:

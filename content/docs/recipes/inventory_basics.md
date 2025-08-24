@@ -55,8 +55,8 @@ func _input(event: InputEvent) -> void:
 
 func show_inventory():
 	if inventory_activated:
-		for i in inventory:
-			item_list.add_item(i)
+		for item in inventory:
+			item_list.add_item(item)
 		item_list.show()
 	else:
 		item_list.hide()
@@ -76,10 +76,10 @@ func show_inventory():
 			inventory_list.show()
 			var a: String
 			inventory.sort()
-			for i in inventory:
-				if a != i:
-					inventory_list.text += "%s x%d\n" % [i, inventory.count(i)]
-				a = i
+			for item in inventory:
+				if a != item:
+					inventory_list.text += "%s x%d\n" % [item, inventory.count(item)]
+				a = item
 	else:
 		inventory_list.hide()
 ```

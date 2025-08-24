@@ -155,8 +155,7 @@ func _physics_process(delta: float) -> void:
 			rotation = lerp_angle(rotation, target.angle(), elapsed * delta)
 			if can_shoot:
 				if raycast.is_colliding():
-					var collider = raycast.get_collider()
-					if collider != player:
+					if raycast.get_collider() != player:
 						timer.stop()
 						can_shoot = true
 					else:
@@ -255,8 +254,7 @@ public partial class Turret : Area2D
                 {
                     if (raycast.IsColliding())
                     {
-                        var collider = raycast.GetCollider();
-                        if (collider != player)
+                        if (raycast.GetCollider() != player)
                         {
                             timer.Stop();
                             canShoot = true;

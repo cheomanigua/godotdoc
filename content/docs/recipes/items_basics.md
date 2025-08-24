@@ -199,12 +199,12 @@ func _on_body_entered(body):
 		if body.inventory.is_empty():
 			print("You need the %s to pass" % [door_key])
 		else:
-			for i in body.inventory:
-				if i.item_name == door_key:
+			for item in body.inventory:
+				if item.item_name == door_key:
 					print("The door has been opened with the %s" % [door_key])
 					queue_free()
-					body.inventory.erase(i)
-					i.queue_free()
+					body.inventory.erase(item)
+					item.queue_free()
 				else:
 					print("You need the %s" % [door_key])
 ```
