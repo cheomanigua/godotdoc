@@ -14,7 +14,7 @@ toc: true
 - **[Members](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members)**: represent the data and behaviour of a class or struct: fields, constants, properties, methods, events, operators, indexers, constructors, finalizers, nested types. All members use PascalCase style, except private fields and local variables, which use camelCase style.
 - **[Fields](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields)**: variable of any type that is declared directly in a class or struct. Generally, you should declare private or protected accessibility for fields. Data exposed to client code should be provided through methods, properties, and indexers.
     ```csharp
-    int step;                   // private local variables use camelCase
+    int step;                   // local variables use camelCase
     private string _lastName;   // private fields use camelCase starting with underscore (_)
     public string FirstName;    // public fields use PascalCase. However it is recommended to use properties instead
     ```
@@ -72,7 +72,10 @@ public class Person
     // Method
     public void Increment()
     {
-        int step = 1;   // local private variable
+        // local variables
+        int step = 1;
+        var step2 = 2;  // for local variables consider using implicitly typed (`var`) when the type is evident
+
         _count += step; // accessing private field
     }
 
@@ -239,6 +242,17 @@ public int PurchaseYear     // property in PascalCase
 is the same as:
 
 ```csharp
+private int _purchaseYear;
+public int PurchaseYear
+{
+    get => _purchaseYear;
+    private set => _purchaseYear = value;
+}
+```
+
+is the same as:
+
+```csharp
 public int PurchaseYear { get; private set; }
 ```
 If the property has a public write method (`set`), you can assign a value after the declaration:
@@ -255,6 +269,45 @@ public Car this[int lotNumber]
     get { ... }
 }
 ```
+
+
+#### Example Usage:
+```csharp
+public class Car
+{
+    private int _purchaseYear;
+    public int PurchaseYear
+    {
+        get => _purchaseYear;
+        private set => _purchaseYear = value;
+    }
+
+    public void SetYear(int year)
+    {
+        PurchaseYear = year; // Allowed within the class
+    }
+}
+
+var car = new Car();
+car.SetYear(2023);                      // Works because SetYear is part of the class
+car.PurchaseYear = 2024;                // Error: Setter is private
+Console.WriteLine(car.PurchaseYear);    // Outputs: 2023
+```
+
+#### Potential Considerations:
+- If you want to add validation logic to the setter (e.g., ensuring `PurchaseYear` is within a valid range), you might prefer a traditional block-style setter:
+  ```csharp
+  private set
+  {
+      if (value >= 1900 && value <= DateTime.Now.Year)
+          _purchaseYear = value;
+      else
+          throw new ArgumentException("Invalid purchase year");
+  }
+  ```
+- Ensure the property is used in a context where a private setter makes sense, as it restricts external modification.
+
+
 ## 3. Class instantiation
 
 ### 3.1. Constructor
