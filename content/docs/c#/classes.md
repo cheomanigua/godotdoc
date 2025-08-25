@@ -9,58 +9,9 @@ draft: false
 toc: true
 ---
 
-### Naming conventions [](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names)
-
-- Use PascalCase for class names, method names, property names and public fields.
-- Use PascalCase for constant names, both fields and local constants.
-- Use camelCase for local variables (used only within a method, not within constructors or setters and getters).
-- Use camelCase for method parameters.
-- Use camelCase starting with underscore (_) for private instance fields (used in setters and getters).
-
-```csharp
-public class Person
-{
-    // Private instance fields
-    private int _count;
-    private string _name;
-    private string _last;
-    private string _first;
-
-    public string Name // Property to access the field
-    {
-        get => _name;
-        set => _name = value;
-    }
-
-    // Method
-    public void Increment()
-    {
-        int step = 1;   // local private variable
-        _count += step; // accessing private field
-    }
-
-    public int Count => _count; // Property exposing private field
-
-    // Constructor
-    public Person(string lastName, string firstName)
-    {
-        _last = lastName;
-        _first = firstName;
-    }
-
-}
-```
-
-Alternatively, the Name property can be shortened like this:
-
-```csharp
-    public string Name { get; set; }
-```
-
-
 ### Terminology
 
-- **[Members](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members)**: represent the data and behaviour of a class or struct: fields, constants, properties, methods, events, operators, indexers, constructors, finalizers, nested types. All members use PascalCase style, except private fields, which use camelCase style.
+- **[Members](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members)**: represent the data and behaviour of a class or struct: fields, constants, properties, methods, events, operators, indexers, constructors, finalizers, nested types. All members use PascalCase style, except private fields and local variables, which use camelCase style.
 - **[Fields](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields)**: variable of any type that is declared directly in a class or struct. Generally, you should declare private or protected accessibility for fields. Data exposed to client code should be provided through methods, properties, and indexers.
     ```csharp
     int step;                   // private local variables use camelCase
@@ -95,6 +46,78 @@ Alternatively, the Name property can be shortened like this:
     }
     ```
 
+### Naming conventions [](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names)
+
+- Use PascalCase for class names, method names, property names and public fields.
+- Use PascalCase for constant names, both fields and local constants.
+- Use camelCase for local variables (used only within a method, not within constructors or setters and getters).
+- Use camelCase for method parameters.
+- Use camelCase starting with underscore (_) for private instance fields (used in setters and getters).
+
+```csharp
+public class Person
+{
+    // Private instance fields
+    private int _count;
+    private string _name;
+    private string _last;
+    private string _first;
+
+    public string Name // Property to expose/access the fields
+    {
+        get => _name;
+        set => _name = value;
+    }
+
+    // Method
+    public void Increment()
+    {
+        int step = 1;   // local private variable
+        _count += step; // accessing private field
+    }
+
+    // Property exposing private field
+    public int Count
+    {
+        get { return _count; }
+    }
+
+    // Property exposing private field (same as above, but shorter)
+    public int Count => _count;
+
+    // Constructor
+    public Person(string lastName, string firstName)
+    {
+        _last = lastName;
+        _first = firstName;
+    }
+}
+```
+
+Alternatively, the Name property can be shortened like this:
+
+```csharp
+    public string Name { get; set; }
+```
+
+
+
+### Expression-Bodied Members
+
+The `=>` operator is used to define a member (like a property, method, or indexer) with a single expression, making the syntax more concise.
+
+- **Syntax**: `returnType MemberName => expression;`
+- **Usage**: Replaces a full method or property getter with a single expression that returns a value.
+- **Example**:
+  ```csharp
+  public class Person
+  {
+      private int _count = 42;
+      public int Count => _count; // Expression-bodied property (read-only), returns _count
+      public int DoubleCount() => _count * 2; // Expression-bodied method, returns _count * 2
+  }
+  ```
+- **Explanation**: The `Count` property returns `_count`, and the `DoubleCount` method returns `_count * 2`. The `=>` replaces the need for a `{ return expression; }` block.
 
 ## 1. OOP Basics
 
@@ -611,4 +634,10 @@ In summary, use interfaces to define contracts for behavior, promote flexibility
   - No fields or constructors.
   - A class can implement multiple interfaces.
   - Use for defining contracts without shared implementation.
+
+
+
+
+
+
 
