@@ -9,6 +9,93 @@ draft: false
 toc: true
 ---
 
+### Naming conventions [](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names)
+
+- Use PascalCase for class names, method names, property names and public fields.
+- Use PascalCase for constant names, both fields and local constants.
+- Use camelCase for local variables (used only within a method, not within constructors or setters and getters).
+- Use camelCase for method parameters.
+- Use camelCase starting with underscore (_) for private instance fields (used in setters and getters).
+
+```csharp
+public class Person
+{
+    // Private instance fields
+    private int _count;
+    private string _name;
+    private string _last;
+    private string _first;
+
+    public string Name // Property to access the field
+    {
+        get => _name;
+        set => _name = value;
+    }
+
+    // Method
+    public void Increment()
+    {
+        int step = 1;   // local private variable
+        _count += step; // accessing private field
+    }
+
+    public int Count => _count; // Property exposing private field
+
+    // Constructor
+    public Person(string lastName, string firstName)
+    {
+        _last = lastName;
+        _first = firstName;
+    }
+
+}
+```
+
+Alternatively, the Name property can be shortened like this:
+
+```csharp
+    public string Name { get; set; }
+```
+
+
+### Terminology
+
+- **[Members](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members)**: represent the data and behaviour of a class or struct: fields, constants, properties, methods, events, operators, indexers, constructors, finalizers, nested types. All members use PascalCase style, except private fields, which use camelCase style.
+- **[Fields](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields)**: variable of any type that is declared directly in a class or struct. Generally, you should declare private or protected accessibility for fields. Data exposed to client code should be provided through methods, properties, and indexers.
+    ```csharp
+    int step;                   // private local variables use camelCase
+    private string _lastName;   // private fields use camelCase starting with underscore (_)
+    public string FirstName;    // public fields use PascalCase. However it is recommended to use properties instead
+    ```
+- **[Properties](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties)**: provides a flexible mechanism to read, write, or compute the value of a data field. Properties appear as public data members, but they're implemented as special methods called accessors.
+    ```csharp
+    // All properties use PascalCase
+    public string FirstName { get; set; }
+    private string Address { get; set; }
+    ```
+- **[Methods](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/methods)**: A method is a code block that contains a series of statements. A program causes the statements to be executed by calling the method and specifying any required method arguments.
+    ```csharp
+    // All methods use PascalCase
+    public void StartEngine() {/* Method statements here */ }
+    ```
+- **[Constructors](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/constructors)**: A constructor is a method called by the runtime when an instance of a class or a struct is created. A class or struct can have multiple constructors that take different arguments.
+    ```csharp
+    public class Person
+    {
+        private string _last;
+        private string _first;
+
+        public Person(string lastName, string firstName)
+        {
+            _last = lastName;
+            _first = firstName;
+        }
+
+        // Remaining implementation of Person class.
+    }
+    ```
+
+
 ## 1. OOP Basics
 
 ### 1.1. Inheritance
@@ -85,7 +172,7 @@ A method is an action that can be invoked within the class. Three questions have
 2. Does the action returns a value?
 
     ```csharp
-    public string hello ()
+    public string Hello ()
     {
         string message = "Hello world";
         return message;
@@ -95,7 +182,7 @@ A method is an action that can be invoked within the class. Three questions have
 3. Does the action require certain information to run?
 
     ```csharp
-    public void addition (int a, int b)
+    public void Addition (int a, int b)
     {
         int result = a + b;
         GD.Print(result);
@@ -104,13 +191,13 @@ A method is an action that can be invoked within the class. Three questions have
 
 ### 2.2. Data
 
-A data can be declared inside a class either via a property or via a member. The simple one is via a member:
+A data can be declared inside a class either via a property or via a field. The simple one is via a field:
 
-#### Member
+#### Field
 
 ```csharp
-public int purchaseYear;
-public readonly int purchaseYear; // can only be assigned during instantiation
+public int PurchaseYear;            // public field in PascalCase
+public readonly int PurchaseYear;   // readonly can only be assigned during instantiation
 ```
 
 #### Property
@@ -118,23 +205,23 @@ public readonly int purchaseYear; // can only be assigned during instantiation
 Data that is exposed via a read method (`get`) and a write method (`set`).
 
 ```csharp
-private int purchaseYear;
-public int PurchaseYear
+private int _purchaseYear;  // private instance field in camelCase and underscore
+public int PurchaseYear     // property in PascalCase
 {
-    get { return purchaseYear; }
-    private set { purchaseYear = value; }
+    get { return _purchaseYear; }
+    private set { _purchaseYear = value; }
 }
 ```
 
 is the same as:
 
 ```csharp
-public int purchaseYear { get; private set; }
+public int PurchaseYear { get; private set; }
 ```
 If the property has a public write method (`set`), you can assign a value after the declaration:
 
 ```csharp
-public int purchaseYear { get; set; } = 2025;
+public int PurchaseYear { get; set; } = 2025;
 ```
 
 It is also possible to use an indexed property with the write method (`get`):

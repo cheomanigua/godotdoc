@@ -15,6 +15,8 @@ toc: true
 
 In C#, the `[Flags]` attribute is used with enums to indicate that the enum values can be combined using bitwise operations, typically to represent a set of flags. Comparing bitmasks involves checking whether specific flags are set, unset, or match certain combinations using bitwise operators.
 
+By convention, flags name should be in plural.
+
 ### Declaration
 
 ```csharp
@@ -330,6 +332,8 @@ Console.WriteLine($"{element}: {Convert.ToString(element, 2).PadLeft(3, '0')}");
 # Enums
 
 In C#, an **enum** (short for enumeration) is a value type that defines a set of named constants representing integral values. Enums are useful for creating readable, type-safe code when a variable can only take one of a predefined set of values.
+
+By convention, enum name should be in singular.
 
 ### Key Points About C# Enums
 
