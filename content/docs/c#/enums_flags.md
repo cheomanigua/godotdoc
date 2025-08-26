@@ -32,7 +32,7 @@ There are four ways to set the same bits of a variable:
 		Elements elements = Elements.Fire | Elements.Water; // Fire, Water
 		elements = (Elements)3;								// Fire, Water
 		elements = (Elements)(1<<0 | 1<<1);					// Fire, Water
-		elements = (Elements)(0b011);						// Fire, Water
+		elements = (Elements)0b011;						// Fire, Water
 ```
 ### Get
 
@@ -66,7 +66,7 @@ class Program
 		Sumer capitals = Sumer.Uruk | Sumer.Kish;           // Uruk, Kish
 		capitals = (Sumer)6;								// Uruk, Kish
 		capitals = (Sumer)(1<<1 | 1<<2);					// Uruk, Kish
-		capitals = (Sumer)(0b00110);						// Uruk, Kish
+		capitals = (Sumer)0b00110;						// Uruk, Kish
 
 		// How to query using bitmasks
 		Sumer target = (Sumer)0b11011;		// Ur, Uruk, Adab, Lagash

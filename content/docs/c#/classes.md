@@ -59,14 +59,14 @@ public class Person
 {
     // Private instance fields
     private int _count;
-    private string _name;
+    private int _age;
     private string _last;
     private string _first;
 
-    public string Name // Property to expose/access the fields
+    public int Age // Property to expose/access the field _age
     {
-        get => _name;
-        set => _name = value;
+        get => _age;
+        set => _age = value;
     }
 
     // Method
@@ -89,10 +89,11 @@ public class Person
     public int Count => _count;
 
     // Constructor
-    public Person(string lastName, string firstName)
+    public Person(string lastName, string firstName, int age)
     {
         _last = lastName;
         _first = firstName;
+        Age = age;
     }
 }
 ```

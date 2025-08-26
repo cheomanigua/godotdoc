@@ -528,6 +528,7 @@ const BULLET: PackedScene = preload("res://Projectile/Bullet/bullet.tscn")
 
 enum munition_type { LOW_DAMAGE = 1, MEDIUM_DAMAGE, HIGH_DAMAGE }
 var munition_index: int = 0
+var damage: int = 1
 
 static func create_bullet(_munition_index: int) -> Bullet:
 	var new_bullet: Bullet = BULLET.instantiate()
@@ -591,7 +592,7 @@ func ready():
 	drop(inventory[0])
 ```
 
-Note that you cannot instantiate an object from its own script (You cannot instantiate **item** from **item.gd**)
+{{< alert context="warning" text="Note that you cannot instantiate an object from its own script (You cannot instantiate **item** from **item.gd**)." />}}
 
 <br>
 

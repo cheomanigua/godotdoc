@@ -64,7 +64,7 @@ We are going to implement the solution in two different ways. The first solution
 
 ### Solution 1. Interacting with String array
 
-The **Key** `item_name` is stored in a **String** array.
+The **Key** `item_name` is stored in the **String** array `inventory`.
 
 #### player.gd
 ```gdscript
@@ -89,11 +89,11 @@ func print_inventory():
 		print("Your inventory is empty")
 
 #func drop_item():
-#	for i in inventory:
-#		if i.item_name == "Iron Key":
-#			i.global_position = global_position + Vector2(0, -50)
-#			i.show()
-#			inventory.erase(i)
+#	for item in inventory:
+#		if item.item_name == "Iron Key":
+#			item.global_position = global_position + Vector2(0, -50)
+#			item.show()
+#			inventory.erase(item)
 ```
 
 #### key.gd
@@ -159,13 +159,13 @@ func print_inventory():
 		print(item.item_name)
 	if inventory.is_empty():
 		print("Inventory is empty")
-#	
+
 #func drop_item():
-#	for i in inventory:
-#		if i.item_name == "Iron Key":
-#			i.global_position = global_position + Vector2(0, -50)
-#			i.show()
-#			inventory.erase(i)
+#	for item in inventory:
+#		if item.item_name == "Iron Key":
+#			item.global_position = global_position + Vector2(0, -50)
+#			item.show()
+#			inventory.erase(item)
 ```
 
 #### key.gd

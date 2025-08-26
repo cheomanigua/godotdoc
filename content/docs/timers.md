@@ -18,8 +18,8 @@ Timers can be created in three different ways:
 
 1. Adding a Timer node in the Editor and referencing it in code:
 
-{{< tabs tabTotal="2">}}
-{{% tab tabName="GDScript" %}}
+    {{< tabs tabTotal="2">}}
+    {{% tab tabName="GDScript" %}}
 
 ```gdscript
 @onready var timer: Timer = %Timer
@@ -83,17 +83,17 @@ using System.Threading.Tasks;
 
 public partial class MyNode : Node
 {
-		
 	public override void _Ready()
 	{
-        _ = WaitForTimeout();
+		label.Visible = false;
 	}
 
-	public async Task WaitForTimeout()
+	public async void WaitForTimeout()
 	{
 		label.Text = message;
-		await ToSignal(GetTree().CreateTimer(5.0f), "timeout");
-		label.Text = "";
+		label.Visible = true;
+		await Task.Delay(5000);
+		label.Visible = false;
 	}
 }
 ```
