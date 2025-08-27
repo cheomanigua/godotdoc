@@ -18,7 +18,7 @@ toc: true
     private string _lastName;   // private fields use camelCase starting with underscore (_)
     public string FirstName;    // public fields use PascalCase. However it is recommended to use properties instead
     ```
-- **[Properties](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties)**: provides a flexible mechanism to read, write, or compute the value of a data field. Properties appear as public data members, but they're implemented as special methods called accessors.
+- **[Properties](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties)**: provides a flexible mechanism to read, write, or compute the value of a data field. Properties appear as public data members, but they're implemented as special methods called accessors (get/set).
     ```csharp
     // All properties use PascalCase
     public string FirstName { get; set; }
@@ -63,11 +63,15 @@ public class Person
     private string _last;
     private string _first;
 
-    public int Age // Property to expose/access the field _age
+    // Property to expose/access the field _age
+    public int Age 
     {
         get => _age;
         set => _age = value;
     }
+
+    // Property to expose/access the field _age (same as above, but shorter)
+    public int Age { get; set; }
 
     // Method
     public void Increment()
@@ -96,12 +100,6 @@ public class Person
         Age = age;
     }
 }
-```
-
-Alternatively, the Name property can be shortened like this:
-
-```csharp
-    public string Name { get; set; }
 ```
 
 
@@ -138,9 +136,9 @@ class Wizard : Character { }
 
 Everything inside a class is encapsulated, and the amount of encapsulation depends on the scope:
 
-- **Public**: the element is visible both inside and outside the class.
-- **Private**: the element is visible only inside the class.
-- **Protected**: the element is visible only inside the class and within the child classes hierarchy.
+- **Public**: the member is visible both inside and outside the class.
+- **Private**: the member is visible only inside the class.
+- **Protected**: the member is visible only inside the class and within the child classes hierarchy.
 
 ### 1.3. Polymorphism
 
@@ -229,7 +227,7 @@ public readonly int PurchaseYear;   // readonly can only be assigned during inst
 
 #### Property
 
-Data that is exposed via a read method (`get`) and a write method (`set`).
+Data that is exposed via accessors: a read method (`get`) and a write method (`set`).
 
 ```csharp
 private int _purchaseYear;  // private instance field in camelCase and underscore

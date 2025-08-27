@@ -87,9 +87,16 @@ public partial class Stats : Label
     private void OnAttributeChange()
     {
         Text = "";
-        foreach (var kvp in Player.attributes)
+        foreach (var attrib in Player.attributes)
         {
-            Text += $"{kvp.Key}: {kvp.Value:F2}\n";
+            if (attrib.Value.VariantType == Variant.Type.Float)
+            {
+                Text += $"{attrib.Key}: {(float)attrib.Value:F2}\n"; // F2 to limit to two decimals
+            }
+            else
+            {
+                Text += $"{attrib.Key}: {attrib.Value}\n";
+            }
         }
     }
 }

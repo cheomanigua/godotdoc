@@ -78,17 +78,24 @@ For Godot to launch **C#** files when clicking on them, configure Godot this way
         - **External Editor**: `Custom`
         - **Custom Exec Path**: `/usr/bin/codium` or whatever is the path to VSCodium
 
-## 3. VSCode/VSCodium configuration
-
-### Plugins
+## 3. VSCode/VSCodium pluggins
 
 Install the following extension:
 - For VSCode: [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 - For VSCodium: [C#](https://open-vsx.org/extension/muhammad-sammy/csharp)
 
-### Debugging
 
-{{< alert context="primary" text="For Linux Mint 21, it's necessary to build Godot from source. Otherwise debugging yields an error when stepping into some lines. Instructions below on how to install from source are for Debian/Ubuntu derivatives. Debugging only works on Visual Studio Code." />}}
+## 4. Running VSCode/VSCodium
+
+To work with `.cs` files in VSCode/VSCodium, just double click in a `.cs` file from the Godot file browser.
+
+{{< alert context="warning" text="In order for VSCodium to get auto completion, you must open the folder holding the Godot project in the VSCodium file browser." />}}
+
+## 5. Debugging
+
+{{< alert context="primary" text="For Linux Mint 21, it's necessary to build Godot from source. Otherwise debugging yields an error when stepping into some lines. Instructions below on how to install from source are for Debian/Ubuntu derivatives." />}}
+
+{{< alert context="warning" text="Debugging only works on Visual Studio Code." />}}
 
 - [Getting the source](https://docs.godotengine.org/en/latest/contributing/development/compiling/getting_source.html)
 - [Compiling for Linux](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_linuxbsd.html)

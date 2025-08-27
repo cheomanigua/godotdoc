@@ -152,46 +152,108 @@ Dictionaries can be more complex that the previous examples.
 
 ### 1. Array within dictionary
 
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
-var inventory {
-    0 : ["Silver", 23], 
-    1 : ["Gold", 56],
-    2 : ["Ruby", 8]
+extends Node
+
+var inventory = {
+	0: ["Silver", 23],
+	1: ["Gold", 56],
+	2: ["Ruby", 8]
 }
 
 func _ready():
+	## loop through the dictionary keys to match the value to be "Gold" via the first element of the array
+	for key in inventory:
+		if inventory[key][0] == "Gold":
+			print("There is Gold!!!!")
 
-    ## loop through the dictionary keys to match the value to be "Gold" via the first element of the array
+	## other interesting stuff
+	var i = 1
+	print(inventory.keys()[i]) ## will print 1
+	print(inventory[0][0]) ## will print "Silver"
+	print(inventory[0][1]) ## will print 23
+	print(inventory[2][0]) ## will print "Ruby"
+	print(inventory[2][1]) ## will print 8
 
-    for key in inventory:
-        if inventory[key][0] == "Gold": 
-            print ("There is Gold!!!!")
+	## add a new entry to the dictionary
+	inventory[3] = ["Emerald", 3]
 
-    ## other interesting stuff
-    var i = 1
-    print(inventory.keys().[i] ## will print 1
-    print(inventory[0][0]) ## will print "Silver"
-    print(inventory[0][1]) ## will print 23
-    print(inventory[2][0]) ## will print "Ruby"
-    print(inventory[2][1]) ## will print 8
+	## print a random array element of the dictionary
+	randomize()
+	var rand = randi() % inventory.size()
+	print("%s : %s" % [inventory[rand][0], inventory[rand][1]])
 
-    ## add a new entry to the dictionary
-    inventory[3] = ["Emerald", 3]
-
-    ## print a random array element of the dictionary
-    randomize()
-    var rand = randi() % inventory.size()
-    print("%s : %s" % [inventory[rand][0], inventory[rand][1]])
-
-    ## print the full inventory
-    for key in inventory:
-        print("%s: %s" % [inventory[key][0],inventory[key][1]])
+	## print the full inventory
+	for key in inventory:
+		print("%s: %s" % [inventory[key][0], inventory[key][1]])
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+
+using System;
+using System.Collections.Generic;
+
+class Inventory
+{
+    public override void _Ready()
+    {
+        // Initialize the dictionary
+        Dictionary<int, (string item, int quantity)> inventory = new Dictionary<int, (string, int)>
+        {
+            { 0, ("Silver", 23) },
+            { 1, ("Gold", 56) },
+            { 2, ("Ruby", 8) }
+        };
+
+        // Loop through dictionary keys to find "Gold"
+        foreach (var key in inventory.Keys)
+        {
+            if (inventory[key].item == "Gold")
+            {
+                Console.WriteLine("There is Gold!!!!");
+            }
+        }
+
+        // Other interesting stuff
+        int i = 1;
+        Console.WriteLine(i); // Prints key at index i (1)
+        Console.WriteLine(inventory[0].item); // Prints "Silver"
+        Console.WriteLine(inventory[0].quantity); // Prints 23
+        Console.WriteLine(inventory[2].item); // Prints "Ruby"
+        Console.WriteLine(inventory[2].quantity); // Prints 8
+
+        // Add a new entry to the dictionary
+        inventory[3] = ("Emerald", 3);
+
+        // Print a random array element of the dictionary
+        Random random = new Random();
+        int rand = random.Next(0, inventory.Count);
+        Console.WriteLine($"{inventory[rand].item} : {inventory[rand].quantity}");
+
+        // Print the full inventory
+        foreach (var key in inventory)
+        {
+            Console.WriteLine($"{key.Value.item}: {key.Value.quantity}");
+        }
+    }
+}
+```
+
+{{% /tab %}}
+{{< /tabs >}}
+
 
 ### 2. Dictionary within dictionary
 
 Multi-dimentional dictionaries a.k.a. nested dictionaries
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 var cities: Array = ["Tarraco", "Ampuria"]
@@ -204,15 +266,67 @@ func _ready() -> void:
 		urbes[city] = {}			# creates 1st level keys with "cities" for dictionary "urbes"
 		urbes[city]["stock"] = {}	# creates 2nd level dictionary with key "stock"
 		urbes[city]["price"] = {}	# creates 2nd level dictionary with key "price"
+
 	# Generate each product stocks and prices for each city in dictionary "urbes"
 	for city in urbes:
 		# creates 3rd level dictionary with keys "Wheat" and "Olives"
 		for product in products:
 			urbes[city]["stock"][product] = randi_range(0, 1000)
 			urbes[city]["price"][product] = randf_range(0.0, 2.0)
+
 	# Printing the whole dictionary
 	print(JSON.stringify(urbes, "\t"))
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+
+using System;
+using System.Collections.Generic;
+using System.Text.Json;
+
+publid class Economy
+{
+    public override void _Ready()
+    {
+        // Initialize lists
+        List<string> cities = new List<string> { "Tarraco", "Ampuria" };
+        List<string> products = new List<string> { "Wheat", "Olives" };
+
+        // Initialize the nested dictionary
+        Dictionary<string, Dictionary<string, Dictionary<string, double>>> urbes = new Dictionary<string, Dictionary<string, Dictionary<string, double>>>();
+
+        // Random number generator
+        Random random = new Random();
+
+        // Create dictionary structure for each city
+        foreach (string city in cities)
+        {
+            urbes[city] = new Dictionary<string, Dictionary<string, double>>
+            {
+                { "stock", new Dictionary<string, double>() },
+                { "price", new Dictionary<string, double>() }
+            };
+
+            // Populate stock and price for each product in the city
+            foreach (string product in products)
+            {
+                urbes[city]["stock"][product] = random.Next(0, 1001); // randi_range(0, 1000) equivalent
+                urbes[city]["price"][product] = random.NextDouble() * 2.0; // randf_range(0.0, 2.0) equivalent
+            }
+        }
+
+        // Print the dictionary as JSON
+        string jsonOutput = JsonSerializer.Serialize(urbes, new JsonSerializerOptions { WriteIndented = true });
+        Console.WriteLine(jsonOutput);
+    }
+}
+
+```
+
+{{% /tab %}}
+{{< /tabs >}}
 
 It will print:
 
@@ -243,18 +357,21 @@ It will print:
 
 ## Load JSON files as dictionaries
 
-Example file: [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view)
+Example file: [creatures.json](https://drive.google.com/file/d/16irrPAzEku4uLfroE1ri3X_i5ChUJEcE/view?usp=drive_link)
 
-1. JSON file is downloaded to Godot project at location res://Data/test.json
+1. JSON file is downloaded to Godot project at location res://Data/creatures.json
 2. A Global singleton script in created:
 
-Given the [test.json](https://drive.google.com/file/d/1lkMs1Yh7TzhiIBZON0oo9a3gSrr7PFbf/view) file, we write the following code:
+Given the [creatures.json](https://drive.google.com/file/d/16irrPAzEku4uLfroE1ri3X_i5ChUJEcE/view?usp=drive_link) file, we write the following code:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
-extends Node2D
+extends Node
 
 func get_creatures_data() -> Dictionary:
-	var file = FileAccess.open("res://Data/test.json", FileAccess.READ)
+	var file = FileAccess.open("res://Data/creatures.json", FileAccess.READ)
 	var json = JSON.parse_string(file.get_as_text())
 	file.close()
 	return json
@@ -292,15 +409,18 @@ func _ready():
 The above code will print:
 
 
-
 ```
-["human", "adivia", "goblin", "agoiru", "orc"]
+["human", "orc", "goblin", "adivia", "agoiru"]
 Goblin stats are:
-dexterity : 7
-strength : 5
-intelligence : 5
-endurance : 7
-health : 10
+strength : 5.0
+intelligence : 5.0
+dexterity : 7.0
+endurance : 7.0
+health : 10.0
+sprite_sheet : demon1.png
+vframes : 9.0
+hframes : 8.0
+frame : 1.0
 
 Goblin
 Strength: 5
@@ -311,16 +431,113 @@ Health: 10
 
 a) Goblin strength is 5
 b) human
-c) 7
-d) ["dexterity", "strength", "intelligence", "endurance", "health"]
-e) [7, 5, 5, 7, 10]
-f) dexterity
-g) { "intelligence": 5, "dexterity": 5, "strength": 5, "endurance": 5, "health": 10 }
+c) 5.0
+d) ["strength", "intelligence", "dexterity", "endurance", "health", "sprite_sheet", "vframes", "hframes", "frame"]
+e) [5.0, 5.0, 7.0, 7.0, 10.0, "demon1.png", 9.0, 8.0, 1.0]
+f) strength
+g) { "strength": 5.0, "intelligence": 5.0, "dexterity": 5.0, "endurance": 5.0, "health": 10.0, "sprite_sheet": <null>, "vframes": <null>, "hframes": <null>, "frame": <null> }
 h) goblin strength is 5
 i) goblin strength is 5
 j) goblin strength is 5
-k) human dexterity is 7
+k) human strength is 5
+
 ```
+
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+```csharp
+using Godot;
+using System;
+using System.IO;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.Linq;  // for First() keyword
+
+public partial class Main : Node
+{
+    private static Dictionary<string, Dictionary<string, object>> GetCreaturesData()
+    {
+        string jsonString = File.ReadAllText("creatures.json");
+        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+        return creatures ?? new Dictionary<string, Dictionary<string, object>>();
+    }
+
+    public override void _Ready()
+    {
+        var creatures = GetCreaturesData();
+        string ckey = "goblin";
+        string cvalue = "strength";
+
+        // Testing
+        GD.Print(string.Join(", ", creatures.Keys));
+        GD.Print($"{string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1))} stats are:");
+        foreach (var key in creatures[ckey].Keys)
+        {
+            GD.Print($"{key} : {creatures[ckey][key]}");
+        }
+        GD.Print();
+        GD.Print(string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1)));
+        GD.Print($"Strength: {creatures[ckey]["strength"]}");
+        GD.Print($"Intelligence: {creatures[ckey]["intelligence"]}");
+        GD.Print($"Dexterity: {creatures[ckey]["dexterity"]}");
+        GD.Print($"Endurance: {creatures[ckey]["endurance"]}");
+        GD.Print($"Health: {creatures[ckey]["health"]}");
+        GD.Print();
+        GD.Print($"a) {string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1))} strength is {creatures[ckey]["strength"]}");
+        GD.Print($"b) {creatures.Keys.First()}");
+        GD.Print($"c) {creatures[ckey].Values.First()}");
+        GD.Print($"d) {string.Join(", ", creatures[ckey].Keys)}");
+        GD.Print($"e) {string.Join(", ", creatures[ckey].Values)}");
+        GD.Print($"f) {creatures[ckey].Keys.First()}");
+        GD.Print($"g) {JsonSerializer.Serialize(creatures.Values.First())}");
+        GD.Print($"h) goblin strength is {creatures[ckey]["strength"]}");
+        GD.Print($"i) {ckey} strength is {creatures[ckey]["strength"]}");
+        GD.Print($"j) {ckey} {cvalue} is {creatures[ckey][cvalue]}");
+        GD.Print($"k) {creatures.Keys.First()} {creatures[ckey].Keys.First()} is {creatures[ckey].Values.First()}");
+    }
+}
+```
+
+The above code will print:
+
+```
+human, orc, goblin, adivia, agoiru
+Goblin stats are:
+strength : 5
+intelligence : 5
+dexterity : 7
+endurance : 7
+health : 10
+sprite_sheet : demon1.png
+vframes : 9
+hframes : 8
+frame : 1
+
+Goblin
+Strength: 5
+Intelligence: 5
+Dexterity: 7
+Endurance: 7
+Health: 10
+
+a) Goblin strength is 5
+b) human
+c) 5
+d) strength, intelligence, dexterity, endurance, health, sprite_sheet, vframes, hframes, frame
+e) 5, 5, 7, 7, 10, demon1.png, 9, 8, 1
+f) strength
+g) {"strength":5,"intelligence":5,"dexterity":5,"endurance":5,"health":10,"sprite_sheet":null,"vframes":null,"hframes":null,"frame":null}
+h) goblin strength is 5
+i) goblin strength is 5
+j) goblin strength is 5
+k) human strength is 5
+```
+
+
+{{% /tab %}}
+{{< /tabs >}}
+
 
 As you can see from the results, using numbers as indexes is not a good idea. It may work if the json file is always rendered in the same order both for keys and values. But this is not always the case. In the example above we are trying to get *Goblin* related data. However in lines **b)**, **g)** and **k)** *Human* related data is fetched.
 
