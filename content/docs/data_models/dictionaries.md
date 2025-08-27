@@ -449,52 +449,79 @@ k) human strength is 5
 ```csharp
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Collections.Generic;
-using System.Linq;  // for First() keyword
+using System.Linq;
 
-public partial class Main : Node
+public partial class Test : Node
 {
-    private static Dictionary<string, Dictionary<string, object>> GetCreaturesData()
-    {
-        string jsonString = File.ReadAllText("creatures.json");
-        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
-        return creatures ?? new Dictionary<string, Dictionary<string, object>>();
-    }
-
     public override void _Ready()
     {
-        var creatures = GetCreaturesData();
-        string ckey = "goblin";
+        var ckey = "goblin";
         string cvalue = "strength";
 
-        // Testing
+        // Read JSON file
+        string jsonString = File.ReadAllText("creatures.json");
+
+        // Parse JSON into a dictionary
+        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+        
+        // Print results
         GD.Print(string.Join(", ", creatures.Keys));
-        GD.Print($"{string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1))} stats are:");
-        foreach (var key in creatures[ckey].Keys)
+        foreach (var race in creatures)
         {
-            GD.Print($"{key} : {creatures[ckey][key]}");
+            GD.Print(race.Key);
         }
-        GD.Print();
-        GD.Print(string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1)));
-        GD.Print($"Strength: {creatures[ckey]["strength"]}");
+
+        GD.Print("");
+        GD.Print($"{ckey.Capitalize()} stats are:\n");
+
+        GD.Print("VERSION 1");
+        foreach (var attribute in creatures[ckey])
+        {
+            GD.Print($"{attribute.Key}: {attribute.Value}");
+        }
+
+        GD.Print("\nVERSION 2");
+        foreach (var attribute in creatures[ckey].Keys)
+        {
+            GD.Print($"{attribute}: {creatures[ckey][attribute]}");
+        }
+
+        GD.Print("");
+        GD.Print(ckey.Capitalize());
+        GD.Print($"Strength: {creatures[ckey][cvalue]}");
         GD.Print($"Intelligence: {creatures[ckey]["intelligence"]}");
         GD.Print($"Dexterity: {creatures[ckey]["dexterity"]}");
         GD.Print($"Endurance: {creatures[ckey]["endurance"]}");
         GD.Print($"Health: {creatures[ckey]["health"]}");
-        GD.Print();
-        GD.Print($"a) {string.Concat(ckey[0].ToString().ToUpper(), ckey.AsSpan(1))} strength is {creatures[ckey]["strength"]}");
-        GD.Print($"b) {creatures.Keys.First()}");
-        GD.Print($"c) {creatures[ckey].Values.First()}");
+        GD.Print("");
+        GD.Print($"a) {ckey.Capitalize()} {cvalue} is {creatures[ckey][cvalue]}");
+        GD.Print($"b1) {creatures.Keys.ElementAt(0)}");
+        GD.Print($"b2) {creatures.Keys.First()}");
+        GD.Print($"c) {creatures[ckey].Values.ElementAt(0)}");
         GD.Print($"d) {string.Join(", ", creatures[ckey].Keys)}");
         GD.Print($"e) {string.Join(", ", creatures[ckey].Values)}");
-        GD.Print($"f) {creatures[ckey].Keys.First()}");
-        GD.Print($"g) {JsonSerializer.Serialize(creatures.Values.First())}");
+        GD.Print($"f) {creatures[ckey].Keys.ElementAt(0)}");
+        GD.Print($"g1) {string.Join(", ", creatures.Values.ElementAt(0).Select(kvp => $"{kvp.Key}: {kvp.Value}"))}");
+        GD.Print($"g2) {JsonSerializer.Serialize(creatures.Values.First())}");
         GD.Print($"h) goblin strength is {creatures[ckey]["strength"]}");
-        GD.Print($"i) {ckey} strength is {creatures[ckey]["strength"]}");
+        GD.Print($"h) {ckey} strength is {creatures[ckey]["strength"]}");
         GD.Print($"j) {ckey} {cvalue} is {creatures[ckey][cvalue]}");
-        GD.Print($"k) {creatures.Keys.First()} {creatures[ckey].Keys.First()} is {creatures[ckey].Values.First()}");
+        GD.Print($"j) {creatures.Keys.ElementAt(0)} {creatures[ckey].Keys.ElementAt(0)} is {creatures[ckey].Values.ElementAt(0)}");
+
+
+        // // Print each creature and its attributes
+        // foreach (var creature in creatures)
+        // {
+        //     GD.Print($"Creature: {creature.Key}");
+        //     foreach (var attribute in creature.Value)
+        //     {
+        //         GD.Print($"{attribute.Key}: {attribute.Value}");
+        //     }
+        //     GD.Print();
+        // }
     }
 }
 ```
@@ -503,16 +530,35 @@ The above code will print:
 
 ```
 human, orc, goblin, adivia, agoiru
+human
+orc
+goblin
+adivia
+agoiru
+
 Goblin stats are:
-strength : 5
-intelligence : 5
-dexterity : 7
-endurance : 7
-health : 10
-sprite_sheet : demon1.png
-vframes : 9
-hframes : 8
-frame : 1
+
+VERSION 1
+strength: 5
+intelligence: 5
+dexterity: 7
+endurance: 7
+health: 10
+sprite_sheet: demon1.png
+vframes: 9
+hframes: 8
+frame: 1
+
+VERSION 2
+strength: 5
+intelligence: 5
+dexterity: 7
+endurance: 7
+health: 10
+sprite_sheet: demon1.png
+vframes: 9
+hframes: 8
+frame: 1
 
 Goblin
 Strength: 5
@@ -522,16 +568,18 @@ Endurance: 7
 Health: 10
 
 a) Goblin strength is 5
-b) human
+b1) human
+b2) human
 c) 5
 d) strength, intelligence, dexterity, endurance, health, sprite_sheet, vframes, hframes, frame
 e) 5, 5, 7, 7, 10, demon1.png, 9, 8, 1
 f) strength
-g) {"strength":5,"intelligence":5,"dexterity":5,"endurance":5,"health":10,"sprite_sheet":null,"vframes":null,"hframes":null,"frame":null}
+g1) strength: 5, intelligence: 5, dexterity: 5, endurance: 5, health: 10, sprite_sheet: , vframes: , hframes: , frame: 
+g2) {"strength":5,"intelligence":5,"dexterity":5,"endurance":5,"health":10,"sprite_sheet":null,"vframes":null,"hframes":null,"frame":null}
 h) goblin strength is 5
-i) goblin strength is 5
+h) goblin strength is 5
 j) goblin strength is 5
-k) human strength is 5
+j) human strength is 5
 ```
 
 
