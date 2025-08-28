@@ -59,3 +59,34 @@ GD.Print("The " + Race.Name + " has a health of " + Race.Health);
 GD.Print("The {0} has a health of {1}", Race.Name, Race.Health);
 GD.Print($"The {Race.Name} has a health of {Race.Health}");
 ```
+
+### Loading Scenes and Resources
+
+```csharp
+    // Load scene NPC
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");   // Remember to attach NPC.cs to npc.tscn
+
+    public override void _Ready()
+    {
+        // Instantiate scene NPC
+        var npc = NPCScene.Instantiate() as NPC;
+
+        // Load goblin.tres resource into NPC's NpcRace property via Race's Resource class 
+        npc.NpcRace = ResourceLoader.Load("res://resources/csharp/goblin.tres") as Race;
+
+        npc.Transform = new Transform2D(0f, new Vector2(100, 100));
+        GD.Print(npc.race.RaceName)     // Not so good option
+        npc.PrintName()                 // Better option
+        AddChild(npcInstance);
+    }
+```
+
+### Parsing JSON
+
+```csharp
+// Read JSON file
+string jsonString = File.ReadAllText("creatures.json");
+
+// Parse JSON into a dictionary
+var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+```

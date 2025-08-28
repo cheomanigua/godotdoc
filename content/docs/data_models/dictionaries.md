@@ -610,14 +610,21 @@ You can create instances dynamically at runtime using a JSON file as data source
 ```gdscript
 extends CharacterBody2D
 
-var attributes: Dictionary = { 
-	"strength" : 0, 
-	"intelligence" : 0, 
-	"dexterity" : 0, 
-	"endurance" : 0, 
-	"health" : 0, 
-	"race_name" : ""
-	}
+# Private dictionary to store attributes
+var _attributes: Dictionary = {}
+
+# Getter for attributes
+func get_attributes() -> Dictionary:
+	return _attributes
+
+# Setter for attributes
+func set_attributes(value: Dictionary) -> void:
+	_attributes = value if value != null else {}
+
+# Property definition for attributes
+var attributes: Dictionary:
+	#get = get_attributes
+	set = set_attributes
 ```
 <br>
 
@@ -635,11 +642,12 @@ func get_creatures_data() -> Dictionary:
 
 
 func _ready() -> void:
+	var ckey = "goblin"
 	var creatures: Dictionary = get_creatures_data()
 	var npc = preload("res://npc.tscn").instantiate()
 
-	for attribute in creatures["goblin"]:
-		npc.attributes[attribute] = creatures["goblin"][attribute]
+	for attribute in creatures[ckey]:
+		npc.attributes[attribute] = creatures[ckey][attribute]
 
 	for key in npc.attributes:
 		print(key, ": ", npc.attributes[key])
@@ -682,7 +690,8 @@ public partial class SomeOne : Node
     public override void _Ready()
     {
         var ckey = "goblin";
-		var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
+		var npc = (NPC)NPCScene.Instantiate();
+		//var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
 
         // Read JSON file
         string jsonString = File.ReadAllText("creatures.json");
@@ -707,7 +716,6 @@ public partial class SomeOne : Node
     }
 }
 ```
-
 
 
 {{% /tab %}}
@@ -744,6 +752,7 @@ func _ready() -> void:
 	add_child(npc)
 	npc.transform = Transform2D(0, Vector2(600, 300))
 ```
+
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
@@ -759,7 +768,8 @@ public partial class SomeOne : Node
 
     public override void _Ready()
     {
-		var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
+		var npc = (NPC)NPCScene.Instantiate();
+		//var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
 
         // Read JSON file
         string jsonString = File.ReadAllText("creatures.json");

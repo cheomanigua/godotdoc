@@ -117,7 +117,7 @@ using Godot;
 
 public partial class NPC : CharacterBody2D
 {
-    [Export] public Race Race_ {get; set;}
+    [Export] public Race NpcRace {get; set;}
 
     public void PrintName()
     {
@@ -255,7 +255,8 @@ Follow these steps:
         {
             Resource resource = new Race();     // CSHARP RESOURCE FILE
 
-            Dictionary creatures = GetCreaturesData();
+            string jsonString = File.ReadAllText("res://Data/creatures.json");
+            var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
             
             foreach (var race in creatures)
             {
@@ -263,18 +264,10 @@ Follow these steps:
                 foreach (var attribute in raceDict)
                 {
                     resource.Set(attribute.Key.ToPascalCase(), attribute.Value);
-                var resource_path = "res://resources/csharp/" + race.Key + ".tres";
-                ResourceSaver.Save(resource, resource_path);
+                    var resource_path = "res://resources/csharp/" + race.Key + ".tres";
+                    ResourceSaver.Save(resource, resource_path);
                 }
             }
-        }
-
-        public static Dictionary GetCreaturesData()
-        {
-            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
-            var json = (Dictionary)Json.ParseString(file.GetAsText());
-            file.Close();
-            return json;
         }
     }
     ```
@@ -321,7 +314,8 @@ Follow these steps:
             var myGDScript = GD.Load<GDScript>("res://race.gd");    // GDSCRIPT RESOURCE FILE
             var resource = (Resource)myGDScript.New();
 
-            Dictionary creatures = GetCreaturesData();
+            string jsonString = File.ReadAllText("res://Data/creatures.json");
+            var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
 
             foreach (var race in creatures)
             {
@@ -333,14 +327,6 @@ Follow these steps:
                 ResourceSaver.Save(resource, resource_path);
                 }
             }
-        }
-
-        public static Dictionary GetCreaturesData()
-        {
-            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
-            var json = (Dictionary)Json.ParseString(file.GetAsText());
-            file.Close();
-            return json;
         }
     }
     ```
@@ -441,7 +427,9 @@ Follow these steps:
         public override void _Ready()
         {
             Resource resource = new Race();
-            Dictionary creatures = GetCreaturesData();
+
+            string jsonString = File.ReadAllText("res://Data/creatures.json");
+            var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
 
             foreach (var race in creatures)
             {
@@ -449,14 +437,6 @@ Follow these steps:
                 string resource_path = "res://resources/csharp/" + race.Key + ".tres";
                 ResourceSaver.Save(resource, resource_path);
             }
-        }
-
-        public static Dictionary GetCreaturesData()
-        {
-            var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
-            var json = (Dictionary)Json.ParseString(file.GetAsText());
-            file.Close();
-            return json;
         }
     }
     ```
@@ -501,9 +481,8 @@ public partial class Spawner : Node
     public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");   // Remember to attach NPC.cs to npc.tscn
     public override void _Ready()
     {
-        CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
-        NPC npc = npcInstance as NPC; // NPC.cs class
-        npc.Race_ = GD.Load<Race>("res://resources/csharp/goblin.tres");
+        var npc = NPCScene.Instantiate() as NPC;
+        npc.NpcRace = ResourceLoader.Load("res://resources/csharp/goblin.tres") as Race;
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
         GD.Print(npc.race.RaceName)     // Not so good option
         npc.PrintName()                 // Better option
@@ -521,11 +500,11 @@ public partial class Spawner : Node
     public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");   // Remember to attach npc.gd to npc.tscn
     public override void _Ready()
     {
-        CharacterBody2D npcInstance = (CharacterBody2D)NPCScene.Instantiate();
-        Resource Race = GD.Load<Resource>("res://resources/gdscript/goblin.tres"));
-        npcInstance.Set("race", Race);
+        var npcInstance = (CharacterBody2D)NPCScene.Instantiate();
+        var loadRace = ResourceLoader.Load("res://resources/gdscript/goblin.tres")) as Race;
+        npcInstance.Set("race", loadRace);
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
-        GD.Print(Race.Get("race_name"));    // Not so good option
+        GD.Print(loadRace.Get("race_name"));    // Not so good option
         npcInstance.Call("print_name");     // Better option
         AddChild(npcInstance);
     }
@@ -588,7 +567,8 @@ public partial class Spawner : Node
 
 	public override void _Ready()
 	{
-		Dictionary creatures = GetCreaturesData();
+        string jsonString = File.ReadAllText("res://Data/creatures.json");
+        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
 
 		List<string> races = new List<string> {};
 		foreach (var key in creatures.Keys)
@@ -603,20 +583,12 @@ public partial class Spawner : Node
 			var xaxis = GD.RandRange(100, 1100);
 			var yaxis = GD.RandRange(100, 600);
 
-			CharacterBody2D npcInstance = (CharacterBody2D)npcScene.Instantiate();
-			NPC npc = npcInstance as NPC;
-			npc.Race_ = GD.Load<Race>("res://resources/csharp/" + filename + ".tres");
+			var npc = npcScene.Instantiate() as NPC;
+            npc.NpcRace = ResourceLoader.Load("res://resources/csharp/" + filename + ".tres")) as Race;
+			//npc.NpcRace = GD.Load<Race>("res://resources/csharp/" + filename + ".tres");
 			npc.Transform = new Transform2D(0.0f, new Vector2(xaxis, yaxis));
 			AddChild(npcInstance);
 		}
-	}
-
-	public static Dictionary GetCreaturesData()
-	{
-		var file = FileAccess.Open("res://Data/creatures.json", FileAccess.ModeFlags.Read);
-		var json = (Dictionary)Json.ParseString(file.GetAsText());
-		file.Close();
-		return json;
 	}
 
 	private T GetRandomElement<T>(List<T> list)
@@ -683,7 +655,7 @@ func decrease_health(health: int):
 using Godot;
 public partial class NPC : CharacterBody2D
 {
-    [Export] public Race Race_ {get; set;}
+    [Export] public Race NpcRace {get; set;}
 
     public override void _Ready()
     {
@@ -704,7 +676,6 @@ public partial class NPC : CharacterBody2D
         if (Input.IsMouseButtonPressed(MouseButton.WheelUp))
 		{
 			IncreaseHealth(1);
-
 		}
         if (Input.IsMouseButtonPressed(MouseButton.WheelDown))
 		{
@@ -722,21 +693,21 @@ public partial class NPC : CharacterBody2D
 
     public void PrintStats()
     {
-        GD.Print("Hello from C#. I'm a ", Race_.RaceName,
-        ", my Health is ", Race_.Health,
-        ", my Max Health is ", Race_.Strength + Race_.Endurance);
+        GD.Print("Hello from C#. I'm a ", NpcRace.RaceName,
+        ", my Health is ", NpcRace.Health,
+        ", my Max Health is ", NpcRace.Strength + NpcRace.Endurance);
     }
 
     public void IncreaseHealth(int health)
     {
-        Race_.Health += health;
-        GD.Print("+1 Health is now: ", Race_.Health);
+        NpcRace.Health += health;
+        GD.Print("+1 Health is now: ", NpcRace.Health);
     }
 
     public void DecreaseHealth(int health)
     {
-        Race_.Health -= health;
-        GD.Print("-1 Health is now: ", Race_.Health);
+        NpcRace.Health -= health;
+        GD.Print("-1 Health is now: ", NpcRace.Health);
     }
 }
 ```
@@ -793,7 +764,7 @@ func decrease_health(health: int):
 using Godot;
 public partial class NPC : CharacterBody2D
 {
-    [Export] public Race Race_ {get; set;}
+    [Export] public Race NpcRace {get; set;}
 
     public override void _Ready()
     {
@@ -814,7 +785,6 @@ public partial class NPC : CharacterBody2D
         if (Input.IsMouseButtonPressed(MouseButton.WheelUp))
 		{
 			IncreaseHealth(1);
-
 		}
         if (Input.IsMouseButtonPressed(MouseButton.WheelDown))
 		{
@@ -832,23 +802,24 @@ public partial class NPC : CharacterBody2D
 
     public void PrintStats()
     {
-        GD.Print("Hello from C#. I'm a ", Race_.Attributes["RaceName"],
-        ", my Health is ", Race_.Attributes["Health"],
-        ", my Max Health is ", (int)Race_.Attributes["Strength"] + (int)Race_.Attributes["Endurance"]);
+        GD.Print("Hello from C#. I'm a ", NpcRace.Attributes["RaceName"],
+        ", my Health is ", NpcRace.Attributes["Health"],
+        ", my Max Health is ", (int)NpcRace.Attributes["Strength"] + (int)NpcRace.Attributes["Endurance"]);
     }
 
     public void IncreaseHealth(int health)
     {
-        Race_.Attributes["Health"] = (int)Race_.Attributes["Health"] + health;
-        GD.Print("+1 Health is now: ", Race_.Attributes["Health"]);
+        NpcRace.Attributes["Health"] = (int)NpcRace.Attributes["Health"] + health;
+        GD.Print("+1 Health is now: ", NpcRace.Attributes["Health"]);
     }
 
     public void DecreaseHealth(int health)
     {
-        Race_.Attributes["Health"] = (int)Race_.Attributes["Health"] - health;
-        GD.Print("-1 Health is now: ", Race_.Attributes["Health"]);
+        NpcRace.Attributes["Health"] = (int)NpcRace.Attributes["Health"] - health;
+        GD.Print("-1 Health is now: ", NpcRace.Attributes["Health"]);
     }
 }
 ```
+
 {{% /tab %}}
 {{< /tabs >}}
