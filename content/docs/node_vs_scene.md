@@ -281,14 +281,14 @@ var MyScene = preload("myscene.tscn")
 
 
 ```csharp
-public PackedScene MyScene = GD.Load<PackedScene>("res://myscene.tscn");
-public PackedScene MyScene = (PackedScene)ResourceLoader.Load("res://myscene.tscn");
+public PackedScene MyScene = (PackedScene)ResourceLoader.Load("res://myscene.tscn");    // Option 1, preferred
+public PackedScene MyScene = GD.Load<PackedScene>("res://myscene.tscn");                // Option 2
 ```
 
 {{% /tab %}}
 {{< /tabs >}}
 
-At this point, `scene` is a packed scene resource, not a node.
+At this point, `MyScene` is a packed scene resource, not a node.
 
 The second step is to create an instance, that is, to create the actual node. For that you need to call `PackedScene.instantiate()`. It returns a tree of nodes that you can use as a child of your current node.
 
@@ -317,7 +317,7 @@ using Godot;
 
 public partial class World : Node
 {
-    public PackedScene Bullet = GD.Load<PackedScene>("res://bullet.tscn");
+    public PackedScene Bullet = (PackedScene)ResourceLoader.Load("res://bullet.tscn");
 
     private void SomeFunction()
     {

@@ -459,7 +459,7 @@ public partial class Test : Node
     public override void _Ready()
     {
         var ckey = "goblin";
-        string cvalue = "strength";
+        var cvalue = "strength";
 
         // Read JSON file
         string jsonString = File.ReadAllText("creatures.json");
@@ -477,17 +477,31 @@ public partial class Test : Node
         GD.Print("");
         GD.Print($"{ckey.Capitalize()} stats are:\n");
 
+        // Print attributes of Goblin
         GD.Print("VERSION 1");
         foreach (var attribute in creatures[ckey])
         {
-            GD.Print($"{attribute.Key}: {attribute.Value}");
+            GD.Print($"{attribute.Key}: {attribute.Value}");        // same result as VERSION 2
         }
 
+        // Print attributes of Goblin
         GD.Print("\nVERSION 2");
         foreach (var attribute in creatures[ckey].Keys)
         {
-            GD.Print($"{attribute}: {creatures[ckey][attribute]}");
+            GD.Print($"{attribute}: {creatures[ckey][attribute]}"); // same result as VERSION 1
         }
+
+        // // Print a list of all creatures and their attributes
+        // GD.Print("\nVERSION 3");
+        // foreach (var creature in creatures)
+        // {
+        //     GD.Print($"Creature: {creature.Key}");
+        //     foreach (var attribute in creature.Value)
+        //     {
+        //         GD.Print($"{attribute.Key}: {attribute.Value}");
+        //     }
+        //     GD.Print();
+        // }
 
         GD.Print("");
         GD.Print(ckey.Capitalize());
@@ -507,21 +521,9 @@ public partial class Test : Node
         GD.Print($"g1) {string.Join(", ", creatures.Values.ElementAt(0).Select(kvp => $"{kvp.Key}: {kvp.Value}"))}");
         GD.Print($"g2) {JsonSerializer.Serialize(creatures.Values.First())}");
         GD.Print($"h) goblin strength is {creatures[ckey]["strength"]}");
-        GD.Print($"h) {ckey} strength is {creatures[ckey]["strength"]}");
+        GD.Print($"i) {ckey} strength is {creatures[ckey]["strength"]}");
         GD.Print($"j) {ckey} {cvalue} is {creatures[ckey][cvalue]}");
-        GD.Print($"j) {creatures.Keys.ElementAt(0)} {creatures[ckey].Keys.ElementAt(0)} is {creatures[ckey].Values.ElementAt(0)}");
-
-
-        // // Print each creature and its attributes
-        // foreach (var creature in creatures)
-        // {
-        //     GD.Print($"Creature: {creature.Key}");
-        //     foreach (var attribute in creature.Value)
-        //     {
-        //         GD.Print($"{attribute.Key}: {attribute.Value}");
-        //     }
-        //     GD.Print();
-        // }
+        GD.Print($"k) {creatures.Keys.ElementAt(0)} {creatures[ckey].Keys.ElementAt(0)} is {creatures[ckey].Values.ElementAt(0)}");
     }
 }
 ```
@@ -577,9 +579,9 @@ f) strength
 g1) strength: 5, intelligence: 5, dexterity: 5, endurance: 5, health: 10, sprite_sheet: , vframes: , hframes: , frame: 
 g2) {"strength":5,"intelligence":5,"dexterity":5,"endurance":5,"health":10,"sprite_sheet":null,"vframes":null,"hframes":null,"frame":null}
 h) goblin strength is 5
-h) goblin strength is 5
+i) goblin strength is 5
 j) goblin strength is 5
-j) human strength is 5
+k) human strength is 5
 ```
 
 
@@ -589,7 +591,7 @@ j) human strength is 5
 
 As you can see from the results, using numbers as indexes is not a good idea. It may work if the json file is always rendered in the same order both for keys and values. But this is not always the case. In the example above we are trying to get *Goblin* related data. However in lines **b)**, **g)** and **k)** *Human* related data is fetched.
 
-Assigning the name `goblin` to the variable `ckey` is the safest way to proceed with keys. Again, it will not guarantee the correct data if the values are indexed by numbers. In the example above the numbered index used is `[0]`.
+Assigning the name `goblin` to the variable `ckey` is the safest way to proceed with keys. Again, it will not guarantee the correct data if the values are indexed by numbers. In the example above the numbered index used is `[0]`. If you are using C#, the index is `ElementsAt(0)` or `First()`.
 
 However, if we assign the name `strength` to the variable `cvalue`, we can safely index the value from the json file, regardless if it changes the key/value orders when rendering the file. You can see a fine example comparing lines **h)**, **i)** and **j**. They yield the same result, but the line **j)** in the code is cleaner and it's safe.
 
@@ -599,6 +601,9 @@ However, if we assign the name `strength` to the variable `cvalue`, we can safel
 [creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view?usp=drive_link)
 
 You can create instances dynamically at runtime using a JSON file as data source.
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ##### `npc.gd`
 
@@ -643,7 +648,76 @@ func _ready() -> void:
 	npc.transform = Transform2D(0, Vector2(600, 300))
 ```
 
+{{% /tab %}}
+{{% tab tabName="C#" %}}
+
+##### `NPC.cs`
+```csharp
+using Godot;
+using System.Collections.Generic;
+
+public partial class NPC : CharacterBody2D
+{
+    Dictionary<string, object> _attributes = new Dictionary<string, object>();
+
+    public Dictionary<string, object> Attributes
+    {
+        get => _attributes;
+        set => _attributes = value ?? new Dictionary<string, object>();
+    }
+}
+```
+
+##### `Someone.cs`
+```csharp
+using Godot;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+
+public partial class SomeOne : Node
+{
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");
+
+    public override void _Ready()
+    {
+        var ckey = "goblin";
+		var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
+
+        // Read JSON file
+        string jsonString = File.ReadAllText("creatures.json");
+
+        // Parse JSON into a dictionary
+        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+        
+        // Generate npc dictionary with attributes and values from json file
+        foreach (var attribute in creatures[ckey])
+        {
+            npc.Attributes[attribute.Key] = attribute.Value;
+        }
+        
+        // Print npc instance dictionary
+        foreach (var attribute in npc.Attributes)
+        {
+            GD.Print($"{attribute.Key}: {npc.Attributes[attribute.Key]}");
+        }
+
+        AddChild(npc);
+        npc.Position = new Vector2(100, 100);
+    }
+}
+```
+
+
+
+{{% /tab %}}
+{{< /tabs >}}
+
+
 If you want to instantiate random NPCs:
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
 
 ```gdscript
 
@@ -670,7 +744,56 @@ func _ready() -> void:
 	add_child(npc)
 	npc.transform = Transform2D(0, Vector2(600, 300))
 ```
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
+```csharp
+using Godot;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+
+public partial class SomeOne : Node
+{
+    public PackedScene NPCScene = (PackedScene)ResourceLoader.Load("res://npc.tscn");
+
+    public override void _Ready()
+    {
+		var npc = (CharacterBody2D)NPCScene.Instantiate() as NPC;
+
+        // Read JSON file
+        string jsonString = File.ReadAllText("creatures.json");
+
+        // Parse JSON into a dictionary
+        var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+        
+        // Get a random key from the creatures dictionary
+        var keys = new List<string>(creatures.Keys);
+        var random = new RandomNumberGenerator();
+        random.Randomize(); // Ensure randomization is seeded properly
+        var ckey = keys[random.RandiRange(0, keys.Count - 1)];
+
+        // Generate npc dictionary with attributes and values from json file
+        foreach (var attribute in creatures[ckey])
+        {
+            npc.Attributes[attribute.Key] = attribute.Value;
+        }
+        
+        // Print npc instance dictionary
+        foreach (var attribute in npc.Attributes)
+        {
+            GD.Print($"{attribute.Key}: {npc.Attributes[attribute.Key]}");
+        }
+
+        AddChild(npc);
+        npc.Position = new Vector2(100, 100);
+    }
+}
+```
+
+
+{{% /tab %}}
+{{< /tabs >}}
 
 ### CSV to JSON
 
