@@ -33,25 +33,26 @@ attributes.Add("dexterity", 5);
 ## New Entry
 
 ```csharp
-attributes.Add("wisdom", 10);
+attributes.Add("endurance", 10);
 ```
 
 ## Entry Update
 
 ```csharp
 // Direct update
-attributes["wisdom"] = 8;                   // wisdom == 8
+attributes["endurance"] = 8;                    // endurance == 8
 
 // Update via variable
-int wisdom = (int)attributes["wisdom"];
-wisdom += 4;
-attributes["wisdom"] = wisdom;              // wisdom == 12
+int endurance = (int)attributes["endurance"];
+endurance += 4;
+attributes["endurance"] = endurance;            // endurance == 12
 ```
 
 ## Example
 
 ```csharp
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Player : RigidBody2D
 {
@@ -78,6 +79,12 @@ public partial class Player : RigidBody2D
         int strength = (int)attributes["strength"];
         strength += 2;
         attributes["strength"] = strength;
+
+        // Check if element "strength" is in the dictionary
+        if (attributes.Values.Any(tuple => tuple.item == "strength"))
+        {
+            GD.Print("Strength is present.");
+        }
 
 
 
@@ -163,13 +170,21 @@ string jsonString = File.ReadAllText("creatures.json");
 
 // Parse JSON into a dictionary
 var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
+
+// Print the dictionary formatted as JSON
+string jsonOutput = JsonSerializer.Serialize(creatures, new JsonSerializerOptions { WriteIndented = true });
+GD.Print(jsonOutput);
 ```
 
 ## Iteration and access
 
-Given the above JSON serialization, we can iterate and access particular keys and values:
+Given the above JSON deserialization, we can iterate and access particular keys and values:
 
 ```csharp
+
+var ckey = "goblin"
+var cvalue = "strength"
+
 
 /////  1. ITERATION  /////
 
@@ -179,14 +194,14 @@ foreach (var race in creatures)
     GD.Print(race.Key);
 }
 
-// Print attributes of Goblin
+// Print attributes of goblin
 GD.Print("VERSION 1");
 foreach (var attribute in creatures[ckey])
 {
     GD.Print($"{attribute.Key}: {attribute.Value}");        // same result as VERSION 2
 }
 
-// Print attributes of Goblin
+// Print attributes of goblin
 GD.Print("\nVERSION 2");
 foreach (var attribute in creatures[ckey].Keys)
 {
@@ -194,7 +209,6 @@ foreach (var attribute in creatures[ckey].Keys)
 }
 
 // Print a list of all creatures and their attributes
-GD.Print("\nVERSION 3");
 foreach (var creature in creatures)
 {
     GD.Print($"Creature: {creature.Key}");
@@ -202,15 +216,10 @@ foreach (var creature in creatures)
     {
         GD.Print($"{attribute.Key}: {attribute.Value}");
     }
-    GD.Print();
 }
 
 
-
 /////  2. ACCESS PARTICULAR KEYS AND VALUES  /////
-
-var ckey = "goblin"
-var cvalue = "strength"
 
 // Accessing list of primary keys
 GD.Print(string.Join(", ", creatures.Keys));                // agoiru, orc, adivia, human, goblin
@@ -224,11 +233,97 @@ GD.Print($"{string.Join(", ", creatures[ckey].Keys)}");     // race_name, streng
 // Accessing list of secondary values
 GD.Print($"{string.Join(", ", creatures[ckey].Values)}");   // goblin, 5, 7, etc
 
-// Accessing strength
-GD.Print($"{ckey} {cvalue} is {creatures[ckey][cvalue]}");          // 5
-GD.Print($"{ckey} strength is {creatures[ckey]["strength"]}");      // 5
-GD.Print($"goblin strength is {creatures[ckey]["strength"]}");      // 5
+// Accessing goblin strength
+GD.Print(creatures["goblin"]["strength"]);      // 5
+GD.Print(creatures["goblin"][cvalue]);          // 5
+GD.Print(creatures[ckey]["strength"]);          // 5
+GD.Print(creatures[ckey][cvalue]);              // 5
 
 
 
+```
+
+## Search particular element
+
+If we want to find out if a particular element is inside a dictionary, there are different ways to implement the search. In the examples below, we are looking for `Gold`.
+
+#### One dimentional dictionary
+
+```csharp
+Dictionary<string, int> inventory = new Dictionary<string, int>
+{
+    {"Silver", 23},
+    {"Gold", 56},
+    {"Ruby", 8}
+};
+
+// Option 1. Faster if only "Gold" is required
+if (inventory.ContainsKey("Gold"))
+{
+    GD.Print("There is gold!!");
+}
+
+// Option 2. Faster if "Gold" and quantity is required
+if (inventory.TryGetValue("Gold", out int quantity))
+{
+    Console.WriteLine($"Gold is found with quantity {quantity}.");
+}
+```
+
+#### Nested dictionary with Tuple
+
+```csharp
+Dictionary<int, (string, int)> inventory = new Dictionary<int, (string, int)>
+{
+    { 0, ("Silver", 23) },
+    { 1, ("Gold", 56) },
+    { 2, ("Ruby", 8) }
+};
+
+foreach (var pair in inventory)
+{
+    if (pair.Value.Item1 == "Gold")
+    {
+        Console.WriteLine($"Gold is found at key {pair.Key} with quantity {pair.Value.Item2}.");
+        break; // Stop after finding the first instance, adjust if you need all instances
+    }
+}
+```
+
+#### Nested dictionary with dictionary
+
+```csharp
+Dictionary<string, Dictionary<string, Dictionary<string, double>>> inventory = new Dictionary<string, Dictionary<string, Dictionary<string, double>>>();
+
+// Searching in outer dictionary
+if (inventory.ContainsKey("Gold"))
+{
+    Console.WriteLine("Gold is found as an outer key in the inventory!");
+}
+
+// Searching in middle dictionary
+foreach (var outerPair in inventory)
+{
+    if (outerPair.Value.ContainsKey("Gold"))
+    {
+        found = true;
+        Console.WriteLine($"Gold found as a middle key in outer key '{outerPair.Key}' with value {outerPair.Value["Gold"]}.");
+        break; // Stop after finding the first instance, adjust if you need all instances
+    }
+}
+
+// Searching in inner dictionary
+foreach (var outerPair in inventory)
+{
+    foreach (var middlePair in outerPair.Value)
+    {
+        if (middlePair.Value.ContainsKey("Gold"))
+        {
+            found = true;
+            Console.WriteLine($"Gold found in outer key '{outerPair.Key}', middle key '{middlePair.Key}' with value {middlePair.Value["Gold"]}.");
+            break; // Stop after finding the first instance, adjust if you need all instances
+        }
+    }
+    if (found) break;
+}
 ```

@@ -77,21 +77,23 @@ Potion x4
 ```csharp
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
-public partial class Foo : Node
+public partial class World : Node
 {
-	readonly string[] inventory = new string[5] {"Coin", "Potion", "Potion", "Coin", "Potion"};
-	
-	public void ShowInventory(){
-		Array.Sort(inventory);
+   	string[] inventory = new string[] { "Coin", "Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem" };
 
-		foreach (string item in inventory)
-		{
-			GD.Print(item);
-		}
-	}
+    public override void _Ready()
+    {
+        inventory
+            .GroupBy(item => item)
+            .OrderBy(group => group.Key)
+            .ToList()
+            .ForEach(group => GD.Print($"{group.Key} x{group.Count()}"));
+        }
+    }
 }
-
 ```
 
 {{% /tab %}}
@@ -100,25 +102,24 @@ public partial class Foo : Node
 ```csharp
 
 using Godot;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
-public partial class Foo : Node
+public partial class World : Node
 {
-	readonly List<string> inventory = new List<string>
-	{
-		"Coin",	"Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem"
-	};
+    List<string> inventory = new List<string> { "Coin", "Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem" };
 
-	public void ShowInventory(){
-		inventory.Sort();
-
-		foreach (string item in inventory)
-		{
-			GD.Print(item);
-		}
-	}
+    public override void _Ready()
+    {
+        inventory
+            .GroupBy(item => item)
+            .OrderBy(group => group.Key)
+            .ToList()
+            .ForEach(group => GD.Print($"{group.Key} x{group.Count()}"));
+        }
+    }
 }
-
 ```
 
 {{% /tab %}}

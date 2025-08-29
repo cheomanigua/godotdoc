@@ -150,7 +150,7 @@ func _on_body_entered(body,item):
 
 Dictionaries can be more complex that the previous examples.
 
-### 1. Array within dictionary
+### 1. Nested dictionary (with tuple in C#)
 
 {{< tabs tabTotal="2">}}
 {{% tab tabName="GDScript" %}}
@@ -193,10 +193,13 @@ func _ready():
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
+#### Nested dictionary with Named Tuple
+
 ```csharp
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 class Inventory
 {
@@ -210,22 +213,18 @@ class Inventory
             { 2, ("Ruby", 8) }
         };
 
-        // Loop through dictionary keys to find "Gold"
-        foreach (var key in inventory.Keys)
+        // Using tuple to find element "Gold"
+        if (inventory.Values.Any(tuple => tuple.item == "Gold"))
         {
-            if (inventory[key].item == "Gold")
-            {
-                Console.WriteLine("There is Gold!!!!");
-            }
+            GD.Print("There is gold!!");
         }
 
         // Other interesting stuff
-        int i = 1;
-        Console.WriteLine(i); // Prints key at index i (1)
-        Console.WriteLine(inventory[0].item); // Prints "Silver"
-        Console.WriteLine(inventory[0].quantity); // Prints 23
-        Console.WriteLine(inventory[2].item); // Prints "Ruby"
-        Console.WriteLine(inventory[2].quantity); // Prints 8
+        GD.Print(inventory[0]);            // Silver, 23
+        GD.Print(inventory[0].item);       // Silver
+        GD.Print(inventory[0].quantity);   // 23
+        GD.Print(inventory[2].item);       // Ruby
+        GD.Print(inventory[2].quantity);   // 8
 
         // Add a new entry to the dictionary
         inventory[3] = ("Emerald", 3);
@@ -233,12 +232,12 @@ class Inventory
         // Print a random array element of the dictionary
         Random random = new Random();
         int rand = random.Next(0, inventory.Count);
-        Console.WriteLine($"{inventory[rand].item} : {inventory[rand].quantity}");
+        GD.Print($"{inventory[rand].item} : {inventory[rand].quantity}");
 
         // Print the full inventory
         foreach (var key in inventory)
         {
-            Console.WriteLine($"{key.Value.item}: {key.Value.quantity}");
+            GD.Print($"{key.Value.item}: {key.Value.quantity}");
         }
     }
 }
@@ -248,7 +247,7 @@ class Inventory
 {{< /tabs >}}
 
 
-### 2. Dictionary within dictionary
+### 2. Nested dictionary with dictionary
 
 Multi-dimentional dictionaries a.k.a. nested dictionaries
 
@@ -319,7 +318,7 @@ publid class Economy
 
         // Print the dictionary as JSON
         string jsonOutput = JsonSerializer.Serialize(urbes, new JsonSerializerOptions { WriteIndented = true });
-        Console.WriteLine(jsonOutput);
+        GD.Print(jsonOutput);
     }
 }
 
