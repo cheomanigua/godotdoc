@@ -355,7 +355,7 @@ It will print:
 }
 ```
 
-## Load JSON files as dictionaries
+## JSON Serialization
 
 Example file: [creatures.json](https://drive.google.com/file/d/16irrPAzEku4uLfroE1ri3X_i5ChUJEcE/view?usp=drive_link)
 

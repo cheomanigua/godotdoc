@@ -81,7 +81,7 @@ GD.Print($"The {Race.Name} has a health of {Race.Health}");
     }
 ```
 
-### Parsing JSON
+### JSON Serialization
 
 ```csharp
 // Read JSON file
@@ -90,3 +90,39 @@ string jsonString = File.ReadAllText("creatures.json");
 // Parse JSON into a dictionary
 var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
 ```
+
+### Classes vs Resources
+
+- **Classes**: Use for **behavior-driven** entities or systems (e.g., players, enemies, quest managers) that require logic, processing, or scene tree integration.
+- **Resources**: Use for **data-driven** elements (e.g., items, abilities, quests) that need to be stored, shared, or edited in the Godot editor.
+- **Combine Them**: Most RPGs use classes to process resources (e.g., a `Player` class uses `Item` resources for inventory).
+
+By leveraging both, you can create a flexible, data-driven RPG architecture that’s easy to extend and maintain. For example, define item data as resources for easy tweaking, and use classes to implement gameplay logic like combat or quest progression.
+
+
+#### Practical Example in an RPG
+Let’s say you’re building an RPG with players, enemies, items, and abilities:
+
+- **Player and Enemy (Classes)**:
+  - Create a `Player` class (extending `CharacterBody2D`) for movement, input, and combat logic.
+  - Create an `Enemy` class for AI and behavior.
+  - Both might inherit from a `Character` base class for shared health and movement logic.
+
+</br>
+
+- **Items and Abilities (Resources)**:
+  - Create an `Item` resource for weapons, potions, etc., with properties like `name`, `value`, and `icon`.
+  - Create an `Ability` resource for skills like “Fireball” or “Heal,” with properties like `damage` and `cooldown`.
+  - Store these in an `Inventory` (class) or `AbilitySystem` (class) that processes the data.
+
+</br>
+
+- **Quest System**:
+  - Use a `Quest` resource to store quest data (e.g., title, objectives, rewards).
+  - Use a `QuestManager` class to track progress, update quests, and trigger events.
+
+</br>
+
+- **Saving/Loading**:
+  - Resources are ideal for saving game state (e.g., player inventory as an array of `Item` resources) because they can be serialized easily.
+  - Classes handle the logic of saving/loading (e.g., a `SaveManager` class that writes resources to disk).

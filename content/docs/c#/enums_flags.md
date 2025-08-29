@@ -66,7 +66,7 @@ class Program
 		Sumer capitals = Sumer.Uruk | Sumer.Kish;           // Uruk, Kish
 		capitals = (Sumer)6;								// Uruk, Kish
 		capitals = (Sumer)(1<<1 | 1<<2);					// Uruk, Kish
-		capitals = (Sumer)0b00110;						// Uruk, Kish
+		capitals = (Sumer)0b00110;						    // Uruk, Kish
 
 		// How to query using bitmasks
 		Sumer target = (Sumer)0b11011;		// Ur, Uruk, Adab, Lagash
@@ -95,7 +95,7 @@ class Program
 
 
 ### Comparing Bitmasks
-Here’s how to perform common comparisons with bitmasks in C#:
+Here’s how to perform common comparisons with bitmasks in C#. Using bitmasks is faster then using HasFlag:
 
 ```csharp
 using System;
@@ -116,9 +116,15 @@ class Program
 		bool isFireWater = elements.HasFlag(Elements.Fire | Elements.Water);    // True
 		bool isEarth = elements.HasFlag(Elements.Earth);                        // False
 
-        // Using bitwise AND
-		bool isWater = (elements & Elements.Water) == Elements.Water;           // True
+        // Using bitwise `&`, equality operator `==`
+		bool isFire = (elements & Elements.Fire) == Elements.Fire;              // True
+        bool isFireWater = (elements & (Elements.Fire | Elements.Water)) == (Elements.Fire | Elements.Water);   // True
 		bool isEarth = (elements & Elements.Earth) == Elements.Earth;           // False
+
+        // Using bitwise `&`, equality operator `!= 0`
+        bool isFire = (elements & Elements.Fire) != 0;                          // True
+		bool isFireWater = (elements & (Elements.Fire | Elements.Water)) != 0;  // True
+		bool isEarth = (elements & Elements.Earth) != 0;                        // False
     }
 }
 ```
