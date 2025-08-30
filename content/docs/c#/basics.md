@@ -12,24 +12,40 @@ toc: true
 
 ### _init()
 
-There is no `_init()` function in **C#**. The equivalent in **C#** is the class constructor:
+
+`_init()` is the GDScript class constructor. The equivalent in **C#** is a **C#** class constructor:
 
 {{< tabs tabTotal="2">}}
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
 
-func _init() -> void:
-	set_pickable(true)
+class_name Character
+
+var race_name: String
+var strength: int
+
+# Constructor
+func _init(race_name: String, strength: int):
+    self.race_name = race_name
+    self.strength = strength
 ```
 {{% /tab %}}
 {{% tab tabName="C#" %}}
 
 ```csharp
-    public MyClass()
+public class Character
+{
+    private string raceName;
+    private int strength;
+
+    // Constructor
+    public Character(string raceName, int strength)
     {
-        SetPickable(true);
+        this.raceName = raceName;
+        this.strength = strength;
     }
+}
 ```
 {{% /tab %}}
 {{< /tabs >}}

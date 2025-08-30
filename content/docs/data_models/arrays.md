@@ -49,26 +49,30 @@ Some callable methods:
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
-...
+extends Node
 
-var inventory: Array[String] = ["Coin", "Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem"]
+var inventory = ["Coin", "Potion", "Potion", "Coin", "Potion", "Gem", "Potion", "Coin", "Gem"]
 
-...
-
-func show_inventory():
-	var a: String
-	inventory.sort()
+func _ready():
+	var grouped = {}
+	# Group items
 	for item in inventory:
-		if a != item:
-			print(item + " x" + str(inventory.count(item)))
-		a = item
+		if grouped.has(item):
+			grouped[item] += 1
+		else:
+			grouped[item] = 1
+	
+	# Print
+	for key in grouped.keys():
+		print("%s x%d" % [key, grouped[key]])
 ```
 
 It will print:
+
 ```
 Coin x3
-Gem x2
 Potion x4
+Gem x2
 ```
 
 {{% /tab %}}

@@ -354,7 +354,7 @@ It will print:
 }
 ```
 
-## JSON Serialization
+## JSON Deserialization
 
 Example file: [creatures.json](https://drive.google.com/file/d/16irrPAzEku4uLfroE1ri3X_i5ChUJEcE/view?usp=drive_link)
 

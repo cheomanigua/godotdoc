@@ -160,7 +160,7 @@ It is better only if:
 - The implicit conversion of .NET types to `Variant` is reliable in your environment.
 
 
-## JSON Serialization
+## JSON
 
 JSON file: [creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQUmhrX_wpwNScq/view)
 
@@ -168,10 +168,10 @@ JSON file: [creatures.json](https://drive.google.com/file/d/1pqJw1z3rW2_9pZzKRPQ
 // Read JSON file
 string jsonString = File.ReadAllText("creatures.json");
 
-// Parse JSON into a dictionary
+// Parse JSON into a dictionary (deserialization)
 var creatures = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object>>>(jsonString);
 
-// Print the dictionary formatted as JSON
+// Print the dictionary formatted as JSON (serialization)
 string jsonOutput = JsonSerializer.Serialize(creatures, new JsonSerializerOptions { WriteIndented = true });
 GD.Print(jsonOutput);
 ```
