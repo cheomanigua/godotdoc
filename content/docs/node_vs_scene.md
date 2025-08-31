@@ -3,8 +3,8 @@ weight: 200
 title: "Node vs Scene"
 description: "How to add nodes and instantiate scenes"
 icon: "article"
-date: "2025-02-06T16:24:17+02:00"
-lastmod: "2025-02-06T16:24:17+02:00"
+date: "2025-02-06T16:25:17+02:00"
+lastmod: "2025-02-06T16:25:17+02:00"
 draft: false
 toc: true
 ---
@@ -271,6 +271,7 @@ The first step is to load the scene from the local drive:
 {{% tab tabName="GDScript" %}}
 
 ```gdscript
+# There are four ways to instantiate a scene
 const MyScene = preload("myscene.tscn") # if a constant, a scene can only be preloaded, but not loaded
 var MyScene = load("myscene.tscn")
 var MyScene = preload("myscene.tscn")
@@ -512,11 +513,36 @@ More info in [Godot Documentation](https://docs.godotengine.org/en/stable/tutori
 
 **.instantiate()** is used to instantiate **Scenes**. It is convenient when we want to instantiate things that are recurrent in the game, like enemies, items, coins, etc. Also, **instantiate()** is a must for projectile type of objects, like bullets, arrows, etc.
 
-However, with `.instantiate()` is not possible to add paramenters via constructor while instantiating a scene, as opposed to `.new()`. There is a solution, though. We can use a static method to work around the lack of a constructor. Keep reading:
+However, with `.instantiate()` is not possible to add paramenters via constructor while instantiating a scene, as opposed to `.new()`. This applies to C# also.
+
+{{< alert context="warning" text="**Important**: with `.instantiate()` is not possible to add paramenters via constructor while instantiating a scene, as opposed to `.new()`. This applies to C# also." />}}
+
+There is a solution for GDScript, though. We can use a static method to work around the lack of a constructor. Keep reading:
+
+
 
 ### static methods (like constructors)
 
 The example below implements a turret that can select three different types of bullets to shoot. Each type of bullet produces a particular damage value. It's not the job of the turret to inflict the damage, that's the job of the bullet. Likewise, it is not the job of the bullet to select the type of munition the turret can shoot. The solution is for the tower to select the type of bullet to shoot and pass that information to the bullet class constructor. The bullet class deals with the damage calculations:
+
+
+{{< tabs tabTotal="2">}}
+{{% tab tabName="GDScript" %}}
+
+- `turret.gd`
+
+```gdscript
+extends StaticBody2D
+
+enum munition { LOW_DAMAGE, MEDIUM_DAMAGE, HIGH_DAMAGE }
+@export var munition_type: munition = munition.LOW_DAMAGE
+
+func _shoot():
+	var new_bullet: Bullet = Bullet.create_bullet(munition_type)
+	get_parent().add_child(new_bullet)
+	new_bullet.global_position = muzzle.global_position
+```
+
 
 - `Bullet.gd`
 
@@ -539,20 +565,59 @@ func _ready() -> void:
 	damage = munition_type.values()[munition_index]
 ```
 
-- `turret.gd`
 
-```gdscript
-extends StaticBody2D
+{{% /tab %}}
+{{% tab tabName="C#" %}}
 
-enum munition { LOW_DAMAGE, MEDIUM_DAMAGE, HIGH_DAMAGE }
-@export var munition_type: munition = munition.LOW_DAMAGE
+- `Turret.cs`
 
-func _shoot():
-	var new_bullet: Bullet = Bullet.create_bullet(munition_type)
-	get_parent().add_child(new_bullet)
-	new_bullet.global_position = muzzle.global_position
+```csharp
+
+public partial class Turret : Area2D
+{
+    public PackedScene bulletScene = (PackedScene)ResourceLoader.Load("res://Projectile/Bullet/bullet.tscn");
+    public enum Munition { LowDamage = 1, MediumDamage, HighDamage }
+    [Export]Munition MunitionType { get; set; } = Munition.LowDamage;
+
+    public void Shoot()
+    {
+        var newBullet = bulletScene.Instantiate() as Bullet;
+        newBullet.Damage = (int)MunitionType;
+        newBullet.Transform = new Transform2D(Rotation, Position);
+        if (newBullet != null) GetParent().AddChild(newBullet);
+    }
+}
 ```
 
+- `Bullet.cs`
+
+```csharp
+[GlobalClass]
+public partial class Bullet : Area2D
+{
+    public int Damage { get; set; } = 1;
+
+    public override void _Ready()
+    {
+        BodyEntered += OnBodyEntered;
+    }
+
+    private void OnBodyEntered(Node body)
+    {
+        QueueFree();
+        if (body.HasMethod("TakeDamage"))
+        {
+            body.TakeDamage(Damage);
+        }
+    }
+}
+```
+
+
+
+
+{{% /tab %}}
+{{< /tabs >}}
 
 {{< alert context="success" text="The great advantage of using a **static method** is that the own original class loads its own **PackedScene**. This means that if five different scenes instantiate the original scene, they won't need to load the original **PackedScene**. This means that any changes in the scene path has to be updated only in the own original class." />}}
 
