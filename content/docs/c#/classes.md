@@ -59,6 +59,7 @@ public class Person
 {
     // Private instance fields
     private int _count;
+    private int _age;
 
     // Property to expose/access the field _age
     public int Age
@@ -228,38 +229,52 @@ public readonly int PurchaseYear;   // readonly can only be assigned during inst
 
 #### Property
 
-Data that is exposed via accessors: a read method (`get`) and a write method (`set`).
+Data that is exposed via accessors: a read method (`get`) and a write method (`set`). Below are four different ways to use accessors to achieve the same result:
+
+{{< tabs tabTotal="4">}}
+{{% tab tabName="Block-Style" %}}
 
 ```csharp
-private int _purchaseYear;  // private instance field in camelCase and underscore
-public int PurchaseYear     // property in PascalCase
+// private instance field in camelCase and underscore
+private int _purchaseYear;
+
+// property in PascalCase
+public int PurchaseYear
 {
     get { return _purchaseYear; }
     private set { _purchaseYear = value; }
 }
 ```
-
-is the same as:
+{{% /tab %}}
+{{% tab tabName="Expression-Bodied" %}}
 
 ```csharp
+// private instance field in camelCase and underscore
 private int _purchaseYear;
+
+// property in PascalCase
 public int PurchaseYear
 {
     get => _purchaseYear;
     private set => _purchaseYear = value;
 }
 ```
-
-is the same as:
+{{% /tab %}}
+{{% tab tabName="Auto-Implement" %}}
 
 ```csharp
 public int PurchaseYear { get; private set; }
 ```
+{{% /tab %}}
+{{% tab tabName="Auto-Implement assigned" %}}
+
 If the property has a public write method (`set`), you can assign a value after the declaration:
 
 ```csharp
 public int PurchaseYear { get; set; } = 2025;
 ```
+{{% /tab %}}
+{{< /tabs >}}
 
 It is also possible to use an indexed property with the write method (`get`):
 
@@ -269,7 +284,6 @@ public Car this[int lotNumber]
     get { ... }
 }
 ```
-
 
 #### Example Usage:
 ```csharp
@@ -289,9 +303,9 @@ public class Car
 }
 
 var car = new Car();
-car.SetYear(2023);                      // Works because SetYear is part of the class
+car.SetYear(2023);                      // Works because SetYear is a class member method
 car.PurchaseYear = 2024;                // Error: Setter is private
-Console.WriteLine(car.PurchaseYear);    // Outputs: 2023
+Console.WriteLine(car.PurchaseYear);    // Works because `get` is public. Prints 2023
 ```
 
 #### Potential Considerations:

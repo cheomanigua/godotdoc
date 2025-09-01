@@ -137,6 +137,7 @@ Can be done with noticeable coupling using:
 Can be done with minimal coupling using:
 
 - signals
+- events/delegates (C#)
 - groups
 - autoloads
 - using the physics engine (colliders)

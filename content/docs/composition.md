@@ -34,6 +34,7 @@ Can be done with noticeable coupling using:
 Can be done with minimal coupling using:
 
 - signals
+- events/delegates (C#)
 - groups
 - autoloads
 - using the physics engine (colliders)
@@ -174,16 +175,26 @@ if collision:
 
 ## Get name of scene
 
-If you want to get the name of a scene called `Key.tscn`, run the following code in the scene script:
+If you want to get the name of a scene called `Key.tscn`, there are four ways you can achieve this:
 
 ```gdscript
+extends Node2D
 
 func _ready() -> void:
-    var path = scene_file_path
-    print (path.right(-path.rfind("/") - 1).left(-5))
-```
+    # Using node's own name
+    var scene_name1 = name
+    print("From node name: ", scene_name4) # Outputs: Key (if on root node)
 
-It will print:
-```
-key
+    # Using current scene's root node name
+    var scene_name2 = get_tree().current_scene.name
+    print("From current_scene.name: ", scene_name3) # Outputs: Key
+
+    # Robust scene_file_path approach
+    var scene_name3 = scene_file_path.get_file().get_basename()
+    print("From scene_file_path (robust): ", scene_name2) # Outputs: Key
+
+    # scene_file_path with string manipulation
+    var path = scene_file_path
+    var scene_name4 = path.right(-path.rfind("/") - 1).left(-5)
+    print("From scene_file_path: ", scene_name1) # Outputs: Key
 ```
