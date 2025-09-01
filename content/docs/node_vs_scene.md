@@ -425,7 +425,7 @@ print(city.population)         # 3000
 
 ```csharp
 var city = new City();
-city.Set("city_name", "Tarraco");
+city.Set("name", "Tarraco");
 city.Set("population", 3000);
 AddChild(city);
 GD.Print(city.Get("population"));
@@ -454,12 +454,12 @@ If you, on the other hand, have defined a class constructor in your `City.gd` cl
 class_name City
 extend Node
 
-var city_name: String = ""
+var name: String = ""
 var population: int = 0
 
 # Constructor
 func _init(_name: String, _population: int) -> void:
-	cityu_name = _name
+	name = _name
 	population = _population
 ```
 
@@ -623,7 +623,7 @@ public partial class Bullet : Area2D
 
 <br>
 
-#### Instantiate a scene with parameters using a custom inititalization method
+### Instantiate a scene with parameters using a custom initialization method
 
 The following code will instantiate 1 Gem in the player position after the players drop the gem:
 
@@ -661,7 +661,7 @@ func ready():
 
 <br>
 
-#### Instantiate a scene using properties directly
+### Instantiate a scene using properties directly
 
 We can also set up the instance properties before adding the instance to the scene via `add_child`:
 
