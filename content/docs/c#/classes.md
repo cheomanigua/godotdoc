@@ -33,13 +33,13 @@ toc: true
     ```csharp
     public class Person
     {
-        private string _last;
-        private string _first;
+        private string Last { get; set; }
+        private string First { get; set; }
 
-        public Person(string lastName, string firstName)
+        public Person(string last, string first)
         {
-            _last = lastName;
-            _first = firstName;
+            Last = Name;
+            First = first;
         }
 
         // Remaining implementation of Person class.
@@ -59,12 +59,9 @@ public class Person
 {
     // Private instance fields
     private int _count;
-    private int _age;
-    private string _last;
-    private string _first;
 
     // Property to expose/access the field _age
-    public int Age 
+    public int Age
     {
         get => _age;
         set => _age = value;
@@ -72,6 +69,10 @@ public class Person
 
     // Property to expose/access the field _age (same as above, but shorter)
     public int Age { get; set; }
+
+    // Property to expose/access the fields _firstName and _lastName
+    private string FirstName { get; set; }
+    private string LastName { get; set; }
 
     // Method
     public void Increment()
@@ -95,8 +96,8 @@ public class Person
     // Constructor
     public Person(string lastName, string firstName, int age)
     {
-        _last = lastName;
-        _first = firstName;
+        LastName = lastName;
+        FirstName = firstName;
         Age = age;
     }
 }

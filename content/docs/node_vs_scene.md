@@ -482,13 +482,13 @@ using Godot;
 
 public partial class City : Node
 {
-    public string CityName { get; set; }
+    public string Name { get; set; }
     public int Population { get; set; }
 
     // Constructor
     public City(string name, int population)
     {
-        CityName = name;
+        Name = name;
         Population = population;
     }
 }

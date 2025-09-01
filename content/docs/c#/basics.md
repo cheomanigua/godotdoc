@@ -22,13 +22,13 @@ toc: true
 
 class_name Character
 
-var race_name: String
+var name: String
 var strength: int
 
 # Constructor
-func _init(race_name: String, strength: int):
-    self.race_name = race_name
-    self.strength = strength
+func _init(_name: String, _strength: int):
+    self.name = _name
+    self.strength = _strength
 ```
 {{% /tab %}}
 {{% tab tabName="C#" %}}
@@ -36,14 +36,15 @@ func _init(race_name: String, strength: int):
 ```csharp
 public class Character
 {
-    private string raceName;
-    private int strength;
+    // Properties
+    private string Name { get; set; }
+    private int Strength { get; set; }
 
     // Constructor
-    public Character(string raceName, int strength)
+    public Character(string name, int strength)
     {
-        this.raceName = raceName;
-        this.strength = strength;
+        Name = name;
+        Strength = strength;
     }
 }
 ```
@@ -91,8 +92,8 @@ GD.Print($"The {Race.Name} has a health of {Race.Health}");
         npc.NpcRace = ResourceLoader.Load("res://resources/csharp/goblin.tres") as Race;
 
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
-        GD.Print(npc.race.RaceName)     // Not so good option
-        npc.PrintName()                 // Better option
+        GD.Print(npc.race.RaceName)         // Not so good option
+        npc.PrintName()                 // Better option if member method PrintName() exists
         AddChild(npcInstance);
     }
 ```

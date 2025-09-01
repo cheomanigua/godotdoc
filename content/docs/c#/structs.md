@@ -17,8 +17,8 @@ using System;
 
 class Car
 {
-	public string Brand;
-	public int PurchaseYear;
+	public string Brand { get; set; }
+	public int PurchaseYear { get; set; }
 	public Car(string brand, int purchaseYear)
 	{
 		PurchaseYear = purchaseYear;
@@ -29,8 +29,8 @@ class Car
 
 struct Truck
 {
-	public string Brand;
-	public int PurchaseYear;
+	public string Brand { get; set; }       // Caution. Check the warning box below
+	public int PurchaseYear { get; set; }   // Caution. Check the warning box below
 	public Truck(string brand, int purchaseYear)
 	{
 		PurchaseYear = purchaseYear;
@@ -48,6 +48,9 @@ class Program
     }
 }
 ```
+{{< alert context="warning" text="Be **cautious** with mutable structs (those with `{ get; set; }`) because changes to a copied struct don’t affect the original, which can lead to unexpected behavior. If you want immutability, consider using `{ get; init; }` (available in C# 9.0+) or making the fields readonly." />}}
+
+</br>
 
 What is the difference between a Struct and a Class?
 
