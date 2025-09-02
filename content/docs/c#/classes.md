@@ -289,7 +289,7 @@ A method is an action that can be invoked within the class. Three questions have
         return message;             // returns a value
     }
 
-    public string Hola()
+    public void Hola()
     {
         GD.Print("Hello world");    // does not return a value
     }
@@ -298,10 +298,10 @@ A method is an action that can be invoked within the class. Three questions have
 3. Does the action require certain information to run?
 
     ```csharp
-    public void Addition(int a, int b)     // requires certain information to run (int a, int b)
+    private int Addition(int a, int b)     // requires certain information to run (int a, int b)
     {
         int result = a + b;
-        GD.Print(result);
+        return result;
     }
     ```
 
@@ -364,7 +364,7 @@ public class Toyota : Car
 }
 ```
 
-### 1.4. Logic validation in Properties
+### 1.4. Logic & validation in Properties
 
 We can use accessors and constructors to build property logic validation. In the example below, we create the following class definition:
 
@@ -389,12 +389,12 @@ public class Person
     public int Health
     {
         get { return _health; }
-        set { _health = (value > 100) ? 100 : value; }
+        set => _health = System.Math.Clamp(value, 0, 100);
     }
     public int Mana
     {
         get => _mana;
-        set => _mana = (value > 50) ? 50 : value;
+        set => _mana = System.Math.Clamp(value, 0, 50);
     }
 
     public Person(string name, int str, int intel, int dex, int endu)
@@ -410,7 +410,9 @@ public class Person
 }
 ```
 
-The above code works during instantiation. However, if during the game `Strength` or `Endurance` changes value, it won't be reflected to `Health`. Likewise, if `Intelligence` changes value, it won't be reflected to `Mana`. If we want **Health** and **Mana** to update when **Strength**, **Endurance** or **Intelligence** changes, use this code instead:
+</br>
+
+The above code works only during instantiation. However, if during the game `Strength` or `Endurance` changes value, it won't be reflected to `Health`. Likewise, if `Intelligence` changes value, it won't be reflected to `Mana`. If we want **Health** and **Mana** to update when **Strength**, **Endurance** or **Intelligence** changes, use this code instead:
 
 ```csharp
 
@@ -447,14 +449,14 @@ public class Person
 
     public int Health
     {
-        get { return _health; }
-        set { _health = (value > 100) ? 100 : value; }
+        get => _health;
+        private set => _health = System.Math.Clamp(value, 0, 100);
     }
 
     public int Mana
     {
         get => _mana;
-        set => _mana = (value > 50) ? 50 : value;
+        private set => _mana = System.Math.Clamp(value, 0, 50);
     }
 
     // Constructor
@@ -470,12 +472,39 @@ public class Person
     // Methods
     private void UpdateHealth()
     {
-        _health = (Strength + Endurance) > 100 ? 100 : (Strength + Endurance);
+        Health = _strength + _endurance;
     }
 
     private void UpdateMana()
     {
-        _mana = Intelligence * 2 > 50 ? 50 : Intelligence * 2;
+        Mana = _intelligence * 2;
+    }
+}
+```
+</br>
+
+If we want to inform about `Health` and `Mana` changes, we can create events and add logic to the setters:
+
+```csharp
+public event System.Action<int> HealthChanged;
+public event System.Action<int> ManaChanged;
+
+public int Health
+{
+    get => _health;
+    private set
+    {
+        _health = System.Math.Clamp(value, 0, 100);
+        HealthChanged?.Invoke(_health);
+    }
+}
+public int Mana
+{
+    get => _mana;
+    private set
+    {
+        _mana = System.Math.Clamp(value, 0, 50);
+        ManaChanged?.Invoke(_mana);
     }
 }
 ```
