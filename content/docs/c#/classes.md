@@ -52,12 +52,12 @@ toc: true
 - Use PascalCase for constant names, both fields and local constants.
 - Use camelCase for local variables (used only within a method, not within constructors or setters and getters).
 - Use camelCase for method parameters.
-- Use camelCase starting with underscore (_) for private instance fields (used in setters and getters).
+- Use camelCase starting with underscore (_) for private fields (used in setters and getters).
 
 ```csharp
 public class Person
 {
-    // Private instance fields
+    // Private fields
     private int _count;
     private int _age;
 
@@ -123,75 +123,11 @@ The `=>` operator is used to define a member (like a property, method, or indexe
   ```
 - **Explanation**: The `Count` property returns `_count`, and the `DoubleCount` method returns `_count * 2`. The `=>` replaces the need for a `{ return expression; }` block.
 
-## 1. OOP Basics
-
-### 1.1. Inheritance
-
-In C# it is not possible to inherit from several classes. So it's necessary to select the class to inherit from.
-
-```csharp
-class Character { }
-class Wizard : Character { }
-```
-
-### 1.2. Encapsulation
-
-Everything inside a class is encapsulated, and the amount of encapsulation depends on the scope:
-
-- **Public**: the member is visible both inside and outside the class.
-- **Private**: the member is visible only inside the class.
-- **Protected**: the member is visible only inside the class and within the child classes hierarchy.
-
-### 1.3. Polymorphism
-
-{{< alert text="To understand the code below, that uses the `new` keyword and constructors, check first [Class Instantiation](#3-class-instantiation)." />}}
-
-Given the parent class and child class:
-
-```csharp
-class Car { }
-class Toyota : Car { }
-```
-
-with polymorphism you can instantiate like this:
-
-```csharp
-Car toyota = new Toyota();
-```
-
-but not like this:
-```csharp
-Toyota toyota = new Car();
-```
-Polymorphism let you do this:
-
-```csharp
-public class Driver
-{
-    public void LogIn(Car car) { }
-}
-
-var john = new Driver();
-john.LogIn(new Car(2025));
-john.LogIn(new Toyota());
-```
-However:
-
-```csharp
-public class Driver
-{
-    public void LogIn(Toyota toyota) { }
-}
-
-var john = New Driver();
-john.LogIn(new Car(2025)); // Compiler error
-john.LogIn(new Toyota()); // Fine
-```
-## 2. Class definition
+## 1. Class definition
 
 A class must first be defined and later on instantiated. A class is composed of data, methods and constructors.
 
-### 2.1. Data
+### 1.1. Data
 
 A data can be declared inside a class either via a property or via a field. The simple one is via a field:
 
@@ -200,12 +136,15 @@ A data can be declared inside a class either via a property or via a field. The 
 ```csharp
 int step;                           // local variables use camelCase
 private string _lastName;           // private fields use camelCase starting with underscore (_)
-public int PurchaseYear;            // Public fields are recommended to be converted to properties.
-public readonly int PurchaseYear;   // readonly can only be assigned during instantiation
+public int PurchaseYear;            // public fields use PascalCase
+public readonly int PurchaseYear;   // readonly Public fields can only be assigned during instantiation
 ```
 
 #### Property
 
+```csharp
+public int PurchaseYear { get; set; }   // properties use PascalCase and accessors
+```
 Property values are exposed via [accessors](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/using-properties): a read method (`get`) and a write method (`set`). Below are four different ways to use accessors to achieve the same result:
 
 {{< tabs tabTotal="4">}}
@@ -267,13 +206,17 @@ public Car this[int lotNumber]
 ```csharp
 public class Car
 {
+    // Private field
     private int _purchaseYear;
+
+    // Public property
     public int PurchaseYear
     {
         get => _purchaseYear;
         private set => _purchaseYear = value;
     }
 
+    // Public method
     public void SetYear(int year)
     {
         PurchaseYear = year; // Allowed within the class
@@ -281,9 +224,9 @@ public class Car
 }
 
 var car = new Car();
+car.PurchaseYear = 2024;                // Error: `setter` is private
 car.SetYear(2023);                      // Works because SetYear is a class member method
-car.PurchaseYear = 2024;                // Error: Setter is private
-Console.WriteLine(car.PurchaseYear);    // Works because `get` is public. Prints 2023
+Console.WriteLine(car.PurchaseYear);    // Works because `getter` is public. Prints 2023
 ```
 
 #### Potential Considerations:
@@ -299,32 +242,70 @@ Console.WriteLine(car.PurchaseYear);    // Works because `get` is public. Prints
   ```
 - Ensure the property is used in a context where a private setter makes sense, as it restricts external modification.
 
-### 2.2. Methods
+#### Public fields vs properties
+
+```csharp
+public int PurchaseYear;                // public field
+public int PurchaseYear { get; set; }   // property
+```
+In C#, **public fields** and **properties** both provide access to data in a class, but they serve different purposes and have distinct characteristics.
+
+- A **public field** is a variable directly accessible from outside the class.
+- A **property** is a member that provides a controlled way to access a private field (or data) with optional logic.
+
+|                 | Public Field                     | Property                          |
+|-----------------------|----------------------------------|-----------------------------------|
+| **Encapsulation**     | None; direct access to data.     | Encapsulates data; controls access. |
+| **Logic**             | No logic for get/set.            | Can include validation or logic.  |
+| **Flexibility**       | Fixed; cannot change behavior.   | Can modify `get`/`set` later without breaking API. |
+| **Usage**             | Avoid in public APIs; use internally or for simple structs. | Preferred for public APIs and most class designs. |
+| **Performance**       | Marginally faster (negligible).  | Slightly slower due to method calls (negligible). |
+| **Compatibility**     | Limited (e.g., no data binding).  | Works with frameworks, interfaces, etc. |
+
+</br>
+
+##### When to use
+
+- **Public Fields**: Use sparingly, typically for internal or private fields, simple structs, or when performance is critical and no logic is needed (e.g., temporary data containers).
+- **Properties**: Use in most cases, especially for public APIs, to ensure encapsulation, maintainability, and flexibility. Auto-implemented properties are ideal for simple cases, while full properties allow custom logic.
+
+### 1.2. Methods
 
 A method is an action that can be invoked within the class. Three questions have to be made when declaring a method:
 
 1. Can the action be performed outside the class or only inside the class?
+
+    ```csharp
+    public string Hello() {}    // Action can be performed outside the class
+    private int Addition() {}   // Action can only be performed inside the class
+    ```
+
 2. Does the action returns a value?
 
     ```csharp
-    public string Hello ()
+    public string Hello()
     {
         string message = "Hello world";
-        return message;
+        return message;             // returns a value
+    }
+
+    public string Hola()
+    {
+        GD.Print("Hello world");    // does not return a value
     }
     ```
 
 3. Does the action require certain information to run?
 
     ```csharp
-    public void Addition (int a, int b)
+    public void Addition(int a, int b)     // requires certain information to run (int a, int b)
     {
         int result = a + b;
         GD.Print(result);
     }
     ```
 
-### 2.3. Constructor
+### 1.3. Constructor
 
 A constructor lets you instantiate a class easily. We can define several distinct constructors in order to instantiate in several distinct ways.
 
@@ -383,9 +364,9 @@ public class Toyota : Car
 }
 ```
 
-### 2.4. Logic in Properties
+### 1.4. Logic validation in Properties
 
-We can use accessors and constructors to build property logic. In the example below, we create the following class definition:
+We can use accessors and constructors to build property logic validation. In the example below, we create the following class definition:
 
 - **Properties**: Name, Strength, Intelligence, Dexterity, Endurance, Health, Mana.
 - Health value is calculated by adding Strength + Endurance.
@@ -397,8 +378,8 @@ We can use accessors and constructors to build property logic. In the example be
 
 public class Person
 {
-    int _health;
-    int _mana;
+    private int _health;
+    private int _mana;
 
     public string Name { get; set; }
     public int Strength { get; set; }
@@ -428,9 +409,80 @@ public class Person
     }
 }
 ```
-## 3. Class instantiation
 
-### 3.1. New
+The above code works during instantiation. However, if during the game `Strength` or `Endurance` changes value, it won't be reflected to `Health`. Likewise, if `Intelligence` changes value, it won't be reflected to `Mana`. If we want **Health** and **Mana** to update when **Strength**, **Endurance** or **Intelligence** changes, use this code instead:
+
+```csharp
+
+public class Person
+{
+    // Private fields
+    private int _strength;
+    private int _endurance;
+    private int _intelligence;
+    private int _health;
+    private int _mana;
+
+    // Public properties
+    public string Name { get; set; }
+    public int Dexterity { get; set; }
+
+    public int Strength
+    {
+        get => _strength;
+        set { _strength = value; UpdateHealth(); }
+    }
+
+    public int Endurance
+    {
+        get => _endurance;
+        set { _endurance = value; UpdateHealth(); }
+    }
+
+    public int Intelligence
+    {
+        get => _intelligence;
+        set { _intelligence= value; UpdateMana(); }
+    }
+
+    public int Health
+    {
+        get { return _health; }
+        set { _health = (value > 100) ? 100 : value; }
+    }
+
+    public int Mana
+    {
+        get => _mana;
+        set => _mana = (value > 50) ? 50 : value;
+    }
+
+    // Constructor
+    public Person(string name, int str, int intel, int dex, int endu)
+    {
+        Name = name;
+        Strength = str;
+        Intelligence = intel;
+        Dexterity = dex;
+        Endurance = endu;
+    }
+
+    // Methods
+    private void UpdateHealth()
+    {
+        _health = (Strength + Endurance) > 100 ? 100 : (Strength + Endurance);
+    }
+
+    private void UpdateMana()
+    {
+        _mana = Intelligence * 2 > 50 ? 50 : Intelligence * 2;
+    }
+}
+```
+
+## 2. Class instantiation
+
+### 2.1. New
 
 To create the actual instance, the `new` keyword is used. Given the class constructor:
 
@@ -462,7 +514,7 @@ or
 Car car = new();
 ```
 
-### 3.2. Object initializer
+### 2.2. Object initializer
 
 If the class has a constructor with no parameters, you can use an object initializer.
 
@@ -490,7 +542,7 @@ After instantiation, you can change `Name` or `Surname` like this:
 employee.Name = "Alice";
 ```
 
-## 4. Virtual methods
+## 3. Virtual methods
 
 When a class inherits from another, the child class has naturally the methods and data from the parent class. Sometimes, however, the child class may redefine some methods from the parent class. In that case:
 
@@ -515,7 +567,7 @@ public class Toyota : Car
 }
 ```
 
-## 5. Abstract class
+## 4. Abstract class
 
 An **abstract class** in C# is a class that cannot be instantiated directly and is designed to serve as a base class for other classes. It is declared using the `abstract` keyword and can contain both abstract members (methods, properties, etc., without implementation) and non-abstract members (with implementation). Derived classes must implement all abstract members unless they are also abstract.
 
@@ -598,7 +650,7 @@ In summary, use abstract classes when you need a base class with shared function
 
 
 
-## 6. Interface
+## 5. Interface
 
 In C#, an **interface** is a contract that defines a set of methods, properties, events, or indexers that a class or struct must implement, without providing any implementation details (from C# 8, you can provide implementation details, although is not recommended). It’s like a blueprint that ensures any class implementing the interface provides specific functionality.
 
@@ -739,7 +791,7 @@ Here, `App` depends on the `ILogger` interface, making it easy to swap `ConsoleL
 
 In summary, use interfaces to define contracts for behavior, promote flexibility, and enable polymorphism, especially in scenarios requiring loose coupling or multiple implementations of the same functionality.
 
-## 7. Abstract Class vs. Interface
+## 6. Abstract Class vs. Interface
 - **Abstract Class**:
   - Can have both abstract and non-abstract members.
   - Supports fields, constructors, and access modifiers.
@@ -752,8 +804,67 @@ In summary, use interfaces to define contracts for behavior, promote flexibility
   - Use for defining contracts without shared implementation.
 
 
+## 7. OOP Basic Theory
 
+### 7.1. Inheritance
 
+In C# it is not possible to inherit from several classes. So it's necessary to select the class to inherit from.
 
+```csharp
+class Character { }
+class Wizard : Character { }
+```
 
+### 7.2. Encapsulation
 
+Everything inside a class is encapsulated, and the amount of encapsulation depends on the scope:
+
+- **Public**: the member is visible both inside and outside the class.
+- **Private**: the member is visible only inside the class.
+- **Protected**: the member is visible only inside the class and within the child classes hierarchy.
+
+### 7.3. Polymorphism
+
+{{< alert text="To understand the code below, that uses the `new` keyword and constructors, check first [Class Instantiation](#3-class-instantiation)." />}}
+
+Given the parent class and child class:
+
+```csharp
+class Car { }
+class Toyota : Car { }
+```
+
+with polymorphism you can instantiate like this:
+
+```csharp
+Car toyota = new Toyota();
+```
+
+but not like this:
+```csharp
+Toyota toyota = new Car();
+```
+Polymorphism let you do this:
+
+```csharp
+public class Driver
+{
+    public void LogIn(Car car) { }
+}
+
+var john = new Driver();
+john.LogIn(new Car(2025));
+john.LogIn(new Toyota());
+```
+However:
+
+```csharp
+public class Driver
+{
+    public void LogIn(Toyota toyota) { }
+}
+
+var john = New Driver();
+john.LogIn(new Car(2025)); // Compiler error
+john.LogIn(new Toyota()); // Fine
+```
