@@ -189,47 +189,24 @@ john.LogIn(new Toyota()); // Fine
 ```
 ## 2. Class definition
 
-A class must first be defined and later on instantiated. A class is composed of methods and data.
+A class must first be defined and later on instantiated. A class is composed of data, methods and constructors.
 
-### 2.1. Methods
-
-A method is an action that can be invoked within the class. Three questions have to be made when declaring a method:
-
-1. Can the action be performed outside the class or only inside the class?
-2. Does the action returns a value?
-
-    ```csharp
-    public string Hello ()
-    {
-        string message = "Hello world";
-        return message;
-    }
-    ```
-
-3. Does the action require certain information to run?
-
-    ```csharp
-    public void Addition (int a, int b)
-    {
-        int result = a + b;
-        GD.Print(result);
-    }
-    ```
-
-### 2.2. Data
+### 2.1. Data
 
 A data can be declared inside a class either via a property or via a field. The simple one is via a field:
 
 #### Field
 
 ```csharp
-public int PurchaseYear;            // public field in PascalCase
+int step;                           // local variables use camelCase
+private string _lastName;           // private fields use camelCase starting with underscore (_)
+public int PurchaseYear;            // Public fields are recommended to be converted to properties.
 public readonly int PurchaseYear;   // readonly can only be assigned during instantiation
 ```
 
 #### Property
 
-Data that is exposed via accessors: a read method (`get`) and a write method (`set`). Below are four different ways to use accessors to achieve the same result:
+Property values are exposed via [accessors](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/using-properties): a read method (`get`) and a write method (`set`). Below are four different ways to use accessors to achieve the same result:
 
 {{< tabs tabTotal="4">}}
 {{% tab tabName="Block-Style" %}}
@@ -245,6 +222,7 @@ public int PurchaseYear
     private set { _purchaseYear = value; }
 }
 ```
+
 {{% /tab %}}
 {{% tab tabName="Expression-Bodied" %}}
 
@@ -321,10 +299,34 @@ Console.WriteLine(car.PurchaseYear);    // Works because `get` is public. Prints
   ```
 - Ensure the property is used in a context where a private setter makes sense, as it restricts external modification.
 
+### 2.2. Methods
 
-## 3. Class instantiation
+A method is an action that can be invoked within the class. Three questions have to be made when declaring a method:
 
-### 3.1. Constructor
+1. Can the action be performed outside the class or only inside the class?
+2. Does the action returns a value?
+
+    ```csharp
+    public string Hello ()
+    {
+        string message = "Hello world";
+        return message;
+    }
+    ```
+
+3. Does the action require certain information to run?
+
+    ```csharp
+    public void Addition (int a, int b)
+    {
+        int result = a + b;
+        GD.Print(result);
+    }
+    ```
+
+### 2.3. Constructor
+
+A constructor lets you instantiate a class easily. We can define several distinct constructors in order to instantiate in several distinct ways.
 
 All classes must have a constructor. If you don't define one, the C# compiler will use a default constructor:
 
@@ -381,7 +383,54 @@ public class Toyota : Car
 }
 ```
 
-### 3.2. New
+### 2.4. Logic in Properties
+
+We can use accessors and constructors to build property logic. In the example below, we create the following class definition:
+
+- **Properties**: Name, Strength, Intelligence, Dexterity, Endurance, Health, Mana.
+- Health value is calculated by adding Strength + Endurance.
+- Health value cannot exceeds the value 100.
+- Mana value is calculated by multiplying Intelligence * 2.
+- Mana value cannot exceeds the value 50.
+
+```csharp
+
+public class Person
+{
+    int _health;
+    int _mana;
+
+    public string Name { get; set; }
+    public int Strength { get; set; }
+    public int Intelligence { get; set; }
+    public int Dexterity { get; set; }
+    public int Endurance { get; set; }
+    public int Health
+    {
+        get { return _health; }
+        set { _health = (value > 100) ? 100 : value; }
+    }
+    public int Mana
+    {
+        get => _mana;
+        set => _mana = (value > 50) ? 50 : value;
+    }
+
+    public Person(string name, int str, int intel, int dex, int endu)
+    {
+        Name = name;
+        Strength = str;
+        Intelligence = intel;
+        Dexterity = dex;
+        Endurance = endu;
+        Health = Strength + Endurance;
+        Mana = Intelligence * 2;
+    }
+}
+```
+## 3. Class instantiation
+
+### 3.1. New
 
 To create the actual instance, the `new` keyword is used. Given the class constructor:
 
@@ -413,7 +462,7 @@ or
 Car car = new();
 ```
 
-### 3.3. Object initializer
+### 3.2. Object initializer
 
 If the class has a constructor with no parameters, you can use an object initializer.
 

@@ -9,6 +9,7 @@ draft: false
 toc: true
 ---
 
+{{< alert text="For the official .NET C# documentation, visit [Microsoft .NET C#](https://learn.microsoft.com/en-us/dotnet/csharp/tour-of-csharp/) and [Microsoft .NET C# Programming concepts](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/)." />}}
 
 ### _init()
 
@@ -92,7 +93,7 @@ GD.Print($"The {Race.Name} has a health of {Race.Health}");
         npc.NpcRace = ResourceLoader.Load("res://resources/csharp/goblin.tres") as Race;
 
         npc.Transform = new Transform2D(0f, new Vector2(100, 100));
-        GD.Print(npc.race.RaceName)         // Not so good option
+        GD.Print(npc.race.RaceName)     // Not so good option
         npc.PrintName()                 // Better option if member method PrintName() exists
         AddChild(npcInstance);
     }
