@@ -14,7 +14,6 @@ toc: true
 - **[Members](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/members)**: represent the data and behaviour of a class or struct: fields, constants, properties, methods, events, operators, indexers, constructors, finalizers, nested types. All members use PascalCase style, except private fields and local variables, which use camelCase style.
 - **[Fields](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/fields)**: variable of any type that is declared directly in a class or struct. Generally, you should declare private or protected accessibility for fields. Data exposed to client code should be provided through methods, properties, and indexers.
     ```csharp
-    int step;                   // local variables use camelCase
     private string _lastName;   // private fields use camelCase starting with underscore (_)
     public string FirstName;    // public fields use PascalCase. However it is recommended to use properties instead
     ```
@@ -45,6 +44,21 @@ toc: true
         // Remaining implementation of Person class.
     }
     ```
+- **Local variables**: are not members. Declared within a method, constructor, or block (e.g., inside curly braces {}). It exists only within that specific scope and is destroyed when the scope is exited. Local variables are typically stored on the stack and are not associated with an object's state.
+
+    ```csharp
+    public class Person
+    {
+        // private field
+        private int _luck;
+
+        public int IncreaseLuck()
+        {
+            int localVar = 10;  // local variable, exists only in IncreaseLuck
+            var localVar2= 10;  // local variables can use implicitly typed (`var`) when the type is evident
+            return _luck += localVar;
+        }
+    }
 
 ### Naming conventions [](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names)
 
@@ -78,10 +92,7 @@ public class Person
     // Method
     public void Increment()
     {
-        // local variables
-        int step = 1;
-        var step2 = 2;  // for local variables consider using implicitly typed (`var`) when the type is evident
-
+        var step = 1;   // local variable
         _count += step; // accessing private field
     }
 
@@ -134,10 +145,9 @@ A data can be declared inside a class either via a property or via a field. The 
 #### Field
 
 ```csharp
-int step;                           // local variables use camelCase
 private string _lastName;           // private fields use camelCase starting with underscore (_)
 public int PurchaseYear;            // public fields use PascalCase
-public readonly int PurchaseYear;   // readonly Public fields can only be assigned during instantiation
+public readonly int PurchaseYear;   // readonly public fields can only be assigned during instantiation
 ```
 
 #### Property
