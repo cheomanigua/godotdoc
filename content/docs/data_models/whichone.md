@@ -9,7 +9,7 @@ draft: false
 toc: true
 ---
 
-# Basics
+# Basics - Classes vs Resources
 
 In Godot 4, when developing an RPG game, both **classes** and **resources** have distinct use cases, and choosing between them depends on the specific needs of your game's architecture, data management, and extensibility. Below, I’ll explain when it’s better to use **classes** (such as GDScript classes or nodes) versus **resources** in the context of an RPG, along with their strengths and practical applications.
 
@@ -187,7 +187,7 @@ RPGs often require a mix of **behavior** (handled by classes) and **data** (hand
 
 ---
 
-# Resources vs C# Classes
+# RPG Items: Resources vs C# Classes
 
 In Godot 4, choosing between **Godot Resources** and **C# classes** for representing items in your game depends on your project's needs, workflow, and how you plan to manage and use those items. Both approaches have their strengths and use cases, and the "better" choice depends on factors like flexibility, ease of use, performance, and integration with Godot's ecosystem. Below, I'll break down the pros, cons, and use cases for each approach, along with some practical considerations.
 

@@ -88,7 +88,7 @@ public partial class Stats : Label
 
     public override void _ExitTree()
     {
-        EventManager.AttributeChangeEvent -= OnAttributeChange; // Unsubscribe to prevent memory leaks if node is deleted
+        EventManager.AttributeChangeEvent -= OnAttributeChange; // Unsubscribe to prevent memory leaks
     }
 
     private void OnAttributeChange()
@@ -118,8 +118,6 @@ using Godot;
 
 public partial class EventsLabel : Label
 {
-
-    // Prevent duplicate subscriptions
     public override void _Ready()
     {
         EventManager.MessageEvent -= OnMessageEVent;
@@ -128,7 +126,7 @@ public partial class EventsLabel : Label
 
     public override void _ExitTree()
     {
-        EventManager.MessageEvent -= OnAttributeChange; // Unsubscribe to prevent memory leaks if node is deleted
+        EventManager.MessageEvent -= OnAttributeChange;
     }
 
     private void OnMessageEVent(string message)
