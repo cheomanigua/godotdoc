@@ -53,12 +53,25 @@ You can use Visual Studio Code or VSCodium as your editor for **C#** programming
 - Download VSCodium from [here](https://vscodium.com/#install).
 - Install **.NET SKD 8** or later:
 
-    {{< tabs tabTotal="2">}}
-    {{% tab tabName="Debian" %}}
+    {{< tabs tabTotal="3">}}
+    {{% tab tabName="Ubuntu" %}}
 
 ```
-$sudo apt install dotnet-sdk-8.0
+$ sudo apt install dotnet-sdk-8.0
 ```
+
+{{% /tab %}}
+{{% tab tabName="Debian" %}}
+
+```
+$ wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+$ sudo dpkg -i packages-microsoft-prod.deb
+$ rm packages-microsoft-prod.deb
+$ sudo apt-get update && \
+  sudo apt-get install -y dotnet-sdk-9.0
+```
+
+
 {{% /tab %}}
 {{% tab tabName="MacOS" %}}
 
