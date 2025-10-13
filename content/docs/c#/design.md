@@ -3,8 +3,8 @@ weight: 2500
 title: "Design Patterns"
 description: "Using GoF's Design Pattern for game development"
 icon: "article"
-date: "2025-10-13T15:26:17+01:00"
-lastmod: "2025-10-13T15:26:17+01:00"
+date: "2025-10-13T11:26:17+01:00"
+lastmod: "2025-10-13T11:26:17+01:00"
 draft: false
 toc: true
 ---
