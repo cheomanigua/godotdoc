@@ -1,7 +1,7 @@
 ---
 weight: 2500
 title: "Design Patterns"
-description: "Using GoF Design Pattern for game development"
+description: "Using GoF's Design Pattern for game development"
 icon: "article"
 date: "2025-10-13T11:26:17+01:00"
 lastmod: "2025-10-13T11:26:17+01:00"
@@ -26,7 +26,7 @@ This is a classic use case for **composition over inheritance**, where entities 
 
 ---
 
-### 1. **Component Pattern** (Composition over Inheritance)
+### 1. Component Pattern (Composition over Inheritance)
 
 **Use for:** Dynamically adding/removing behaviors like `Radar`, `Shield`, `Weapon`.
 
@@ -75,7 +75,7 @@ public class Ship : Node2D
 
 ---
 
-### 2. **Factory Pattern**
+### 2. Factory Pattern
 
 **Use for:** Creating Weapons, WeaponTypes, AmmoTypes dynamically.
 
@@ -105,7 +105,7 @@ You can also extend this by using **Resource-based** configurations in Godot (e.
 
 ---
 
-### 3. **Strategy Pattern**
+### 3. Strategy Pattern
 
 **Use for:** Weapon behavior (e.g., fire logic) or different ammo logic.
 
@@ -140,7 +140,7 @@ This lets you plug-and-play firing logic per weapon or ammo type.
 
 ---
 
-### 4. **Prototype Pattern**
+### 4. Prototype Pattern
 
 **Use for:** Cloning ship configurations, or ammo/weapon setups.
 
@@ -150,7 +150,7 @@ In Godot, this can be a `.tscn` scene you instantiate, or a C# object you clone.
 
 ---
 
-### 5. **Observer/Event Pattern**
+### 5. Observer/Event Pattern
 
 **Use for:** Communication between components (e.g., Radar detects enemy → Weapon fires).
 
@@ -173,13 +173,13 @@ Then `Weapon` subscribes to the radar's `OnTargetDetected`.
 
 ---
 
-### 6. **Service Locator / Dependency Injection (Optional)**
+### 6. Service Locator / Dependency Injection (Optional)
 
 Useful if you have shared services like logging, configuration, or object pooling.
 
 ---
 
-### Bonus: **ECS Alternative (Entity-Component-System)**
+### Bonus: ECS Alternative (Entity-Component-System)
 
 If you want *more advanced* dynamic behavior, you could adopt an **ECS-like** approach (either manually or using 3rd-party Godot ECS libraries like **Godex**), but it’s often overkill for many games unless you're building something massive or simulation-heavy.
 
