@@ -31,8 +31,19 @@ toc: true
 
 ### Adding Godot to the launch menu
 
-[External Link](https://devdocse.web.app/docs/linux/#adding-apps-to-launch-menu)
+- Add any Godot image in **png** or **svg** format into `~/.local/share/icons/`
+- Create the `godot.desktop` file below in `~/.local/share/applications/`
 
+```bash
+[Desktop Entry]
+Type=Application
+Name=Godot Mono 4.5
+Exec=/home/cheo/Downloads/godot/.\/Godot_v4.5-stable_mono_linux.x86_64 --editor
+Icon=/home/cheo/.local/share/icons/icon.svg
+Comment=Godot Game Engine
+Categories=Development;Game;
+Terminal=false
+```
 
 ### Key binding
 
