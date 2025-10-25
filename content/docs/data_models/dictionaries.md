@@ -4,7 +4,7 @@ title: "Dictionaries"
 description: ""
 icon: "article"
 date: "2024-08-24T14:59:45+02:00"
-lastmod: "22024-08-24T14:59:45+02:00"
+lastmod: "2024-08-24T14:59:45+02:00"
 draft: false
 toc: true
 ---

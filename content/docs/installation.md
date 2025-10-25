@@ -54,7 +54,7 @@ Terminal=false
 - **Alt** + **Return**: Create new empty line below with indented cursor position
 
 
-# VSCode/VSCodium as editor
+# VSCode/VSCodium/Rider as editor
 
 You can use Visual Studio Code or VSCodium as your editor for **C#** programming in Godot.
 
@@ -62,6 +62,7 @@ You can use Visual Studio Code or VSCodium as your editor for **C#** programming
 
 - Download VSCode from [here](https://code.visualstudio.com/).
 - Download VSCodium from [here](https://vscodium.com/#install).
+- Download VSCodium from [here](https://www.jetbrains.com/rider/download/).
 - Install **.NET SKD 8** or later:
 
     {{< tabs tabTotal="3">}}
@@ -103,8 +104,8 @@ For Godot to launch **C#** files when clicking on them, configure Godot this way
     - For JetBrains Rider:
         - **External Editor**: `JetBrains Rider`
 3. Open your IDE, then:
-        - For VSCode and VSCodium, open the folder of the Godot project
-        - For JetBrains Rider, open the project `.sln` file
+    - For VSCode/VSCodium: open the folder of the Godot project
+    - For JetBrains Rider: open the the project's `.sln` file
 
 
 ## 3. VSCode/VSCodium pluggins

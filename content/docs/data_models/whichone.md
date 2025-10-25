@@ -3,8 +3,8 @@ weight: 3600
 title: "Classes vs Resources"
 description: "When to choose a class or a resource"
 icon: "article"
-date: "2025-02-03T021:25:18+02:00"
-lastmod: "2025-02-03T021:25:18+02:00"
+date: "2025-02-03T21:25:18+02:00"
+lastmod: "2025-02-03T21:25:18+02:00"
 draft: false
 toc: true
 ---

@@ -4,7 +4,7 @@ title: "Composition"
 description: "A good game arquitecture is to structure the game in small components"
 icon: "article"
 date: "2024-08-28T13:51:43+02:00"
-lastmod: "22024-08-28T13:51:43+02:00"
+lastmod: "2024-08-28T13:51:43+02:00"
 draft: false
 toc: true
 ---
