@@ -88,8 +88,13 @@ For Godot to launch **C#** files when clicking on them, configure Godot this way
     - For Visual Studio Code:
         - **External Editor**: `Visual Studio Code and VSCodium`
     - For VSCodium:
-        - **External Editor**: `Custom`
-        - **Custom Exec Path**: `/usr/bin/codium` or whatever is the path to VSCodium
+        - **External Editor**: `Visual Studio Code and VSCodium`
+    - For JetBrains Rider:
+        - **External Editor**: `JetBrains Rider`
+3. Open your IDE, then:
+        - For VSCode and VSCodium, open the folder of the Godot project
+        - For JetBrains Rider, open the project `.sln` file
+
 
 ## 3. VSCode/VSCodium pluggins
 

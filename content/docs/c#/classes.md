@@ -117,7 +117,7 @@ public class Person
 
 
 
-### Expression-Bodied Members
+### Expression-Bodied Members/Methods
 
 The `=>` operator is used to define a member (like a property, method, or indexer) with a single expression, making the syntax more concise.
 
