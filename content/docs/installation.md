@@ -54,15 +54,15 @@ Terminal=false
 - **Alt** + **Return**: Create new empty line below with indented cursor position
 
 
-# VSCode/VSCodium/Rider as editor
+# External Editors
 
-You can use Visual Studio Code or VSCodium as your editor for **C#** programming in Godot.
+You can use **Visual Studio Code**, **VSCodium** or **JetBrains Rider** as your editor for **C#** programming in Godot.
 
 ## 1. Installation
 
 - Download VSCode from [here](https://code.visualstudio.com/).
 - Download VSCodium from [here](https://vscodium.com/#install).
-- Download VSCodium from [here](https://www.jetbrains.com/rider/download/).
+- Download Rider from [here](https://www.jetbrains.com/rider/download/).
 - Install **.NET SKD 8** or later:
 
     {{< tabs tabTotal="3">}}
@@ -94,7 +94,6 @@ Download .NET from [https://dotnet.microsoft.com/en-us/download](https://dotnet.
 
 ## 2. Godot configuration
 
-For Godot to launch **C#** files when clicking on them, configure Godot this way:
 1. **Editor** -> **Editor Settings...** -> **Dotnet** -> **Editor** (Advanced settings must be enabled).
 2. In the new dialog that opens, select the following options:
     - For Visual Studio Code:
@@ -103,29 +102,32 @@ For Godot to launch **C#** files when clicking on them, configure Godot this way
         - **External Editor**: `Visual Studio Code and VSCodium`
     - For JetBrains Rider:
         - **External Editor**: `JetBrains Rider`
-3. Open your IDE, then:
-    - For VSCode/VSCodium: open the folder of the Godot project
-    - For JetBrains Rider: open the the project's `.sln` file
+3. Leave the rest of fields empty
 
 
-## 3. VSCode/VSCodium pluggins
+## 3. Launching External Editor
+
+{{< alert context="warning" text="Don't click on the `.cs` file in Godot to open it. Follow instructions below." />}}
+
+1. Launch your IDE
+2. Then:
+    - From **VSCode** and **VSCodium** application, open the Godot project folder
+    - From **JetBrains Rider** application, open the Godot project `.sln` file
+
+
+## 4. External Editor pluggins
 
 Install the following extension:
 - For VSCode: [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 - For VSCodium: [C#](https://open-vsx.org/extension/muhammad-sammy/csharp)
+- For Rider: All pluggins are already installed by default
 
-
-## 4. Running VSCode/VSCodium
-
-To work with `.cs` files in VSCode/VSCodium, just double click in a `.cs` file from the Godot file browser.
-
-{{< alert context="warning" text="In order for VSCodium to get auto completion, you must open the folder holding the Godot project in the VSCodium file browser." />}}
 
 ## 5. Debugging
 
 {{< alert context="primary" text="For Linux Mint 21, it's necessary to build Godot from source. Otherwise debugging yields an error when stepping into some lines. Instructions below on how to install from source are for Debian/Ubuntu derivatives." />}}
 
-{{< alert context="warning" text="Debugging only works on Visual Studio Code." />}}
+{{< alert context="warning" text="Debugging only works on Visual Studio Code and JetBrains Rider." />}}
 
 - [Getting the source](https://docs.godotengine.org/en/latest/contributing/development/compiling/getting_source.html)
 - [Compiling for Linux](https://docs.godotengine.org/en/latest/contributing/development/compiling/compiling_for_linuxbsd.html)
