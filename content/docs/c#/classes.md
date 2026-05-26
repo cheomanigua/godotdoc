@@ -82,6 +82,10 @@ public class Person
         set => _age = value;
     }
 
+    // Property to expose/access the field _age (same as above, but shorter style)
+    // In this case, there is no need to declare the private field _age.
+    public int Age { get; set; }
+
     // Property exposing private field _count
     public int Count
     {
@@ -90,10 +94,6 @@ public class Person
 
     // Property exposing private field _count (same as above, but shorter)
     public int Count => _count;
-
-    // Property to expose/access the field _age (same as above, but shorter style)
-    // In this case, there is no need to declare the private field _age.
-    public int Age { get; set; }
 
     // Property to expose/access the fields _firstName and _lastName.
     // There is no need to declare _firstName and _lastName using this style.
