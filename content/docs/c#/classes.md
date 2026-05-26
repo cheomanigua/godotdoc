@@ -37,7 +37,7 @@ toc: true
 
         public Person(string last, string first)
         {
-            Last = Name;
+            Last = last;
             First = first;
         }
 
@@ -82,28 +82,23 @@ public class Person
         set => _age = value;
     }
 
-    // Property to expose/access the field _age (same as above, but shorter)
-    public int Age { get; set; }
-
-    // Property to expose/access the fields _firstName and _lastName
-    private string FirstName { get; set; }
-    private string LastName { get; set; }
-
-    // Method
-    public void Increment()
-    {
-        var step = 1;   // local variable
-        _count += step; // accessing private field
-    }
-
-    // Property exposing private field
+    // Property exposing private field _count
     public int Count
     {
         get { return _count; }
     }
 
-    // Property exposing private field (same as above, but shorter)
+    // Property exposing private field _count (same as above, but shorter)
     public int Count => _count;
+
+    // Property to expose/access the field _age (same as above, but shorter style)
+    // In this case, there is no need to declare the private field _age.
+    public int Age { get; set; }
+
+    // Property to expose/access the fields _firstName and _lastName.
+    // There is no need to declare _firstName and _lastName using this style.
+    private string FirstName { get; set; }
+    private string LastName { get; set; }
 
     // Constructor
     public Person(string lastName, string firstName, int age)
@@ -111,6 +106,13 @@ public class Person
         LastName = lastName;
         FirstName = firstName;
         Age = age;
+    }
+
+    // Method
+    public void Increment()
+    {
+        var step = 1;   // local variable
+        _count += step; // accessing private field
     }
 }
 ```
@@ -239,15 +241,22 @@ car.SetYear(2023);                      // Works because SetYear is a class memb
 Console.WriteLine(car.PurchaseYear);    // Works because `getter` is public. Prints 2023
 ```
 
-#### Potential Considerations:
-- If you want to add validation logic to the setter (e.g., ensuring `PurchaseYear` is within a valid range), you might prefer a traditional block-style setter:
+#### Block-Style use
+
+- If you want to add validation logic to the setter (e.g., ensuring `PurchaseYear` is within a valid range), use a traditional block-style setter:
   ```csharp
-  private set
+  private int _purchaseYear;
+
+  public int PurchaseYear
   {
-      if (value >= 1900 && value <= DateTime.Now.Year)
-          _purchaseYear = value;
-      else
-          throw new ArgumentException("Invalid purchase year");
+    get { return _purchaseYear; }
+    private set
+    {
+        if (value >= 1900 && value <= DateTime.Now.Year)
+            _purchaseYear = value;
+        else
+            throw new ArgumentException("Invalid purchase year");
+    }
   }
   ```
 - Ensure the property is used in a context where a private setter makes sense, as it restricts external modification.
