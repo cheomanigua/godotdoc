@@ -188,6 +188,7 @@ public int PurchaseYear
     private set => _purchaseYear = value;
 }
 ```
+
 {{% /tab %}}
 {{% tab tabName="Auto-Implement" %}}
 
