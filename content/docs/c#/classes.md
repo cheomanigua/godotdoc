@@ -244,7 +244,8 @@ Console.WriteLine(car.PurchaseYear);    // Works because `getter` is public. Pri
 
 #### Block-Style use
 
-- If you want to add validation logic to the setter (e.g., ensuring `PurchaseYear` is within a valid range), use a traditional block-style setter:
+- If you want to add validation logic to the setter (e.g., ensuring `PurchaseYear` is within a valid range), use private fields and a traditional block-style setter:
+
   ```csharp
   private int _purchaseYear;
 
