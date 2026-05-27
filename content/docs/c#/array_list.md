@@ -207,8 +207,6 @@ class Program
 - **Thread Safety**: `List<T>` is not thread-safe by default; use `ConcurrentBag<T>` or synchronization for multi-threaded scenarios.
 - **Alternatives**: Consider `Array` for fixed-size collections, `Dictionary<TKey, TValue>` for key-value pairs, or `HashSet<T>` for unique items.
 
-If you have a specific question about `List<T>` (e.g., a particular method, performance, or scenario), let me know!
-
 ##  Differences between Arrays and Lists
 | Feature                | Array (`T[]`)                     | List (`List<T>`)                  |
 |------------------------|-----------------------------------|-----------------------------------|
