@@ -104,6 +104,90 @@ Your project is a highly elegant symbiosis of both paradigms:
 
 * * *
 
+## Composition (ECS)
+
+**Composition** is the foundational heart and soul of ECS. In fact, ECS was invented specifically to enforce **Composition over Inheritance** at a strict, hardware-enforced level.
+
+To answer your question directly: **Yes, ECS automatically and inherently uses composition.** By its very nature, you cannot use inheritance to build an entity in a true ECS; you are forced to compose it.
+
+Here is exactly how it works, how it contrasts with traditional object-oriented game development, and why it is a game-changer for your roguelikes, simulations, and NPC-driven crime games.
+
+### The Problem with Inheritance (The "Deep Tree" Nightmare)
+
+In traditional Object-Oriented Programming (OOP), you create games using inheritance (an object **is** a type of class).
+
+Imagine you are building your Space Station Crime game. You start with a base class: `NPC`.
+
+1. You need a standard crew member, so you inherit: `CrewMember : NPC`.
+2. You need an automated cleaning droid that moves around the station, so you inherit: `StationDroid : NPC`.
+3. You need a security guard who can attack a criminal: `SecurityGuard : CrewMember`.
+
+Now, the designer comes to you with a classic rogue-like/simulation twist: *"We want a rogue security droid that has gone haywire, has relationship friction metrics with the crew, and can attack the player."*
+
+Suddenly, your inheritance tree shatters. Where does `RogueSecurityDroid` go?
+
+* If it inherits from `StationDroid`, it doesn't get the combat math from `SecurityGuard`.
+* If it inherits from `SecurityGuard`, it inherits unnecessary organic traits (like blood type, hunger, or sleeping schedules) because it's inheriting from `CrewMember`.
+
+This is called the **Diamond Dependency Problem** or the **Deep Hierarchy Trap**.
+
+### How ECS Automatically Solves This via Pure Composition
+
+In your custom ECS project, an entity **is nothing** on its own—it is just an empty ID integer. Instead of defining what an object *is*, you define what an object **has** by attaching independent data components to that ID.
+
+To build that exact same universe using your factory layout, you just stitch components together like LEGO bricks:
+
+```csharp
+// 1. A standard human crew member
+int alice = CreateEntityID();
+IdentityPool[alice] = new IdentityComponent { Class = CharacterClass.Rogue };
+StatsPool[alice]    = new StatsComponent { Health = 100, Mana = 0 };
+SkillsPool[alice]   = new SkillsComponent { Skills = SkillDatabase.GetSingleBitmask("Illusion") };
+
+// 2. A peaceful cleaning droid
+int wallE = CreateEntityID();
+DroidMovementPool[wallE] = new DroidMovementComponent { Battery = 100, Speed = 2.0f };
+// (Notice: wallE has NO StatsPool or SkillsPool. It cannot be attacked or use weapons!)
+
+// 3. The Rogue Security Droid (The magical mix-and-match!)
+int terminator = CreateEntityID();
+DroidMovementPool[terminator] = new DroidMovementComponent { Battery = 500, Speed = 5.0f };
+StatsPool[terminator]         = new StatsComponent { Health = 300, Mana = 0 };
+EquipmentPool[terminator]     = "assassins_dagger".GetHashCode(); // Give the robot a blade!
+```
+
+#### Why this is "Automatic":
+
+You didn't have to write a custom `RogueSecurityDroid` class. You didn't have to refactor any base classes. The `CombatSystem` only looks for things that have a `StatsPool` and an `EquipmentPool`. Because your rogue droid has both, the `CombatSystem` automatically treats it as a combat-ready agent. Meanwhile, your `DroidBatterySystem` automatically runs its logic on it because it possesses a `DroidMovementComponent`.
+
+### Why Composition via ECS is Perfect for Your Genres
+
+#### 1. For Your Roguelike RPG
+
+Roguelikes thrive on emergent, chaotic interactions.
+
+* Want an iron sword? Give it an `ItemComponent` and a `WeaponComponent`.
+* Want a *flaming* iron sword? Just add a `FlameComponent`. Your global `FireSpreadSystem` will automatically start processing that sword entity every frame to set nearby flammable objects on fire, without the sword ever knowing it has fire capabilities.
+
+#### 2. For Your Simulation Games (*Harpoon* style)
+
+A military simulation features diverse units: Submarines, Recon Aircraft, Aircraft Carriers, and Land-Based Radar stations.
+Instead of writing complex nested classes, you compose them:
+
+* **Submarine:** `HullComponent` + `PropulsionComponent` + `SonarComponent` + `TorpedoTubesComponent`.
+* **Radar Station:** `HullComponent` + `RadarComponent`.
+Your `RadarDetectionSystem` loops through any entity possessing a `RadarComponent`, completely ignoring whether it's a truck on land, an airplane in the sky, or a cruiser at sea.
+
+#### 3. For Your Crime/NPC Routine Game
+
+If an NPC is murdered or goes offline, you can dynamically mutate their behavior at runtime just by stripping away components. If a human character becomes a ghost, or a droid gets hacked, you don't swap the object instance out in memory. You simply delete their `RoutineComponent` or push a `HackedComponent` into their data slot. The underlying systems adapt instantly.
+
+### Summary
+
+ECS doesn't just make composition *easier*—**it builds the entire engine around it**. By stripping objects of their behavior and storing data in flat, separate component arrays, you achieve total design freedom. You can invent entirely new character types, item modifiers, or simulation rules directly inside your JSON files, and your engine will compose and execute them automatically.
+
+* * *
+
 ## High Performance
 
 You have done a fantastic job identifying the exact modern C# performance pillars used by AAA engines and high-throughput systems. Every single one of these concepts plays a vital role in why your custom/hybrid ECS setup achieves maximum hardware performance.
