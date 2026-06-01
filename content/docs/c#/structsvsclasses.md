@@ -29,6 +29,7 @@ class Car
 
 struct Truck
 {
+    //Public Auto-Properties for the JsonSerializer compatibility
 	public string Brand { get; set; }       // Caution. Check the warning box below
 	public int PurchaseYear { get; set; }   // Caution. Check the warning box below
 	public Truck(string brand, int purchaseYear)
