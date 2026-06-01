@@ -1,7 +1,7 @@
 ---
 weight: 975
 title: "MVC & OOP"
-description: "How to combine MVC and OOP Composition"
+description: "How to combine MVC, OOP Object Composition, "
 icon: "article"
 date: "2026-05-29T14:44:21+02:00"
 lastmod: "2026-05-29T14:44:21+02:00"

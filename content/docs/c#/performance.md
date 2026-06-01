@@ -219,7 +219,7 @@ Think of a `Span<T>` as a managed pointer with a built-in seatbelt. It points di
 
 You get the raw performance of a direct hardware memory pass, but if you accidentally try to read element 101 out of a 100-element array, C# throws a clean exception instead of letting your game corrupt its own data.
 
-### 3. The `ref` Keyword: No Copying Allowed
+### 3. The `ref` and `in` Keywords: No Copying Allowed
 
 In standard C#, when you pass a `struct` into a function, the computer duplicates the entire struct. If your strategy unit has components tracking 50 different weapon states and positions, copying that data 60 times a second will slow your game to a crawl.
 
@@ -230,8 +230,22 @@ By using the modern **`ref`** and **`in`** keywords, C# passes a direct memory a
 void CheckRadarRange(in PositionComp pos, in SensorsComp radar) {
     // Highly efficient math directly on the array memory, zero data copying.
 }
-
 ```
+Both the **`ref`** and **`in`** keywords are parameter modifiers used to pass arguments to a method **by reference** (meaning the method receives the exact memory address of the variable rather than a copied version of its data).
+
+The fundamental difference lies in whether the method is allowed to modify the underlying data:
+
+* **`ref` (Read/Write Reference):** Passes a variable by reference and gives the method full permission to read and **modify** its values. Any assignment made to the parameter inside the method instantly changes the original variable at the call site. It is typically used when a value type needs to be mutated directly in place to avoid the performance penalty of returning a new struct.
+* **`in` (Read-Only Reference):** Passes a variable by reference but strictly enforces **read-only** access. The compiler treats the parameter as immutable, meaning any attempt to modify its fields inside the method will result in a compile-time error. It is primarily used as an optimization technique to pass large, heavy structures efficiently without the overhead of copying bytes, while still guaranteeing the original data remains safe from accidental side effects.
+
+#### Key Differences at a Glance
+
+| Feature | `ref` | `in` |
+| --- | --- | --- |
+| **Passes by Pointer?** | Yes (64-bit memory address) | Yes (64-bit memory address) |
+| **Data Modification** | **Allowed** (Mutates original variable) | **Forbidden** (Enforced by compiler) |
+| **Call-Site Requirement** | Must explicitly type `ref` | Optional to type `in` (Compiler infers it) |
+| **Variable Initialization** | Must be initialized before passing | Must be initialized before passing |
 
 ### The Catch: You Have to Code Differently
 

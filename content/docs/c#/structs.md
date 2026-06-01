@@ -1,139 +1,189 @@
 ---
-weight: 2275
-title: "Structs vs Classes"
-description: "Differences between Structs and Classes"
+weight: 2235
+title: "Structs"
+description: "Structs, low level programming and high performance"
 icon: "article"
-date: "2025-08-20T10:08:29+01:00"
-lastmod: "2025-08-20T10:08:29+01:00"
+date: "2026-06-01T11:04:24+02:00"
+lastmod: "2026-06-01T11:04:24+02:00"
 draft: false
 toc: true
 ---
 
-Structs and classes are almost the same thing. Given this code:
+## Definition
 
+A **struct** (structure) is a user-defined value type that encapsulates small groups of related variables, designed primarily to provide high-performance memory layouts. Unlike a class, which is allocated on the managed heap and tracked by the Garbage Collector, a struct is typically allocated directly on the CPU stack or inline within its containing type. This contiguous stack allocation drastically reduces memory tracking overhead and maximizes CPU cache efficiency, making structs ideal for lightweight, immutable data structures, such as vectors, coordinates, or mathematical matrices that are created and destroyed frequently within tight execution loops.
+
+
+```csharp
+struct Point
+{
+    public int X;
+    public int Y;
+    public Point(int x, int y) { X = x; Y = y; }
+}
+```
+
+## Struct High Performance
+
+### `ref` and `in` keyword
+
+
+In standard C#, when you pass a struct into a function, the computer duplicates the entire struct. If your strategy unit has components tracking 50 different weapon states and positions, copying that data 60 times a second will slow your game to a crawl.
+
+By using the modern **`ref`** and **`in`** keywords, C# passes a direct memory address instead of making a copy:
+
+```csharp
+// 'in' passes by reference but makes it read-only (super safe!)
+void CheckRadarRange(in PositionComp pos, in SensorsComp radar) {
+    // Highly efficient math directly on the array memory, zero data copying.
+}
+```
+
+To give you the full picture of how this works under the hood, here is the minimum, complete, compile-ready C# implementation.
+
+This example demonstrates how C# blends low-level memory layout control (forcing data to align contiguously) with high-level code safety (`in` references protecting stack memory from accidental modifications).
+
+#### The Complete C# Implementation
 
 ```csharp
 using System;
+using System.Runtime.InteropServices;
 
-class Car
+namespace SimulationEngine
 {
-	public string Brand { get; set; }
-	public int PurchaseYear { get; set; }
-	public Car(string brand, int purchaseYear)
-	{
-		PurchaseYear = purchaseYear;
-		Brand = brand;
-		Console.WriteLine($"Car {Brand} built in {PurchaseYear}.");
-	}
-}
-
-struct Truck
-{
-	public string Brand { get; set; }       // Caution. Check the warning box below
-	public int PurchaseYear { get; set; }   // Caution. Check the warning box below
-	public Truck(string brand, int purchaseYear)
-	{
-		PurchaseYear = purchaseYear;
-		Brand = brand;
-		Console.WriteLine($"Truck {Brand} built in {PurchaseYear}.");
-	}
-}
-
-class Program
-{
-    static void Main(string[] args)
+    // 1. Force the CPU to lay out fields sequentially in memory, exactly like a C/C++ struct.
+    // This allows sequential cache access when stored in arrays.
+    [StructLayout(LayoutKind.Sequential)] // By default structs are sequencial. Added StructLayout for visibility only, no need to add it.
+    public struct PositionComp
     {
-		Car toyota = new Car("Toyota", 2025);
-		Truck ford = new Truck("Ford", 2021);
+        public double X;
+        public double Y;
+
+        public PositionComp(double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SensorsComp
+    {
+        public float RadarRangeNM;
+        public bool IsActiveEmission;
+
+        public SensorsComp(float range, bool active)
+        {
+            RadarRangeNM = range;
+            IsActiveEmission = active;
+        }
+    }
+
+    public class RadarSystem
+    {
+        // 2. The Method using 'in' parameters
+        // 'in' passes a raw memory address pointer (highly efficient for larger structures),
+        // but the compiler will throw an error if you try to modify 'pos' or 'radar' inside.
+        public static bool IsWithinRadarRange(in PositionComp sourcePos, in PositionComp targetPos, in SensorsComp radar)
+        {
+            if (!radar.IsActiveEmission)
+                return false;
+
+            // Highly efficient math performed directly on the stack memory. Zero copying of structs.
+            double deltaX = targetPos.X - sourcePos.X;
+            double deltaY = targetPos.Y - sourcePos.Y;
+            double distance = Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY));
+
+            return distance <= radar.RadarRangeNM;
+        }
+
+        public static void Main()
+        {
+            // 3. Create component instances on the stack
+            PositionComp ussPasadenaPos = new PositionComp(120.15, 30.85);
+            PositionComp targetPos = new PositionComp(120.45, 31.15);
+            SensorsComp passiveRadar = new SensorsComp(50.0f, true);
+
+            // 4. Pass by reference implicitly
+            bool detected = IsWithinRadarRange(ussPasadenaPos, targetPos, passiveRadar);
+
+            Console.WriteLine($"Target Detected: {detected}");
+        }
     }
 }
+
 ```
-{{< alert context="warning" text="Be **cautious** with mutable structs (those with `{ get; set; }`) because changes to a copied struct don’t affect the original, which can lead to unexpected behavior. If you want immutability, consider using `{ get; init; }` (available in C# 9.0+) or making the fields readonly." />}}
 
-</br>
+#### Why this structure provides the "best of both worlds":
 
-What is the difference between a Struct and a Class?
+1. **Stack Allocation & Performance:** Because `PositionComp` and `SensorsComp` are defined as structs, instantiating them inside `Main()` allocates them entirely on the **CPU Stack**. There is zero pressure on the Garbage Collector, meaning this method can be called millions of times per second in a simulation loop without causing stuttering or latency spikes.
+2. **Memory Layout Control:** The `[StructLayout(LayoutKind.Sequential)]` attribute ensures that if you put thousands of these structs inside a C# array, they will sit packed tightly together in RAM. This ensures your code is friendly to the CPU's hardware cache line fetcher.
+3. **Pass-by-Reference Efficiency:** Normally, passing a struct to a method copies all of its variables into a new space. By using the `in` modifier, C# passes a 64-bit memory address (a pointer) instead. If your component grows to have dozens of variables, passing it remains incredibly cheap.
+4. **Enforced Code Safety:** If you accidentally try to write code like `radar.RadarRangeNM = 100.0f;` inside `IsWithinRadarRange`, the C# compiler will refuse to compile your game, protecting your structural database fields from accidental modifications.
 
-In C#, **classes** and **structs** are both used to define custom data types, but they differ in key ways. Here's a concise comparison:
+### `ref` vs `in`
 
-### **Class**
-- **Type**: Reference type (stored on the heap).
-- **Memory**: Reference points to the object; null is allowed.
-- **Inheritance**: Supports inheritance; can inherit from a base class and implement interfaces.
-- **Default Value**: `null` if uninitialized.
-- **Use Case**: Suitable for complex objects with behavior, polymorphism, or when reference semantics are needed.
-- **Modifiers**: Can be `abstract`, `sealed`, or have any access modifier.
-- **Copy Behavior**: Passing a class object passes a reference; changes affect the same instance.
-- **Constructors**: Supports parameterized constructors and a default constructor.
-- **Lifetime**: Garbage-collected when no references remain.
-- **Example**:
-  ```csharp
-  class Person
-  {
-      public string Name;
-      public int Age;
-      public Person(string name, int age) { Name = name; Age = age; }
-  }
-  ```
+In C#, both `ref` and `in` are used to pass arguments by reference (passing a memory address pointer instead of copying the whole value type). However, they enforce completely opposite rules regarding what the receiving method is allowed to do with that memory.
 
-### **Struct**
-- **Type**: Value type (stored on the stack or inline in containing type).
-- **Memory**: Contains the data directly; cannot be `null`.
-- **Inheritance**: Cannot inherit from another struct or class; can only implement interfaces.
-- **Default Value**: All fields initialized to their default values (e.g., `0` for numbers).
-- **Use Case**: Ideal for lightweight, immutable data structures with value semantics (e.g., `Point`, `DateTime`).
-- **Modifiers**: Cannot be `abstract` or `sealed`; always implicitly sealed.
-- **Copy Behavior**: Passing a struct creates a copy; changes do not affect the original.
-- **Constructors**: Requires parameterized constructors; default constructor is implicit and initializes fields to default values.
-- **Lifetime**: Freed when out of scope (stack) or when containing object is garbage-collected (heap).
-- **Example**:
-  ```csharp
-  struct Point
-  {
-      public int X;
-      public int Y;
-      public Point(int x, int y) { X = x; Y = y; }
-  }
-  ```
+Here is the exact breakdown of their differences and why `in` was the correct architectural choice for the radar calculation example.
 
-### **Key Differences**
-| Feature                | Class                          | Struct                        |
-|-----------------------|--------------------------------|-------------------------------|
-| **Type**              | Reference type                | Value type                   |
-| **Memory Allocation** | Heap                          | Stack or inline              |
-| **Inheritance**       | Supports inheritance          | No inheritance, only interfaces |
-| **Nullability**       | Can be `null`                 | Cannot be `null`             |
-| **Copy Semantics**    | Reference (shared)            | Copy (independent)           |
-| **Performance**       | Slower due to heap allocation | Faster for small data types   |
-| **Use Case**          | Complex objects, OOP           | Small, immutable data        |
+#### The Fundamental Difference
 
-### **When to Use**
-- **Class**: Use for complex objects, when inheritance or reference semantics are needed (e.g., domain models like `Customer` or `Order`).
-- **Struct**: Use for small, lightweight data structures with value semantics (e.g., `Point`, `Rectangle`, or simple numeric types). Avoid structs for large data types or mutable objects to prevent excessive copying.
+* **`ref` (Read/Write Reference):** Passes a reference to a variable that the method **can read and must be allowed to modify**. Any changes made to the variable inside the method immediately alter the original variable in the calling function.
+* **`in` (Read-Only Reference):** Passes a reference to a variable that the method **can only read**. The compiler treats the argument as a `readonly` variable, making it physically impossible to modify its fields inside the method.
 
-### **Example Comparison**
+| Feature | `ref` | `in` |
+| --- | --- | --- |
+| **Passes by Pointer?** | Yes (64-bit memory address) | Yes (64-bit memory address) |
+| **Can read values?** | Yes | Yes |
+| **Can modify values?** | **Yes** | **No** (Compiler error) |
+| **Requires initialization?** | Variable must be initialized before passing | Variable must be initialized before passing |
+| **Keyword required at call site?** | **Yes** (e.g., `MyMethod(ref myVar)`) | **No** (Optional, compiler infers it) |
+
+---
+
+#### Why `in` Was Chosen for the Radar Example
+
+In the radar system simulation method:
+
 ```csharp
-class Program
-{
-    static void Main()
-    {
-        // Class: Reference type
-        Person person1 = new Person("Alice", 30);
-        Person person2 = person1; // Reference to same object
-        person2.Name = "Bob";
-        Console.WriteLine(person1.Name); // Outputs: Bob
+public static bool IsWithinRadarRange(in PositionComp sourcePos, in PositionComp targetPos, in SensorsComp radar)
 
-        // Struct: Value type
-        Point point1 = new Point(10, 20);
-        Point point2 = point1; // Creates a copy
-        point2.X = 50;
-        Console.WriteLine(point1.X); // Outputs: 10
-    }
-}
 ```
 
-### **Performance Considerations**
-- **Structs** are faster for small, frequently used data due to stack allocation and no garbage collection overhead.
-- **Classes** are better for larger objects or when shared references are needed, but heap allocation and garbage collection add overhead.
+The `in` keyword was explicitly chosen over `ref` for two major reasons: **Intent and Data Integrity**, and **Call-Site Cleanliness**.
 
-Choose based on your specific needs for semantics, performance, and behavior. If unsure, **classes** are the default choice in C# for most scenarios.
+##### 1. Preventing Accidental Modification (Side Effects)
+
+A radar check is a **pure mathematical query**. It answers a true/false question: *"Is Object B close enough to Object A?"* If we used `ref PositionComp targetPos`, the physics or radar loop would have permission to modify the target's physical location. If a programmer accidentally typed a bug inside the radar function like `targetPos.X = 0;`, the target submarine would instantly teleport to coordinates $(0,0)$ on the map simply because its range was checked!
+
+By using `in`, the compiler enforces a strict safety contract. If anyone tries to modify the position or sensor stats inside the method, the code will fail to compile. It guarantees that a query function remains a query and cannot introduce bugs into your game state.
+
+##### 2. Optimization Without Data Copying
+
+Because `PositionComp` and `SensorsComp` are `structs`, passing them without keywords normally copies all their internal data (doubles and floats) onto a new stack frame. If you run this range calculation for 10,000 units against 10,000 other units every frame, copying those bytes millions of times creates a massive CPU bottleneck.
+
+Using `in` allows us to pass a tiny 64-bit memory pointer instead of copying the struct variables, giving us the raw speed of C-style pointers while keeping our game completely safe from memory corruption.
+
+##### 3. Cleaner Syntax at the Call Site
+
+When you use `ref`, you are forced to explicitly type the keyword when calling the method:
+
+```csharp
+// Using ref requires typing it every time:
+RadarSystem.IsWithinRadarRange(ref ussPasadenaPos, ref targetPos, ref passiveRadar);
+
+```
+
+When you use `in`, C# allows you to pass variables normally without any extra keywords, making your math loops significantly cleaner and easier to read:
+
+```csharp
+// Using in looks like standard clean code:
+RadarSystem.IsWithinRadarRange(ussPasadenaPos, targetPos, passiveRadar);
+
+```
+
+#### Summary Rule of Thumb
+
+* Use **`in`** when passing large structs that you only want to **read** efficiently without copying.
+* Use **`ref`** only when the explicit goal of the method is to **mutate/modify** the incoming struct directly in place (such as a physics integration step like `ApplyVelocity(ref PositionComp pos, VelocityComp vel)`).
