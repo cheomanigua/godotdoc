@@ -443,7 +443,11 @@ Ref:
 
 ### 1. Install dependencies
 ```
+// Debian
 sudo apt-get install -y g++ clang cmake ninja-build unzip libx11-dev libxcursor-dev libxi-dev libxrandr-dev libgl1-mesa-dev libfontconfig1-dev
+
+// OpenSuse Leap
+sudo zypper install gcc-c++ clang cmake ninja unzip libX11-devel libXcursor-devel libXi-devel libXrandr-devel Mesa-libGL-devel fontconfig-devel
 ```
 
 ### 2. Download Aseprite source code
@@ -459,6 +463,20 @@ cd aseprite
 ```
 
 It takes several minutes to compile.
+
+However, on OpenSuse Leap 16, at the end of the compiling process you will get this error:
+
+```
+fatal error: pnglibconf.h: No such file or directory
+```
+
+To fix it, run these commands:
+
+```
+cd build
+ninja third_party/libpng/pnglibconf_h
+ninja
+```
 
 ### 4. Launch aseprite
 
